@@ -1,0 +1,161 @@
+SALES_CATEGORY_NAME,MENU_ITEM_NAME,ITEM_QUANTITY,ITEM_NET_AMOUNT,ITEM_GROSS_AMOUNT,DISCOUNT_AMOUNT,AVERAGE_ITEM_PRICE
+Draft Beer,Michelob Ultra,15161,72412.43,75806.52,3394.09,4.86
+Draft Beer,Miller Lite,2479,12101.59,12394.31,292.71,4.85
+Draft Beer,Yuengling Lager,2490,13232.52,13695.57,463.05,5.33
+Draft Beer,Guinness Draught,561,3758.67,3929.08,170.41,6.74
+Draft Beer,Blue Moon Belgian White,3055,19515.72,19854.31,338.59,6.38
+Draft Beer,Modelo Especial,677,4274.03,4401.85,127.82,6.43
+Draft Beer,Ridgeline Milk Stout,1213,8916.28,9094.82,178.54,7.36
+Draft Beer,Lantern Fruited Gose,502,3605.5,3768.48,162.98,7.35
+Draft Beer,Bluff City Pale Ale,720,4917.15,5039.17,122.02,6.97
+Draft Beer,Foxglove Imperial Stout,478,4190.39,4303.2,112.81,8.91
+Draft Beer,Lantern Brown Ale,1576,10855.58,11034.25,178.67,6.95
+Draft Beer,Iron Hollow Imperial Stout,998,8603.74,8984.33,380.59,8.74
+Draft Beer,Old Mill Porter,1250,8342.37,8753.35,410.98,6.96
+Draft Beer,Harbor Lights Sour Ale,1950,14388.47,14621.41,232.93,7.48
+Draft Beer,Bluff City Hazy IPA,717,5240.68,5377.95,137.27,7.43
+Draft Beer,Ridgeline Brown Ale,870,5451.78,5653.96,202.18,6.42
+Draft Beer,Old Mill Lager,1063,5557.39,5848.44,291.05,5.38
+Draft Beer,Ridgeline Imperial Stout,556,4815.35,5006.73,191.39,8.71
+Draft Beer,Foxglove West Coast IPA,759,5580.38,5695.9,115.52,7.31
+Draft Beer,Old Mill West Coast IPA,2299,16380.73,17241.61,860.88,7.24
+Draft Beer,Iron Hollow Sour Ale,455,3530.6,3641.8,111.2,7.69
+Draft Beer,Northcutt Cider,929,6815.45,6967.71,152.25,7.24
+Draft Beer,Harbor Lights Double IPA,880,6870.21,7040.98,170.77,7.86
+Draft Beer,Red Clay West Coast IPA,2265,15420.44,15857.06,436.63,6.84
+Draft Beer,Twin Pines Cider,866,6386.78,6494.59,107.81,7.46
+Draft Beer,Riverbend Kolsch,1100,6795.47,7149.38,353.91,6.4
+Draft Beer,Riverbend Sour Ale,1315,10183.2,10520.13,336.93,7.73
+Draft Beer,Harbor Lights West Coast IPA,642,4610.01,4811.48,201.47,7.22
+Draft Beer,Twin Pines Blonde Ale,4561,26070.32,27364.85,1294.52,5.81
+Draft Beer,Old Mill Hazy IPA,24945,167625.6,174613.92,6988.33,6.85
+Draft Beer,Lantern Imperial Stout,588,4854.97,4997.05,142.09,8.24
+Draft Beer,Bluff City Milk Stout,460,3522.97,3682.62,159.65,7.75
+Draft Beer,Iron Hollow Porter,1101,6957.15,7157.75,200.61,6.31
+Draft Beer,Riverbend Amber Ale,3161,21653.83,22124.6,470.77,6.97
+Draft Beer,Ridgeline West Coast IPA,1002,6868.82,7010.88,142.06,6.73
+Draft Beer,Red Clay Lager,968,5218.77,5326.4,107.63,5.46
+Draft Beer,Old Mill Blonde Ale,1809,9516.87,9952.17,435.3,5.31
+Draft Beer,Iron Hollow Amber Ale,1276,7461.08,7655.29,194.22,5.88
+Draft Beer,Northcutt Pale Ale,700,4722.01,4896.73,174.72,6.83
+Draft Beer,Iron Hollow Belgian Tripel,451,3650.09,3837.56,187.47,8.5
+Draft Beer,Granite Peak Fruited Gose,2407,19502.94,20463.49,960.55,8.49
+Draft Beer,Red Clay Belgian Tripel,1744,13447.11,13948.92,501.8,7.87
+Draft Beer,Twin Pines Milk Stout,739,5366.32,5545.49,179.16,7.37
+Draft Beer,Granite Peak Milk Stout,768,5584.72,5759.19,174.47,7.38
+Draft Beer,Bluff City West Coast IPA,530,3861.68,3976.08,114.4,7.23
+Draft Beer,Northcutt Blonde Ale,942,5407.38,5652.54,245.16,5.96
+Draft Beer,Bluff City Porter,741,5029.67,5187.93,158.26,6.74
+Draft Beer,Northcutt Belgian Tripel,5966,48765.28,50711.97,1946.7,8.49
+Draft Beer,Old Mill Milk Stout,516,3691.42,3871.23,179.81,7.25
+Draft Beer,Riverbend Brown Ale,6178,36186.9,37065.03,878.12,5.77
+Draft Beer,Twin Pines Amber Ale,1231,7724.6,8000.53,275.92,6.34
+Draft Beer,Ridgeline Blonde Ale,1678,9750.38,10067.77,317.39,6.0
+Draft Beer,Ridgeline Amber Ale,973,6567.88,6810.47,242.59,6.96
+Draft Beer,Red Clay Fruited Gose,705,5735.28,5993.81,258.52,8.48
+Draft Beer,Harbor Lights Belgian Tripel,497,3895.64,3979.9,84.26,7.85
+Draft Beer,Twin Pines Porter,1639,10937.27,11472.78,535.51,6.83
+Draft Beer,Northcutt Milk Stout,554,4066.97,4152.11,85.14,7.24
+Draft Beer,Iron Hollow Hefeweizen,655,4438.41,4586.74,148.33,6.85
+Draft Beer,Twin Pines Brown Ale,526,3533.44,3681.47,148.04,6.87
+Draft Beer,Granite Peak Belgian Tripel,861,7547.27,7745.1,197.83,8.71
+Draft Beer,Iron Hollow Pale Ale,1194,7559.92,7762.91,202.99,6.34
+Draft Beer,Northcutt Amber Ale,1519,9691.13,9873.28,182.15,6.48
+Draft Beer,Granite Peak Porter,1028,7500.75,7710.06,209.31,7.25
+Draft Beer,Harbor Lights Brown Ale,600,4098.18,4197.95,99.76,6.8
+Draft Beer,Granite Peak Lager,1384,8097.47,8305.91,208.44,5.81
+Draft Beer,Ridgeline Pilsner,914,5755.51,5937.87,182.36,6.42
+Draft Beer,Bluff City Imperial Stout,811,6703.77,6897.72,193.95,8.32
+Draft Beer,Foxglove Pale Ale,1494,10986.55,11208.51,221.96,7.5
+Draft Beer,Red Clay Double IPA,653,5279.95,5551.52,271.57,8.48
+Draft Beer,Old Mill Imperial Stout,794,6899.18,7145.34,246.15,8.73
+Liquor,Tito's Vodka,3698,28965.19,29586.81,621.62,8.0
+Liquor,Ketel One Vodka,3625,31909.81,32623.6,713.8,9.0
+Liquor,Grey Goose Vodka,1491,14421.12,14905.47,484.35,9.81
+Liquor,Bacardi Superior Rum,1416,9763.32,9914.3,150.98,6.93
+Liquor,Captain Morgan Spiced Rum,896,6463.69,6722.68,258.99,7.47
+Liquor,Espolon Blanco Tequila,927,7508.38,7877.64,369.26,8.48
+Liquor,Casamigos Blanco,524,6114.58,6289.85,175.27,11.99
+Liquor,Patron Silver,731,8451.39,8774.35,322.96,11.88
+Liquor,Jameson Irish Whiskey,658,5510.58,5594.58,84.0,8.44
+Liquor,Crown Royal,832,7364.79,7487.16,122.38,8.91
+Liquor,Jack Daniel's,2903,23472.77,24676.85,1204.08,8.25
+Liquor,Maker's Mark,2397,21949.12,22772.49,823.37,9.17
+Liquor,Buffalo Trace,894,8073.18,8490.77,417.59,9.42
+Liquor,Woodford Reserve,698,7527.54,7680.07,152.53,10.76
+Liquor,Bulleit Rye,565,5477.72,5651.24,173.52,9.66
+Liquor,Hendrick's Gin,2329,23786.79,24457.07,670.28,10.2
+Liquor,Tanqueray Gin,908,7376.04,7721.01,344.97,8.23
+Liquor,Fireball Shot,1473,8420.18,8837.12,416.94,5.99
+Liquor,Jagermeister Shot,3364,21280.11,21866.36,586.25,6.3
+Liquor,Well Vodka,4778,27852.98,28669.7,816.72,5.98
+Liquor,Well Whiskey,15085,86612.79,90512.08,3899.29,5.81
+Liquor,Well Tequila,2956,17047.54,17738.14,690.59,5.82
+Liquor,Well Rum,5224,29778.04,31343.98,1565.94,5.83
+Liquor,Well Gin,2856,16427.21,17137.51,710.3,5.89
+Liquor,Lunazul Reposado,726,5522.67,5808.87,286.2,7.72
+Liquor,Glenlivet 12,587,7030.9,7342.69,311.79,12.13
+Liquor,Basil Hayden,460,5279.62,5515.25,235.63,11.6
+Liquor,Aperol,1210,10467.48,10890.32,422.85,8.97
+Liquor,House Margarita,1884,18363.31,18838.9,475.59,9.87
+Liquor,Spicy Paloma,1484,15742.64,16327.97,585.33,11.0
+Liquor,Smoked Maple Old Fashioned,494,6122.07,6428.29,306.22,12.97
+Liquor,Espresso Martini,481,5505.88,5775.08,269.2,11.74
+Liquor,Copper Mule,585,5585.8,5846.24,260.44,9.89
+Liquor,Bourbon Smash,1664,17897.19,18307.08,409.89,10.96
+Liquor,Aperol Spritz,1704,18289.86,18744.16,454.3,10.69
+Liquor,Long Island Iced Tea,540,5648.59,5938.53,289.94,10.8
+Liquor,Blackberry Lemonade,965,9488.1,9652.18,164.09,9.99
+Liquor,Seasonal Sangria,726,6939.0,7257.26,318.26,9.72
+Liquor,Frozen Margarita,1769,17012.31,17694.56,682.25,9.77
+Food,Bavarian Pretzel,4638,57309.31,60291.7,2982.39,12.59
+Food,Traditional Wings 10pc,3151,49331.78,50418.09,1086.31,15.42
+Food,Boneless Wings,6438,88293.17,90125.1,1831.93,13.72
+Food,Loaded Tots,1631,17193.6,17942.7,749.1,10.96
+Food,Smash Burger,1032,14924.73,15478.87,554.14,14.45
+Food,Chicken Tenders,3686,45563.22,47920.64,2357.42,12.59
+Food,Buffalo Chicken Flatbread,1094,14863.31,15316.96,453.65,13.65
+Food,Margherita Flatbread,3529,43704.85,45871.47,2166.62,12.63
+Food,Pimento Cheese Dip,1668,17849.32,18350.3,500.98,10.59
+Food,Fish Tacos,1155,16634.77,17330.73,695.95,14.66
+Food,Nachos Grande,3351,45822.55,46915.16,1092.6,13.92
+Food,Caesar Salad,2523,27291.25,27756.99,465.74,10.74
+Food,Fried Pickles,1625,15914.77,16245.73,330.96,9.99
+Food,Hummus Plate,1811,18997.04,19924.33,927.29,10.75
+Food,Brownie Sundae,2178,18924.56,19599.19,674.64,9.0
+Bottle Beer,Bud Light btl,4769,23461.22,23845.95,384.73,4.92
+Bottle Beer,Miller Lite btl,5080,24682.87,25400.55,717.68,4.87
+Bottle Beer,Michelob Ultra btl,6154,29711.51,30772.49,1060.98,4.98
+Bottle Beer,Coors Light btl,1357,6681.55,6786.83,105.28,4.88
+Bottle Beer,Corona Extra btl,869,5460.22,5648.02,187.8,6.38
+Bottle Beer,Stella Artois btl,1031,6501.89,6704.54,202.65,6.43
+Bottle Beer,Heineken btl,1108,6883.13,7200.96,317.83,6.49
+Bottle Beer,Modelo btl,4059,25441.28,26383.0,941.71,6.48
+Bottle Beer,White Claw Black Cherry,679,4296.67,4411.73,115.05,6.41
+Bottle Beer,High Noon Pineapple,808,5896.19,6058.73,162.53,7.49
+Bottle Beer,Truly Wild Berry,661,4146.76,4297.05,150.29,6.32
+Bottle Beer,Athletic Run Wild NA,754,4326.0,4524.58,198.59,5.82
+Bottle Beer,Twin Pines Hazy IPA can,536,3917.74,4016.63,98.89,7.49
+Bottle Beer,Red Clay Pilsner can,703,4398.31,4569.51,171.2,6.46
+Bottle Beer,Angry Orchard Cider,649,4033.37,4218.01,184.65,6.48
+Bottle Beer,Lantern Sour can,561,4367.37,4489.08,121.71,7.88
+Wine,House Pinot Grigio 6oz,932,8074.19,8385.97,311.78,8.73
+Wine,House Chardonnay 6oz,918,7869.15,8263.91,394.76,8.91
+Wine,House Cabernet 6oz,980,9125.24,9314.25,189.01,9.48
+Wine,Hillside Sauvignon Blanc 6oz,1366,13884.04,14341.47,457.43,10.2
+Wine,Hillside Pinot Noir 6oz,2482,26578.26,27306.44,728.17,10.62
+Wine,Coastal Ridge Rose 6oz,1229,12004.75,12289.81,285.06,9.93
+Wine,Valley Oak Red Blend 6oz,659,6952.76,7251.93,299.17,10.65
+Wine,Prosecco Split,1578,15277.58,15781.77,504.19,9.64
+Wine,Moscato 6oz,1245,10864.26,11205.34,341.07,8.71
+Wine,Malbec 6oz,667,6659.81,7004.75,344.93,10.14
+Non-Alcoholic,Fountain Soda,7450,24811.87,26075.38,1263.51,3.41
+Non-Alcoholic,Red Bull,1844,8814.35,9222.25,407.9,4.83
+Non-Alcoholic,Iced Tea,2440,8347.33,8539.74,192.42,3.45
+Non-Alcoholic,Coffee,12127,34821.91,36379.6,1557.69,2.95
+Non-Alcoholic,Craft Root Beer,2128,9287.68,9577.81,290.12,4.4
+Non-Alcoholic,Mocktail,1000,7748.91,8002.33,253.42,7.77
+Merchandise,Logo T-Shirt,463,11103.38,11572.09,468.72,24.49
+Merchandise,Logo Hat,350,9298.17,9786.35,488.18,27.46
+Merchandise,Pint Glass,710,8107.23,8521.19,413.96,11.68
+Merchandise,Gift Card Sleeve,18887,18407.25,18886.64,479.4,0.97
