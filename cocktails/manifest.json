@@ -4,10 +4,15 @@
   "description": "Cocktail reference for bartenders (demo)",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#100d09",
-  "theme_color": "#d9b46c",
+  "background_color": "#F4F1EA",
+  "theme_color": "#2E7D6F",
   "orientation": "portrait",
   "icons": [
-    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
