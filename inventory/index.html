@@ -6,18 +6,18 @@
 <title>Copper Still Taproom — Inventory &amp; Tap Planner (Demo)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--dark:#0E0E0E;--dark-2:#161616;--dark-3:#1C1C1C;--dark-4:#242424;--border:#2E2E2E;
---text:#EDE6D6;--muted:#A89F8C;--dim:#7A7262;--brass:#B8860B;--brass-light:#D4A017;
---green:#5DBB63;--amber:#FF9F1C;--red:#EF5350;--blue:#4FC3F7;
---mono:"IBM Plex Mono",ui-monospace,monospace;--sans:"IBM Plex Sans",system-ui,sans-serif;--disp:"Bebas Neue",Impact,sans-serif;}
+:root{--dark:#F4F1EA;--dark-2:#FFFFFF;--dark-3:#FBF9F5;--dark-4:#ECE7DE;--border:#E0DAD0;
+--text:#1E2A28;--muted:#5F6B67;--dim:#8E9692;--brass:#2E7D6F;--brass-light:#B65A32;
+--green:#2F8F5B;--amber:#C98A1B;--red:#C2453A;--blue:#3E6F9E;
+--mono:"Manrope,system-ui,sans-serif",ui-monospace,monospace;--sans:Manrope,system-ui,sans-serif;--disp:"'Bricolage Grotesque',system-ui,sans-serif",Impact,sans-serif;}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--dark);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
 header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 28px;border-bottom:1px solid var(--border);background:var(--dark-2)}
 .logo{display:flex;align-items:center;gap:12px}
-.logo-icon{width:34px;height:34px;background:var(--brass);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
+.logo-icon{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3A9A89,#1F5A50);box-shadow:inset 0 0 0 3px #FFFFFF,0 0 0 2px #B65A32;flex:none;}
 .logo h1{font-family:var(--disp);font-weight:400;font-size:28px;letter-spacing:2px;margin:0;line-height:1}
 .logo h1 span{color:var(--brass-light)}
 .meta{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;letter-spacing:1px}
@@ -46,19 +46,19 @@ input[type=search]{min-width:200px;flex:1;max-width:280px}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--border);background:var(--dark-2)}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--dark-3);white-space:nowrap;position:sticky;top:0}
-td{padding:10px 12px;border-bottom:1px solid #222;vertical-align:middle}
+td{padding:10px 12px;border-bottom:1px solid #ECE7DE;vertical-align:middle}
 tr:last-child td{border-bottom:0}
 .num{text-align:right;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
 .sub{display:block;color:var(--dim);font-size:12px}
 .status{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;white-space:nowrap;border:1px solid}
-.s-now{color:var(--red);border-color:var(--red);background:rgba(239,83,80,.1)}
-.s-soon{color:var(--amber);border-color:var(--amber);background:rgba(255,159,28,.08)}
-.s-ok{color:var(--green);border-color:rgba(93,187,99,.5)}
-.s-over{color:var(--blue);border-color:rgba(79,195,247,.5)}
+.s-now{color:var(--red);border-color:var(--red);background:rgba(194,69,58,.1)}
+.s-soon{color:var(--amber);border-color:var(--amber);background:rgba(201,138,27,.08)}
+.s-ok{color:var(--green);border-color:rgba(47,143,91,.5)}
+.s-over{color:var(--blue);border-color:rgba(62,111,158,.5)}
 .s-off{color:var(--muted);border-color:var(--dim);text-decoration:line-through}
-.s-keep{color:var(--green);border-color:var(--green);background:rgba(93,187,99,.08)}
+.s-keep{color:var(--green);border-color:var(--green);background:rgba(47,143,91,.08)}
 .s-watch{color:var(--amber);border-color:var(--amber)}
-.s-cut{color:var(--red);border-color:var(--red);background:rgba(239,83,80,.1)}
+.s-cut{color:var(--red);border-color:var(--red);background:rgba(194,69,58,.1)}
 .bar{display:flex;align-items:center;gap:8px;min-width:120px}
 .bar-track{flex:1;height:6px;background:var(--dark-4)}
 .bar-fill{height:100%}
@@ -81,14 +81,14 @@ footer a{color:inherit}
 </style>
 <style>
 .demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
-  padding:9px 20px;background:#0A0A0A;border-bottom:1px solid #2E2E2E;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.3}
-.demo-bar a{color:#A89F8C;text-decoration:none}
-.demo-bar a:hover{color:#EDE6D6}
-.demo-bar a:focus-visible{outline:2px solid #D4A017;outline-offset:2px}
-.demo-bar .back{color:#D4A017;font-weight:600}
-.demo-bar .back:hover{color:#EDE6D6}
+  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid #E0DAD0;font-family:Manrope,system-ui,sans-serif;font-size:12.5px;line-height:1.3}
+.demo-bar a{color:#5F6B67;text-decoration:none}
+.demo-bar a:hover{color:#1E2A28}
+.demo-bar a:focus-visible{outline:2px solid #B65A32;outline-offset:2px}
+.demo-bar .back{color:#B65A32;font-weight:600}
+.demo-bar .back:hover{color:#1E2A28}
 .demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
-.demo-bar nav a[aria-current="page"]{color:#EDE6D6;font-weight:600}
+.demo-bar nav a[aria-current="page"]{color:#1E2A28;font-weight:600}
 </style>
 </head>
 <body>
