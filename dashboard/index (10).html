@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copper Still Taproom — Sample Performance Dashboard</title>
+<!-- Build: 2026-07-18 22:06 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brass:#B8860B; --brass-light:#D4A017; --brass-pale:#F5E6A3;
+  --dark:#0E0E0E; --dark-2:#161616; --dark-3:#1E1E1E; --dark-4:#272727;
+  --border:#2E2E2E; --text:#E8E0D0; --text-muted:#8A8070; --text-dim:#555050;
+  --green:#4CAF50; --red:#E53935; --amber:#FF8F00; --blue:#4FC3F7;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:IBM Plex Sans,sans-serif;font-size:13px;line-height:1.5;}
+
+/* LOADING */
+#loading-screen{position:fixed;inset:0;background:var(--dark);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;}
+.loading-logo{font-family:Bebas Neue,sans-serif;font-size:32px;letter-spacing:4px;color:var(--text);}
+.loading-logo span{color:var(--brass);}
+.loading-bar-track{width:320px;height:3px;background:var(--dark-4);}
+.loading-bar-fill{height:100%;background:var(--brass);transition:width 0.3s ease;width:0%;}
+.loading-status{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim);}
+.loading-files{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);text-align:center;line-height:2;}
+#error-screen{position:fixed;inset:0;background:var(--dark);z-index:9998;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;}
+.error-title{font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--red);letter-spacing:2px;}
+.error-msg{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;line-height:2;}
+.error-files{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);max-width:500px;line-height:2;}
+
+/* HEADER */
+header{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:16px;}
+.logo-icon{width:36px;height:36px;background:var(--brass);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);}
+.logo h1{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:3px;}
+.logo h1 span{color:var(--brass);}
+.header-meta{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-muted);text-align:right;line-height:1.8;}
+.header-meta strong{color:var(--brass);}
+.header-right{display:flex;align-items:center;gap:16px;}
+.live-badge{display:flex;align-items:center;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--green);background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.2);padding:4px 10px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* TABS */
+.tabs{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;}
+.tab{font-family:IBM Plex Mono,monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:14px 20px;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.2s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--brass);border-bottom-color:var(--brass);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* LAYOUT */
+.page{padding:28px 32px;max-width:1600px;margin:0 auto;}
+.section-label{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:28px;}
+.kpi-card{background:var(--dark-2);border:1px solid var(--border);padding:18px 20px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--brass);}
+.kpi-card.green::before{background:var(--green);}
+.kpi-card.blue::before{background:var(--blue);}
+.kpi-card.amber::before{background:var(--amber);}
+.kpi-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.kpi-value{font-family:Bebas Neue,sans-serif;font-size:28px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:8px;}
+.kpi-sub{display:flex;align-items:center;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;font-size:10px;font-family:IBM Plex Mono,monospace;font-weight:600;}
+.badge.up{background:rgba(76,175,80,0.15);color:var(--green);}
+.badge.down{background:rgba(229,57,53,0.15);color:var(--red);}
+.badge.neutral{background:rgba(184,134,11,0.15);color:var(--brass);}
+.kpi-prev{color:var(--text-dim);}
+
+/* YOY CARDS */
+.yoy-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.yoy-card{background:var(--dark-2);border:1px solid var(--border);padding:24px 28px;position:relative;overflow:hidden;}
+.yoy-card.y1{border-top:3px solid #5A5048;}
+.yoy-card.y2{border-top:3px solid var(--brass);}
+.yoy-card.y3{border-top:3px solid var(--green);}
+.yoy-card-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+.yoy-card-amount{font-family:Bebas Neue,sans-serif;font-size:48px;letter-spacing:1px;line-height:1;margin-bottom:8px;}
+.yoy-card-amount.y1{color:var(--text-muted);}
+.yoy-card-amount.y2{color:var(--brass-light);}
+.yoy-card-amount.y3{color:var(--green);}
+.yoy-card-sub{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-bottom:16px;line-height:1.8;}
+.yoy-card-bar{height:3px;background:var(--dark-4);}
+.yoy-card-bar-fill{height:100%;transition:width 1s ease;}
+.yoy-card-bar-fill.y1{background:#5A5048;}
+.yoy-card-bar-fill.y2{background:var(--brass);}
+.yoy-card-bar-fill.y3{background:var(--green);}
+/* YOY METRICS */
+.yoy-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px;}
+.yoy-metric{background:var(--dark-3);border:1px solid var(--border);padding:16px 20px;}
+.yoy-metric-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.yoy-metric-val{font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:4px;color:var(--text);}
+.yoy-metric-val.green{color:var(--green);}
+.yoy-metric-val.brass{color:var(--brass-light);}
+.yoy-metric-val.blue{color:var(--blue);}
+.yoy-metric-sub{font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+/* legacy — keep for other uses */
+.yoy-amount{font-family:Bebas Neue,sans-serif;font-size:36px;letter-spacing:1px;line-height:1;margin-bottom:4px;}
+.yoy-amount.y1{color:var(--text-muted);}
+.yoy-amount.y2{color:var(--brass-light);}
+.yoy-amount.growth{color:var(--green);}
+.yoy-sub{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);}
+
+/* CHARTS */
+.chart-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+.chart-grid-3{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:28px;}
+.chart-grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:28px;}
+.chart-box{background:var(--dark-2);border:1px solid var(--border);padding:20px;}
+.chart-title{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+.chart-subtitle{font-size:11px;color:var(--text-dim);margin-bottom:16px;}
+.chart-container{position:relative;width:100%;}
+.chart-row-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.chart-stat-val{font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--brass-light);line-height:1;}
+.chart-stat-label{font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+.legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.data-table td{padding:9px 12px;font-size:12px;border-bottom:1px solid rgba(46,46,46,0.5);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(184,134,11,0.04);}
+.data-table .num{font-family:IBM Plex Mono,monospace;font-size:11px;text-align:right;}
+
+/* STAT PAIRS */
+.stat-pair{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.stat-pair:last-child{border-bottom:none;}
+.stat-pair-label{font-size:12px;color:var(--text-muted);}
+.stat-pair-val{font-family:IBM Plex Mono,monospace;font-size:12px;font-weight:600;color:var(--text);}
+
+/* HEAT GRID */
+.heat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px;}
+.heat-cell{background:var(--dark-4);padding:12px 8px;text-align:center;transition:transform 0.15s;cursor:default;}
+.heat-cell:hover{transform:scale(1.03);}
+.heat-cell .day-name{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.heat-cell .day-sales{font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;line-height:1;margin-bottom:4px;}
+.heat-cell .day-sub{font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+
+/* PROGRESS */
+.progress-row{margin-bottom:12px;}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;}
+.progress-name{color:var(--text-muted);}
+.progress-val{font-family:IBM Plex Mono,monospace;color:var(--text);font-size:11px;}
+.progress-track{height:6px;background:var(--dark-4);overflow:hidden;}
+.progress-fill{height:100%;transition:width 1s ease;}
+
+/* METRIC BOXES */
+.metric-box{background:var(--dark-3);border:1px solid var(--border);padding:16px;text-align:center;}
+.metric-box-val{font-family:Bebas Neue,sans-serif;font-size:32px;letter-spacing:1px;line-height:1;color:var(--brass-light);}
+.metric-box-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-top:6px;}
+
+
+
+/* PRICING TAB */
+.pricing-target-bar{background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--brass);padding:16px 24px;margin-bottom:20px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
+.pricing-target-bar input[type=range]{-webkit-appearance:none;width:180px;height:4px;background:var(--dark-4);outline:none;border-radius:2px;}
+.pricing-target-bar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--brass);border-radius:50%;cursor:pointer;}
+.pricing-target-val{font-family:Bebas Neue,sans-serif;font-size:32px;color:var(--brass-light);line-height:1;}
+.pricing-target-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.p-cat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.p-cat-card{background:var(--dark-2);border:1px solid var(--border);padding:16px;position:relative;}
+.p-cat-pct{font-family:Bebas Neue,sans-serif;font-size:34px;line-height:1;margin-bottom:4px;}
+.p-cat-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.p-cat-track{height:5px;background:var(--dark-4);margin-bottom:8px;}
+.p-cat-fill{height:100%;transition:width 0.5s;}
+.p-cat-foot{display:flex;justify-content:space-between;font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+.p-pills{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto;}
+.p-pill{background:var(--dark-4);border:1px solid var(--border);padding:8px 14px;}
+.p-pill-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
+.p-pill-val{font-family:Bebas Neue,sans-serif;font-size:20px;line-height:1;}
+.p-tabs{display:flex;gap:0;background:var(--dark-4);border:1px solid var(--border);padding:2px;margin-bottom:16px;width:fit-content;}
+.p-tabs button{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;background:none;border:none;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
+.p-tabs button.active{background:var(--brass);color:var(--dark);}
+.p-tbl-wrap{background:var(--dark-2);border:1px solid var(--border);margin-bottom:20px;}
+.p-tbl-controls{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.p-tbl-controls select,.p-tbl-controls input[type=text]{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:6px 10px;}
+.p-tbl-controls select{min-width:150px;cursor:pointer;}
+.p-tbl-controls input[type=text]{width:200px;}
+.p-filter-btn{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:6px 10px;background:none;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;}
+.p-filter-btn.active{background:var(--brass);color:var(--dark);border-color:var(--brass);}
+.sim-input{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:4px 8px;width:75px;text-align:right;}
+.sim-input.changed{background:rgba(184,134,11,0.1);border-color:var(--brass);}
+.p-badge{display:inline-block;padding:2px 6px;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:600;}
+.p-badge.ok{background:rgba(76,175,80,0.15);color:#4CAF50;}
+.p-badge.warn{background:rgba(255,143,0,0.15);color:#FF8F00;}
+.p-badge.bad{background:rgba(229,57,53,0.15);color:#E53935;}
+.p-badge.na{background:rgba(85,80,80,0.2);color:var(--text-dim);}
+.p-cost-bar{display:flex;align-items:center;gap:6px;}
+.p-cost-track{flex:1;height:5px;background:var(--dark-4);}
+.p-cost-fill{height:100%;}
+.stock-dot{color:#4CAF50;font-size:9px;margin-left:4px;}
+.p-loading{padding:40px;text-align:center;font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim);}
+
+/* MONTHLY & INVENTORY */
+.month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.month-card{background:var(--dark-2);border:1px solid var(--border);padding:16px;position:relative;cursor:pointer;transition:border-color 0.2s;}
+.month-card:hover{border-color:var(--brass);}
+.month-card.y1{border-top:2px solid #5A5048;}
+.month-card.y2{border-top:2px solid var(--brass);}
+.month-card.y3{border-top:2px solid var(--green);}
+.month-card .mc-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.month-card .mc-sales{font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:8px;}
+.month-card .mc-row{display:flex;justify-content:space-between;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-top:3px;}
+.month-card .mc-row span:last-child{color:var(--text-muted);}
+.month-card .yoy-pill{font-family:IBM Plex Mono,monospace;font-size:9px;padding:1px 5px;}
+.year-toggle{display:flex;gap:0;background:var(--dark-4);border:1px solid var(--border);padding:2px;margin-bottom:20px;width:fit-content;}
+.year-toggle button{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 16px;background:none;border:none;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
+.year-toggle button.active{background:var(--brass);color:var(--dark);}
+
+/* INVENTORY */
+.inv-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+.inv-select{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:8px 14px;cursor:pointer;min-width:200px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8070'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.inv-select:focus{outline:none;border-color:var(--brass);}
+.inv-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.inv-stat{background:var(--dark-3);border:1px solid var(--border);padding:14px 16px;}
+.inv-stat-val{font-family:Bebas Neue,sans-serif;font-size:24px;color:var(--brass-light);line-height:1;margin-bottom:4px;}
+.inv-stat-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);}
+.inv-table-wrap{background:var(--dark-2);border:1px solid var(--border);padding:20px;}
+.inv-search{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:7px 12px;width:260px;margin-bottom:14px;}
+.inv-search:focus{outline:none;border-color:var(--brass);}
+.sort-arrow{cursor:pointer;user-select:none;}
+.sort-arrow:hover{color:var(--brass);}
+
+/* DATA SOURCE INFO */
+.data-source{background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--blue);padding:12px 16px;margin-bottom:28px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);line-height:2;}
+.data-source strong{color:var(--blue);}
+
+.rank-num{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);width:20px;flex-shrink:0;}
+
+footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text-dim);font-family:IBM Plex Mono,monospace;font-size:10px;margin-top:40px;}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--dark-2);}
+::-webkit-scrollbar-thumb{background:var(--border);}
+::-webkit-scrollbar-thumb:hover{background:var(--brass);}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div class="loading-logo">COPPER STILL <span>TAPROOM</span></div>
+  <div class="loading-bar-track"><div class="loading-bar-fill" id="loading-bar"></div></div>
+  <div class="loading-status" id="loading-status">Connecting to data...</div>
+  <div class="loading-files" id="loading-files"></div>
+</div>
+
+<!-- ERROR SCREEN -->
+<div id="error-screen">
+  <div class="error-title">⚠ Data Load Failed</div>
+  <div class="error-msg">Could not fetch CSV files from GitHub. Make sure your files are uploaded to:<br><strong>BHERRIN7/Landing_Page/dashboard/data/</strong></div>
+  <div class="error-files" id="error-files"></div>
+  <div style="margin-top:16px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim)">Check the browser console for details.</div>
+</div>
+
+<!-- MAIN APP (hidden until loaded) -->
+<div id="app" style="display:none">
+
+<header>
+  <div class="logo">
+    <div class="logo-icon"></div>
+    <div><h1>COPPER STILL <span>TAPROOM</span></h1></div>
+  </div>
+  <div class="header-right">
+    <div class="header-meta">
+      <div>PERFORMANCE DASHBOARD &nbsp;·&nbsp; DEMO</div>
+      <div id="header-date-range">Loading...</div>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div>SAMPLE DATA</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('overview',this)">Overview</div>
+  <div class="tab" onclick="showTab('revenue',this)">Revenue & Trends</div>
+  <div class="tab" onclick="showTab('sales-mix',this)">Sales Mix</div>
+  <div class="tab" onclick="showTab('operations',this)">Operations</div>
+  <div class="tab" onclick="showTab('guests',this)">Guests & Traffic</div>
+  <div class="tab" onclick="showTab('monthly',this)">Monthly Detail</div>
+  <div class="tab" onclick="showTab('inventory',this)">Inventory</div>
+  <div class="tab" onclick="showTab('pricing',this)">Pricing Analysis</div>
+</div>
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="tab-content active">
+<div class="page">
+  <div class="data-source">
+    <strong>SAMPLE DATA</strong> &nbsp;·&nbsp; All figures are synthetic and generated for demonstration &nbsp;·&nbsp;
+    Last updated: <strong id="last-updated">—</strong> &nbsp;·&nbsp;
+    Updates automatically when new POS exports land in the /data/ folder
+  </div>
+  <div class="section-label">Year-over-Year Summary</div>
+
+  <!-- Top row: 3 year cards -->
+  <div class="yoy-cards">
+    <div class="yoy-card y1">
+      <div class="yoy-card-label">YEAR 1 &nbsp;·&nbsp; Jun '24 – May '25</div>
+      <div class="yoy-card-amount y1" id="yoy-y1-sales">—</div>
+      <div class="yoy-card-sub" id="yoy-y1-sub">—</div>
+      <div class="yoy-card-bar"><div class="yoy-card-bar-fill y1" id="yoy-y1-bar" style="width:0%"></div></div>
+    </div>
+    <div class="yoy-card y2">
+      <div class="yoy-card-label">YEAR 2 &nbsp;·&nbsp; Jun '25 – May '26</div>
+      <div class="yoy-card-amount y2" id="yoy-y2-sales">—</div>
+      <div class="yoy-card-sub" id="yoy-y2-sub">—</div>
+      <div class="yoy-card-bar"><div class="yoy-card-bar-fill y2" id="yoy-y2-bar" style="width:0%"></div></div>
+    </div>
+    <div class="yoy-card y3">
+      <div class="yoy-card-label">YEAR 3 &nbsp;·&nbsp; Jun '26 – May '27</div>
+      <div class="yoy-card-amount y3" id="yoy-y3-sales">—</div>
+      <div class="yoy-card-sub" id="yoy-y3-sub">—</div>
+      <div class="yoy-card-bar"><div class="yoy-card-bar-fill y3" id="yoy-y3-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Bottom row: metrics -->
+  <div class="yoy-metrics">
+    <div class="yoy-metric">
+      <div class="yoy-metric-label">Y1 → Y2 Growth</div>
+      <div class="yoy-metric-val green" id="yoy-y1y2-growth">—</div>
+      <div class="yoy-metric-sub" id="yoy-y1y2-sub">—</div>
+    </div>
+    <div class="yoy-metric">
+      <div class="yoy-metric-label">Y3 Daily Pace vs Y2</div>
+      <div class="yoy-metric-val" id="yoy-growth">—</div>
+      <div class="yoy-metric-sub" id="yoy-growth-sub">—</div>
+    </div>
+    <div class="yoy-metric">
+      <div class="yoy-metric-label">All-Time Revenue</div>
+      <div class="yoy-metric-val brass" id="yoy-total">—</div>
+      <div class="yoy-metric-sub" id="yoy-total-sub">—</div>
+    </div>
+    <div class="yoy-metric">
+      <div class="yoy-metric-label">All-Time Guests</div>
+      <div class="yoy-metric-val blue" id="yoy-guests-total">—</div>
+      <div class="yoy-metric-sub" id="yoy-guests-sub">—</div>
+    </div>
+    <div class="yoy-metric">
+      <div class="yoy-metric-label">All-Time Orders</div>
+      <div class="yoy-metric-val" id="yoy-orders-total">—</div>
+      <div class="yoy-metric-sub" id="yoy-orders-sub">—</div>
+    </div>
+  </div>
+  <div class="section-label">Key Performance Indicators</div>
+  <div class="kpi-grid" id="kpi-grid"></div>
+  <div class="section-label">Monthly Net Sales — Year over Year</div>
+  <div class="chart-box" style="margin-bottom:28px">
+    <div class="chart-row-top">
+      <div><div class="chart-title">Monthly Revenue Comparison</div><div class="chart-subtitle">Jun → May fiscal year alignment</div></div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <div class="legend-item"><div class="legend-dot" style="background:#8A8070"></div>Year 1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#D4A017"></div>Year 2</div>
+      </div>
+    </div>
+    <div class="chart-container" style="height:220px"><canvas id="monthlyBarChart"></canvas></div>
+  </div>
+  <div class="chart-grid-2" style="margin-bottom:28px">
+    <div class="chart-box">
+      <div class="chart-title">Net Sales by Day of Week</div>
+      <div class="chart-subtitle">All-time cumulative</div>
+      <div class="heat-grid" id="dowGrid"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Revenue by Category</div>
+      <div class="chart-subtitle">Top 8 sales categories</div>
+      <div class="chart-container" style="height:220px"><canvas id="categoryDonut"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-grid-2">
+    <div class="chart-box">
+      <div class="chart-title">Order Volume YOY</div>
+      <div class="chart-subtitle">Monthly order counts</div>
+      <div class="chart-container" style="height:180px"><canvas id="ordersBarChart"></canvas></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#4A4440"></div>Year 1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4FC3F7"></div>Year 2</div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Guest Count YOY</div>
+      <div class="chart-subtitle">Monthly guest counts</div>
+      <div class="chart-container" style="height:180px"><canvas id="guestsBarChart"></canvas></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#4A4440"></div>Year 1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4CAF50"></div>Year 2</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- REVENUE -->
+<div id="tab-revenue" class="tab-content">
+<div class="page">
+  <div class="section-label">Revenue Trend</div>
+  <div class="chart-box" style="margin-bottom:28px">
+    <div class="chart-row-top">
+      <div><div class="chart-title">Monthly Net Sales — Full History</div><div class="chart-subtitle" id="rev-date-range">Loading...</div></div>
+      <div><div class="chart-stat-val" id="rev-total">—</div><div class="chart-stat-label">Total Net Sales</div></div>
+    </div>
+    <div class="chart-container" style="height:200px"><canvas id="dailyAreaChart"></canvas></div>
+  </div>
+  <div class="section-label">Monthly Performance Detail</div>
+  <div class="chart-box" style="margin-bottom:28px">
+    <table class="data-table">
+      <thead><tr><th>Month</th><th class="num">Y1 Net Sales</th><th class="num">Y2 Net Sales</th><th class="num">Change $</th><th class="num">Change %</th><th style="width:180px">Trend</th></tr></thead>
+      <tbody id="monthlyTableBody"></tbody>
+    </table>
+  </div>
+  <div class="chart-grid-2">
+    <div class="chart-box">
+      <div class="chart-title">Payment Methods</div>
+      <div class="chart-subtitle">By transaction amount</div>
+      <div class="chart-container" style="height:200px"><canvas id="paymentChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Revenue Breakdown</div>
+      <div class="chart-subtitle">Key financial metrics</div>
+      <div id="revenueBreakdown" style="margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SALES MIX -->
+<div id="tab-sales-mix" class="tab-content">
+<div class="page">
+  <div class="section-label">Sales Category Performance</div>
+  <div class="chart-grid-3" style="margin-bottom:28px">
+    <div class="chart-box">
+      <div class="chart-title">Net Sales by Category</div>
+      <div class="chart-subtitle">All time — sorted by revenue</div>
+      <div id="categoryBars" style="margin-top:8px"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Category Mix</div>
+      <div class="chart-subtitle">% of total net sales</div>
+      <div class="chart-container" style="height:280px"><canvas id="categoryPie"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-grid-4" style="margin-bottom:28px" id="bevMetrics"></div>
+  <div class="section-label">Top Menu Items</div>
+  <div class="chart-grid-2">
+    <div class="chart-box">
+      <div class="chart-title">Top 15 Items by Revenue</div>
+      <div class="chart-subtitle">Net sales all time</div>
+      <table class="data-table" style="margin-top:8px">
+        <thead><tr><th>#</th><th>Item</th><th class="num">Qty</th><th class="num">Avg $</th><th class="num">Net Sales</th></tr></thead>
+        <tbody id="topItemsTable"></tbody>
+      </table>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Discounts & Comps</div>
+      <div class="chart-subtitle">By type — all time</div>
+      <div id="discountBars" style="margin-top:12px"></div>
+      <div id="discountTotals" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- OPERATIONS -->
+<div id="tab-operations" class="tab-content">
+<div class="page">
+  <div class="section-label">Service Metrics</div>
+  <div class="chart-grid-4" style="margin-bottom:28px" id="opsMetrics"></div>
+  <div class="chart-grid-2" style="margin-bottom:28px">
+    <div class="chart-box">
+      <div class="chart-title">Lunch vs Dinner</div>
+      <div class="chart-subtitle">Net sales & order count split</div>
+      <div class="chart-container" style="height:200px"><canvas id="daypartChart"></canvas></div>
+      <div id="daypartStats" style="margin-top:16px"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Service Mode</div>
+      <div class="chart-subtitle">Table vs Quick Service</div>
+      <div class="chart-container" style="height:200px"><canvas id="serviceModeChart"></canvas></div>
+      <div id="serviceModeStats" style="margin-top:16px"></div>
+    </div>
+  </div>
+  <div class="section-label">Dining Options</div>
+  <div class="chart-box"><div class="chart-title">Order Source</div><div class="chart-subtitle">Net sales by dining option</div><div id="diningBars" style="margin-top:12px"></div></div>
+</div>
+</div>
+
+<!-- GUESTS -->
+<div id="tab-guests" class="tab-content">
+<div class="page">
+  <div class="section-label">Guest Traffic Patterns</div>
+  <div class="chart-box" style="margin-bottom:28px">
+    <div class="chart-row-top">
+      <div><div class="chart-title">Revenue by Hour of Day</div><div class="chart-subtitle">Peak hours — all time</div></div>
+      <div><div class="chart-stat-val" id="peak-hour">—</div><div class="chart-stat-label">Peak Hour</div></div>
+    </div>
+    <div class="chart-container" style="height:200px"><canvas id="todChart"></canvas></div>
+  </div>
+  <div class="chart-grid-2" style="margin-bottom:28px">
+    <div class="chart-box">
+      <div class="chart-title">Monthly Guest Counts YOY</div>
+      <div class="chart-subtitle">Headcount comparison</div>
+      <div class="chart-container" style="height:200px"><canvas id="guestYOYChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Guest Value Metrics</div>
+      <div class="chart-subtitle">Spend per guest YOY</div>
+      <div id="guestMetrics" style="margin-top:16px"></div>
+    </div>
+  </div>
+  <div class="section-label">Day of Week Detail</div>
+  <div class="chart-box">
+    <div class="chart-title">Performance by Day</div><div class="chart-subtitle">Cumulative all-time</div>
+    <table class="data-table" style="margin-top:12px">
+      <thead><tr><th>Day</th><th class="num">Net Sales</th><th class="num">Orders</th><th class="num">Guests</th><th class="num">Avg/Order</th><th class="num">Avg/Guest</th><th style="width:200px">Share</th></tr></thead>
+      <tbody id="dowTable"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+
+<!-- MONTHLY DETAIL -->
+<div id="tab-monthly" class="tab-content">
+<div class="page">
+  <div class="section-label">Monthly Performance — All 24 Months</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div class="year-toggle">
+      <button class="active" onclick="filterMonths('all',this)">All</button>
+      <button onclick="filterMonths('Y1',this)">Year 1</button>
+      <button onclick="filterMonths('Y2',this)">Year 2</button>
+      <button onclick="filterMonths('Y3',this)">Year 3</button>
+    </div>
+    <div id="monthly-totals" style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim)"></div>
+  </div>
+  <div class="month-grid" id="monthCards"></div>
+  <div class="section-label">Monthly Trend Charts</div>
+  <div class="chart-grid-2" style="margin-bottom:28px">
+    <div class="chart-box">
+      <div class="chart-title">Net Sales by Month</div>
+      <div class="chart-subtitle">All 24 months — color coded by year</div>
+      <div class="chart-container" style="height:220px"><canvas id="allMonthsBar"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Average Daily Sales by Month</div>
+      <div class="chart-subtitle">Normalized for days open</div>
+      <div class="chart-container" style="height:220px"><canvas id="avgDailyBar"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-grid-2" style="margin-bottom:28px">
+    <div class="chart-box">
+      <div class="chart-title">Avg Order Value by Month</div>
+      <div class="chart-subtitle">Revenue per order</div>
+      <div class="chart-container" style="height:200px"><canvas id="avgOrderBar"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Orders by Month</div>
+      <div class="chart-subtitle">Total order count</div>
+      <div class="chart-container" style="height:200px"><canvas id="allOrdersBar"></canvas></div>
+    </div>
+  </div>
+  <div class="section-label">Full Monthly Detail Table</div>
+  <div class="chart-box">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Month</th><th>Year</th>
+          <th class="num">Net Sales</th><th class="num">Orders</th>
+          <th class="num">Guests</th><th class="num">Avg/Order</th>
+          <th class="num">Avg/Guest</th><th class="num">Avg Daily</th>
+          <th class="num">Best Day</th><th class="num">Worst Day</th>
+          <th class="num">Days Open</th>
+        </tr>
+      </thead>
+      <tbody id="fullMonthTable"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- INVENTORY -->
+<div id="tab-inventory" class="tab-content">
+<div class="page">
+  <div class="section-label">Item Performance by Category</div>
+  <div class="inv-header">
+    <select class="inv-select" id="catSelect" onchange="loadCategory()">
+      <option value="">— Select a Category —</option>
+    </select>
+    <input class="inv-search" type="text" id="invSearch" placeholder="Search items..." oninput="filterInvTable()" style="display:none">
+  </div>
+  <div class="inv-stats" id="invStats" style="display:none"></div>
+  <div class="inv-table-wrap" id="invTableWrap" style="display:none">
+    <div class="chart-container" style="height:180px;margin-bottom:20px"><canvas id="invBarChart"></canvas></div>
+    <table class="data-table" id="invTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th class="sort-arrow" onclick="sortInv('name')">Item ↕</th>
+          <th class="num sort-arrow" onclick="sortInv('qty')">Qty Sold ↕</th>
+          <th class="num sort-arrow" onclick="sortInv('avg')">Avg Price ↕</th>
+          <th class="num sort-arrow" onclick="sortInv('gross')">Gross Sales ↕</th>
+          <th class="num sort-arrow" onclick="sortInv('disc')">Discounts ↕</th>
+          <th class="num sort-arrow" onclick="sortInv('net')">Net Sales ↕</th>
+          <th style="width:120px">Revenue Share</th>
+        </tr>
+      </thead>
+      <tbody id="invTableBody"></tbody>
+    </table>
+  </div>
+  <div id="invEmpty" style="padding:60px;text-align:center;font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim)">
+    Select a category above to view item performance
+  </div>
+</div>
+</div>
+
+
+<!-- PRICING ANALYSIS -->
+<div id="tab-pricing" class="tab-content">
+<div class="page">
+  <div id="pricing-loading" class="p-loading">Loading pricing data...</div>
+  <div id="pricing-content" style="display:none">
+
+    <!-- Target bar -->
+    <div class="pricing-target-bar">
+      <div>
+        <div class="pricing-target-label">Target Cost %</div>
+        <div class="pricing-target-val" id="p-target-display">20%</div>
+      </div>
+      <input type="range" id="p-target-slider" min="15" max="30" value="20" step="0.5" oninput="pUpdateTarget()">
+      <div>
+        <div class="pricing-target-label">Current Blended</div>
+        <div class="pricing-target-val" id="p-current-overall" style="color:var(--amber)">—</div>
+      </div>
+      <div class="p-pills">
+        <div class="p-pill"><div class="p-pill-label">Over Target</div><div class="p-pill-val" id="p-pill-over" style="color:var(--red)">—</div></div>
+        <div class="p-pill"><div class="p-pill-label">Revenue at Risk</div><div class="p-pill-val" id="p-pill-rev" style="color:var(--amber)">—</div></div>
+        <div class="p-pill"><div class="p-pill-label">Est. Annual Gain</div><div class="p-pill-val" id="p-pill-gain" style="color:var(--green)">—</div></div>
+        <div class="p-pill"><div class="p-pill-label">Data Period</div><div class="p-pill-val" style="color:var(--blue);font-size:14px">Jun–Sep '26</div></div>
+      </div>
+    </div>
+
+    <!-- Category cards -->
+    <div class="section-label">Cost % by Category</div>
+    <div class="p-cat-cards" id="p-cat-cards"></div>
+
+    <!-- Sub-tabs -->
+    <div class="p-tabs">
+      <button class="active" onclick="pShowSubTab('overview',this)">Overview</button>
+      <button onclick="pShowSubTab('items',this)">All Items</button>
+      <button onclick="pShowSubTab('opportunities',this)">Opportunities</button>
+      <button onclick="pShowSubTab('simulator',this)">Simulator</button>
+    </div>
+
+    <!-- OVERVIEW sub-tab -->
+    <div id="p-sub-overview" class="p-subtab">
+      <div class="chart-grid-2" style="margin-bottom:20px">
+        <div class="chart-box">
+          <div class="chart-title">Weighted Cost % by Category</div>
+          <div class="chart-subtitle">vs target — recent 4 months</div>
+          <div style="position:relative;height:200px"><canvas id="p-cat-chart"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Cost Distribution — Draft Beer</div>
+          <div class="chart-subtitle">Items bucketed by cost % range</div>
+          <div style="position:relative;height:200px"><canvas id="p-draft-dist"></canvas></div>
+        </div>
+      </div>
+      <div class="section-label">Top 15 Highest-Cost Items by Recent Revenue</div>
+      <div class="p-tbl-wrap">
+        <table class="data-table">
+          <thead><tr>
+            <th>#</th><th>Item</th><th>Category</th>
+            <th class="num">Sell $</th><th class="num">Pour Cost</th>
+            <th class="num">Cost %</th><th class="num">Recent Sales</th>
+            <th class="num" id="p-suggest-hdr">Price @ Target</th>
+          </tr></thead>
+          <tbody id="p-top15-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ITEMS sub-tab -->
+    <div id="p-sub-items" class="p-subtab" style="display:none">
+      <div class="p-tbl-wrap">
+        <div class="p-tbl-controls">
+          <select id="p-cat-filter" onchange="pRenderItems()">
+            <option value="">All Categories</option>
+            <option value="Draft Beer">Draft Beer</option>
+            <option value="Bottle Beer">Bottle Beer</option>
+            <option value="Liquor">Liquor</option>
+            <option value="Wine">Wine</option>
+          </select>
+          <input type="text" id="p-search" placeholder="Search items..." oninput="pRenderItems()">
+          <button class="p-filter-btn active" onclick="pSetFilter('all',this)">All</button>
+          <button class="p-filter-btn" onclick="pSetFilter('ok',this)">✓ At Target</button>
+          <button class="p-filter-btn" onclick="pSetFilter('over',this)">✗ Over Target</button>
+          <button class="p-filter-btn" onclick="pSetFilter('stock',this)">● In Stock</button>
+          <button class="p-filter-btn" onclick="pSetFilter('nodata',this)">No Cost</button>
+          <span style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-left:auto" id="p-items-count"></span>
+        </div>
+        <table class="data-table">
+          <thead><tr>
+            <th onclick="pSort('item')">Item ↕</th>
+            <th onclick="pSort('category')">Cat ↕</th>
+            <th class="num" onclick="pSort('sell_price')">Sell $ ↕</th>
+            <th class="num" onclick="pSort('pour_cost')">Cost ↕</th>
+            <th class="num" onclick="pSort('cost_pct')">Cost % ↕</th>
+            <th onclick="pSort('cost_pct')">Status</th>
+            <th class="num" onclick="pSort('net_recent')">Recent $ ↕</th>
+            <th class="num" onclick="pSort('qty_recent')">Qty ↕</th>
+            <th class="num">Suggest $</th>
+          </tr></thead>
+          <tbody id="p-items-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- OPPORTUNITIES sub-tab -->
+    <div id="p-sub-opportunities" class="p-subtab" style="display:none">
+      <div style="background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--amber);padding:12px 16px;margin-bottom:16px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-muted);line-height:2">
+        Ranked by estimated annual revenue gain if priced at target. <strong style="color:var(--green)">●</strong> = currently in stock. Annual gain estimated from recent 4-month run rate × 3.
+      </div>
+      <div class="section-label">Quick Wins — Price Increase Under $1.50</div>
+      <div class="p-tbl-wrap" style="margin-bottom:20px">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Item</th><th>Cat</th><th class="num">Current $</th><th class="num">Suggested $</th><th class="num">Raise</th><th class="num">Cost %</th><th class="num">Qty/4mo</th><th class="num">Est. Annual Gain</th></tr></thead>
+          <tbody id="p-quickwins-body"></tbody>
+        </table>
+      </div>
+      <div class="section-label">All Over-Target — Sorted by Impact</div>
+      <div class="p-tbl-wrap">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Item</th><th>Cat</th><th class="num">Current $</th><th class="num">Suggested $</th><th class="num">Raise</th><th class="num">Cost %</th><th class="num">Recent $</th><th class="num">Est. Annual Gain</th></tr></thead>
+          <tbody id="p-allover-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SIMULATOR sub-tab -->
+    <div id="p-sub-simulator" class="p-subtab" style="display:none">
+      <div class="kpi-grid" style="margin-bottom:16px">
+        <div class="kpi brass"><div class="kpi-label">Current Cost %</div><div class="kpi-val" id="p-sim-current">—</div></div>
+        <div class="kpi green"><div class="kpi-label">Simulated Cost %</div><div class="kpi-val" id="p-sim-new">—</div></div>
+        <div class="kpi amber"><div class="kpi-label">Items Changed</div><div class="kpi-val" id="p-sim-changed">0</div></div>
+        <div class="kpi green"><div class="kpi-label">Annual Rev Gain</div><div class="kpi-val" id="p-sim-gain">$0</div></div>
+        <div class="kpi blue"><div class="kpi-label">Avg Increase</div><div class="kpi-val" id="p-sim-avg">$0.00</div></div>
+      </div>
+      <div class="p-tbl-wrap">
+        <div class="p-tbl-controls">
+          <select id="p-sim-cat" onchange="pRenderSim()">
+            <option value="">All Categories</option>
+            <option value="Draft Beer">Draft Beer</option>
+            <option value="Bottle Beer">Bottle Beer</option>
+            <option value="Liquor">Liquor</option>
+            <option value="Wine">Wine</option>
+          </select>
+          <input type="text" id="p-sim-search" placeholder="Search..." oninput="pRenderSim()">
+          <button class="p-filter-btn" onclick="pApplyTargetAll()">Apply Target to Visible</button>
+          <button class="p-filter-btn" onclick="pResetSim()">Reset All</button>
+          <span style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-left:auto" id="p-sim-count"></span>
+        </div>
+        <table class="data-table">
+          <thead><tr>
+            <th>Item</th><th>Cat</th>
+            <th class="num">Pour Cost</th><th class="num">Current $</th>
+            <th class="num">New $ (edit)</th><th class="num">Current %</th>
+            <th class="num">New %</th><th class="num">Qty/4mo</th><th class="num">$ Impact</th>
+          </tr></thead>
+          <tbody id="p-sim-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /pricing-content -->
+</div>
+</div>
+
+</div><!-- /app -->
+
+<footer>
+  <div>COPPER STILL TAPROOM &nbsp;·&nbsp; SAMPLE DASHBOARD</div>
+  <div id="footer-range">—</div>
+  <div>Built by <a href="../" style="color:inherit">Blake Herring</a></div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG — only thing to change if repo moves
+// ═══════════════════════════════════════════════
+// Data sources — raw GitHub first, proxy fallback (no CDN tag needed)
+const JSDELIVR = 'data/';
+const RAWGIT   = 'data/';   // relative: reads the data folder next to this page
+const PROXY    = 'data/';
+let   RAW      = RAWGIT;
+const FILES = {
+  sales_by_day:     'Sales%20by%20day.csv',
+  top_items:        'Top%20Items.csv',
+  top_categories:   'Top%20Sales%20Categories.csv',
+  category_summary: 'Sales%20category%20summary.csv',
+  day_of_week:      'Day%20of%20week%20%28totals%29.csv',
+  time_of_day:      'Time%20of%20day%20%28totals%29.csv',
+  payments:         'Payments%20summary.csv',
+  service_mode:     'Service%20mode%20summary.csv',
+  daypart:          'Service%20Daypart%20summary.csv',
+  net_sales:        'Net%20sales%20summary.csv',
+  revenue:          'Revenue%20summary.csv',
+  tip_summary:      'Tip%20summary.csv',
+  void_summary:     'Void%20summary.csv',
+  check_discounts:  'Check%20Discounts.csv',
+  dining_options:   'Dining%20options%20summary.csv',
+  menu_items:       'Menu%20Item%20by%20Sales%20Category.csv',
+  // pricing fetched separately — data embedded below
+};
+
+// Chart defaults
+Chart.defaults.color = '#8A8070';
+Chart.defaults.borderColor = '#2E2E2E';
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 10;
+
+const brass = '#D4A017', brassA = 'rgba(212,160,23,0.85)';
+const amber = '#FF8F00';
+const green = '#4CAF50';
+const blue  = '#4FC3F7';
+const y1C = 'rgba(138,128,112,0.7)', y2C = brassA;
+
+// ═══════════════════════════════════════════════
+// CSV FETCHER
+// ═══════════════════════════════════════════════
+async function fetchCSV(key) {
+  const filename = FILES[key];
+  const isJSON = filename.endsWith('.json');
+  const rawURL = RAWGIT + filename;
+  const urls = [rawURL];
+  let lastError;
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) { lastError = new Error(filename + ': HTTP ' + res.status); continue; }
+      const text = await res.text();
+      if (isJSON) {
+        try { return JSON.parse(text); }
+        catch(e) { lastError = new Error(filename + ': bad JSON'); continue; }
+      }
+      return await new Promise((resolve, reject) => {
+        Papa.parse(text, {
+          header: true, skipEmptyLines: true, dynamicTyping: true,
+          complete: r => resolve(r.data),
+          error:    e => reject(e),
+        });
+      });
+    } catch(e) {
+      lastError = e;
+      continue;
+    }
+  }
+  throw lastError || new Error(filename + ': all sources failed');
+}
+
+// ═══════════════════════════════════════════════
+// LOAD ALL FILES
+// ═══════════════════════════════════════════════
+async function loadAll() {
+  const keys = Object.keys(FILES);
+  const total = keys.length;
+  const results = {};
+  const failed = [];
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    setLoading(`Loading ${FILES[key]}...`, ((i+1)/total*100));
+    try {
+      results[key] = await fetchCSV(key);
+    } catch(e) {
+      console.error(e);
+      failed.push(FILES[key]);
+    }
+  }
+
+  if (failed.length > 3) {
+    document.getElementById('error-files').innerHTML =
+      'Missing files:<br>' + failed.join('<br>');
+    document.getElementById('error-screen').style.display = 'flex';
+    document.getElementById('loading-screen').style.display = 'none';
+    return;
+  }
+
+  setLoading('Building dashboard...', 100);
+  setTimeout(() => buildDashboard(results), 300);
+}
+
+function setLoading(msg, pct) {
+  document.getElementById('loading-status').textContent = msg;
+  document.getElementById('loading-bar').style.width = pct + '%';
+}
+
+// ═══════════════════════════════════════════════
+// BUILD DASHBOARD
+// ═══════════════════════════════════════════════
+function buildDashboard(D) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // ── Parse sales by day ──────────────────────
+  const sbd = (D.sales_by_day || []).map(r => ({
+    date: new Date(String(r.yyyyMMdd).replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')),
+    sales: parseFloat(r['Net sales']) || 0,
+    orders: parseInt(r['Total orders']) || 0,
+    guests: parseInt(r['Total guests']) || 0,
+  })).filter(r => !isNaN(r.date)).sort((a,b) => a.date - b.date);
+
+  const y1cut = new Date('2025-06-01');
+  const y2cut = new Date('2026-06-01');
+  const y1 = sbd.filter(r => r.date < y1cut);
+  const y2 = sbd.filter(r => r.date >= y1cut && r.date < y2cut);
+  const y3 = sbd.filter(r => r.date >= y2cut);
+
+  const sum = arr => arr.reduce((s,v) => s+v, 0);
+  const y1s = sum(y1.map(r=>r.sales)), y2s = sum(y2.map(r=>r.sales));
+  const y3s = sum(y3.map(r=>r.sales));
+  const y1o = sum(y1.map(r=>r.orders)), y2o = sum(y2.map(r=>r.orders));
+  const y3o = sum(y3.map(r=>r.orders));
+  const y1g = sum(y1.map(r=>r.guests)), y2g = sum(y2.map(r=>r.guests));
+  const y3g = sum(y3.map(r=>r.guests));
+  const totalSales = y1s + y2s + y3s;
+  const growth = ((y2s/y1s)-1)*100;
+
+  // Date range
+  const minDate = sbd[0]?.date;
+  const maxDate = sbd[sbd.length-1]?.date;
+  const fmt = d => d?.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) || '—';
+  document.getElementById('header-date-range').innerHTML = `<strong>${fmt(minDate)} — ${fmt(maxDate)}</strong>`;
+  document.getElementById('last-updated').textContent = fmt(maxDate);
+  document.getElementById('rev-date-range').textContent = `${fmt(minDate)} — ${fmt(maxDate)} · ${sbd.length} trading days`;
+  document.getElementById('footer-range').textContent = `DATA: ${fmt(minDate)} — ${fmt(maxDate)}`;
+
+  // ── YOY Banner ──────────────────────────────
+  // Year cards
+  document.getElementById('yoy-y1-sales').textContent = '$' + y1s.toLocaleString('en-US',{maximumFractionDigits:0});
+  document.getElementById('yoy-y1-sub').textContent = y1o.toLocaleString() + ' orders · ' + y1g.toLocaleString() + ' guests · ' + y1.length + ' days';
+  document.getElementById('yoy-y2-sales').textContent = '$' + y2s.toLocaleString('en-US',{maximumFractionDigits:0});
+  document.getElementById('yoy-y2-sub').textContent = y2o.toLocaleString() + ' orders · ' + y2g.toLocaleString() + ' guests · ' + y2.length + ' days';
+  document.getElementById('yoy-y3-sales').textContent = y3s > 0 ? '$' + y3s.toLocaleString('en-US',{maximumFractionDigits:0}) : 'In progress';
+  document.getElementById('yoy-y3-sub').textContent = y3.length > 0 ? y3o.toLocaleString() + ' orders · ' + y3g.toLocaleString() + ' guests · ' + y3.length + ' days' : '—';
+
+  // Progress bars — relative to Y2 as baseline
+  const maxY = Math.max(y1s, y2s, y3s);
+  document.getElementById('yoy-y1-bar').style.width = (y1s/maxY*100).toFixed(1) + '%';
+  document.getElementById('yoy-y2-bar').style.width = (y2s/maxY*100).toFixed(1) + '%';
+  if(y3s > 0) document.getElementById('yoy-y3-bar').style.width = (y3s/maxY*100).toFixed(1) + '%';
+
+  // Y1→Y2 growth
+  const y1y2growth = y1s > 0 ? ((y2s/y1s)-1)*100 : 0;
+  document.getElementById('yoy-y1y2-growth').textContent = (y1y2growth>0?'+':'') + y1y2growth.toFixed(1) + '%';
+  document.getElementById('yoy-y1y2-sub').textContent = (y2s-y1s>0?'+':'-') + ' $' + Math.abs(y2s-y1s).toLocaleString('en-US',{maximumFractionDigits:0});
+
+  // Y3 pace vs Y2 daily avg
+  const y2daily = y2.length > 0 ? y2s/y2.length : 0;
+  const y3daily = y3.length > 0 ? y3s/y3.length : 0;
+  const pacePct = y2daily > 0 ? ((y3daily/y2daily)-1)*100 : 0;
+  const paceEl = document.getElementById('yoy-growth');
+  paceEl.textContent = y3.length > 0 ? (pacePct>0?'+':'') + pacePct.toFixed(1) + '%' : '—';
+  paceEl.style.color = pacePct >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('yoy-growth-sub').textContent = y3.length > 0 ? '$' + Math.round(y3daily).toLocaleString() + '/day vs $' + Math.round(y2daily).toLocaleString() + ' Y2 avg' : 'Not enough data';
+
+  // Totals
+  document.getElementById('yoy-total').textContent = '$' + totalSales.toLocaleString('en-US',{maximumFractionDigits:0});
+  document.getElementById('yoy-total-sub').textContent = (y1o+y2o+y3o).toLocaleString() + ' orders all time';
+  document.getElementById('yoy-guests-total').textContent = (y1g+y2g+y3g).toLocaleString();
+  document.getElementById('yoy-guests-sub').textContent = 'lifetime guests';
+  document.getElementById('yoy-orders-total').textContent = (y1o+y2o+y3o).toLocaleString();
+  document.getElementById('yoy-orders-sub').textContent = 'lifetime orders';
+  document.getElementById('rev-total').textContent = '$' + totalSales.toLocaleString('en-US',{maximumFractionDigits:0});
+
+  // ── KPI Cards ───────────────────────────────
+  const y1AvgOrder = y1s/y1o, y2AvgOrder = y2s/y2o;
+  const y1AvgGuest = y1s/y1g, y2AvgGuest = y2s/y2g;
+  const y1Daily = y1s/y1.length, y2Daily = y2s/y2.length;
+  const tipRow = D.tip_summary?.[0];
+  const totalTips = parseFloat(tipRow?.['Total tips']) || 0;
+  const tipRate = totalSales ? (totalTips/totalSales*100).toFixed(1)+'%' : '—';
+  const voidRow = D.void_summary?.[0];
+  const voidAmt = parseFloat(voidRow?.['Void amount']) || 0;
+  const voidPct = parseFloat(voidRow?.['Void amount %']) || 0;
+  const netRow = D.net_sales?.[0];
+  const grossSales = parseFloat(netRow?.['Gross sales']) || totalSales;
+  const discounts = parseFloat(netRow?.['Sales discounts']) ? Math.abs(parseFloat(netRow?.['Sales discounts'])) : 0;
+  const discPct = grossSales ? (discounts/grossSales*100) : 0;
+
+  const kpis = [
+    {label:'Avg Order Value', val:'$'+y2AvgOrder.toFixed(2), badge:'up', badgeTxt:'▲ '+Math.abs(((y2AvgOrder/y1AvgOrder)-1)*100).toFixed(1)+'%', prev:'vs $'+y1AvgOrder.toFixed(2)+' Y1', cls:'green'},
+    {label:'Avg Per Guest', val:'$'+y2AvgGuest.toFixed(2), badge:'up', badgeTxt:'▲ '+Math.abs(((y2AvgGuest/y1AvgGuest)-1)*100).toFixed(1)+'%', prev:'vs $'+y1AvgGuest.toFixed(2)+' Y1', cls:'green'},
+    {label:'Avg Daily Sales', val:'$'+Math.round(y2Daily).toLocaleString(), badge:'up', badgeTxt:'▲ '+Math.abs(((y2Daily/y1Daily)-1)*100).toFixed(1)+'%', prev:'vs $'+Math.round(y1Daily).toLocaleString()+' Y1', cls:''},
+    {label:'Total Tips', val:'$'+Math.round(totalTips).toLocaleString(), badge:'neutral', badgeTxt:tipRate, prev:'avg tip rate', cls:'blue'},
+    {label:'Discounts Given', val:'$'+Math.round(discounts).toLocaleString(), badge:'neutral', badgeTxt:discPct.toFixed(1)+'%', prev:'of gross sales', cls:'amber'},
+    {label:'Void Amount', val:'$'+Math.round(voidAmt).toLocaleString(), badge:'neutral', badgeTxt:voidPct.toFixed(1)+'%', prev:'of gross sales', cls:''},
+  ];
+  document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
+    <div class="kpi-card ${k.cls}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.val}</div>
+      <div class="kpi-sub"><span class="badge ${k.badge}">${k.badgeTxt}</span><span class="kpi-prev">${k.prev}</span></div>
+    </div>`).join('');
+
+  // ── Monthly data ────────────────────────────
+  const monthOrder = [6,7,8,9,10,11,12,1,2,3,4,5];
+  const monthNames = ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'];
+
+  function getMonthly(rows) {
+    const map = {};
+    rows.forEach(r => {
+      const m = r.date.getMonth()+1;
+      if (!map[m]) map[m] = {sales:0,orders:0,guests:0};
+      map[m].sales += r.sales; map[m].orders += r.orders; map[m].guests += r.guests;
+    });
+    return map;
+  }
+  const m1 = getMonthly(y1), m2 = getMonthly(y2);
+  const y1Sales = monthOrder.map(m => m1[m]?.sales||0);
+  const y2Sales = monthOrder.map(m => m2[m]?.sales||0);
+  const y1Orders = monthOrder.map(m => m1[m]?.orders||0);
+  const y2Orders = monthOrder.map(m => m2[m]?.orders||0);
+  const y1Guests = monthOrder.map(m => m1[m]?.guests||0);
+  const y2Guests = monthOrder.map(m => m2[m]?.guests||0);
+
+  // ── Monthly bar chart ───────────────────────
+  new Chart(document.getElementById('monthlyBarChart'), {
+    type:'bar',
+    data:{ labels:monthNames, datasets:[
+      {label:'Year 1', data:y1Sales, backgroundColor:y1C, borderRadius:2, barPercentage:0.85, categoryPercentage:0.7},
+      {label:'Year 2', data:y2Sales, backgroundColor:y2C, borderRadius:2, barPercentage:0.85, categoryPercentage:0.7},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+  });
+
+  // ── Orders bar ──────────────────────────────
+  new Chart(document.getElementById('ordersBarChart'), {
+    type:'bar',
+    data:{labels:monthNames,datasets:[
+      {label:'Y1',data:y1Orders,backgroundColor:'rgba(74,68,64,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y2',data:y2Orders,backgroundColor:'rgba(79,195,247,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+  });
+
+  // ── Guests bar ──────────────────────────────
+  new Chart(document.getElementById('guestsBarChart'), {
+    type:'bar',
+    data:{labels:monthNames,datasets:[
+      {label:'Y1',data:y1Guests,backgroundColor:'rgba(74,68,64,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y2',data:y2Guests,backgroundColor:'rgba(76,175,80,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+  });
+
+  // ── Guest YOY ───────────────────────────────
+  new Chart(document.getElementById('guestYOYChart'), {
+    type:'bar',
+    data:{labels:monthNames,datasets:[
+      {label:'Y1 Guests',data:y1Guests,backgroundColor:'rgba(74,68,64,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y2 Guests',data:y2Guests,backgroundColor:'rgba(76,175,80,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:10}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+  });
+
+  // ── Monthly table ───────────────────────────
+  const maxVal = Math.max(...y1Sales,...y2Sales);
+  document.getElementById('monthlyTableBody').innerHTML = monthNames.map((m,i) => {
+    const s1=y1Sales[i], s2=y2Sales[i];
+    if(!s1 && !s2) return '';
+    const diff=s2-s1, pct=s1?((s2/s1)-1)*100:0;
+    const col=diff>0?'var(--green)':'var(--red)', arr=diff>0?'▲':'▼';
+    const b1=(s1/maxVal*100).toFixed(1), b2=(s2/maxVal*100).toFixed(1);
+    return `<tr>
+      <td><strong>${m}</strong></td>
+      <td class="num" style="color:var(--text-muted)">${s1?'$'+s1.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</td>
+      <td class="num" style="color:var(--brass-light)">${s2?'$'+s2.toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</td>
+      <td class="num" style="color:${col}">${s1&&s2?(diff>0?'+':'')+' $'+Math.abs(diff).toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</td>
+      <td class="num" style="color:${col}">${s1&&s2?arr+' '+Math.abs(pct).toFixed(1)+'%':'—'}</td>
+      <td><div style="display:flex;flex-direction:column;gap:3px">
+        <div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:var(--text-dim);width:18px">Y1</span><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:${b1}%;height:100%;background:#5A5048"></div></div></div>
+        <div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:var(--text-dim);width:18px">Y2</span><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:${b2}%;height:100%;background:var(--brass)"></div></div></div>
+      </div></td>
+    </tr>`;
+  }).join('');
+
+  // ── Full history area ────────────────────────
+  const allLabels = [...Array(12).keys()].map(i=>monthNames[i]+"'24")
+    .concat([...Array(12).keys()].map(i=>monthNames[i]+"'25"))
+    .concat([...Array(12).keys()].map(i=>monthNames[i]+"'26"));
+  const allSales = [...y1Sales, ...y2Sales];
+  const usedLabels=[], usedSales=[];
+  allSales.forEach((s,i)=>{if(s>0){usedLabels.push(allLabels[i]);usedSales.push(s);}});
+
+  new Chart(document.getElementById('dailyAreaChart'), {
+    type:'line',
+    data:{labels:usedLabels,datasets:[{label:'Net Sales',data:usedSales,borderColor:brass,backgroundColor:'rgba(184,134,11,0.12)',borderWidth:2,fill:true,tension:0.3,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:brass}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false},ticks:{maxRotation:45,font:{size:9}}},y:{grid:{color:'#1A1A1A'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:9}}}}}
+  });
+
+  // ── DOW Grid ────────────────────────────────
+  const dowRows = D.day_of_week || [];
+  const dowOrder2 = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const dowMap = {};
+  dowRows.forEach(r => { dowMap[r['Day of week']] = { sales: parseFloat(r['Net sales'])||0, orders: parseInt(r['Total orders'])||0, guests: parseInt(r['Total guests'])||0 }; });
+  const maxDow = Math.max(...Object.values(dowMap).map(d=>d.sales));
+  document.getElementById('dowGrid').innerHTML = dowOrder2.map(day => {
+    const d = dowMap[day] || {sales:0,orders:0,guests:0};
+    const pct = d.sales/maxDow;
+    const alpha = 0.15 + pct*0.65;
+    return `<div class="heat-cell" style="background:rgba(184,134,11,${alpha})">
+      <div class="day-name">${day}</div>
+      <div class="day-sales" style="color:${pct>0.7?'#F5E6A3':'#D4A017'}">${(d.sales/1000).toFixed(0)}k</div>
+      <div class="day-sub">${d.orders.toLocaleString()} orders</div>
+    </div>`;
+  }).join('');
+
+  // ── DOW Table ───────────────────────────────
+  const totalDowSales = Object.values(dowMap).reduce((s,d)=>s+d.sales,0);
+  document.getElementById('dowTable').innerHTML = dowOrder2.map(day => {
+    const d = dowMap[day]||{sales:0,orders:0,guests:0};
+    const ao=d.orders?d.sales/d.orders:0, ag=d.guests?d.sales/d.guests:0;
+    const sp=(d.sales/totalDowSales*100).toFixed(1);
+    return `<tr>
+      <td><strong>${day}</strong></td>
+      <td class="num" style="color:var(--brass-light)">$${d.sales.toLocaleString('en-US',{maximumFractionDigits:0})}</td>
+      <td class="num">${d.orders.toLocaleString()}</td>
+      <td class="num">${d.guests.toLocaleString()}</td>
+      <td class="num">$${ao.toFixed(2)}</td>
+      <td class="num">$${ag.toFixed(2)}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:6px;background:var(--dark-4)"><div style="width:${parseFloat(sp)/20*100}%;height:100%;background:var(--brass)"></div></div>
+        <span style="font-family:IBM Plex Mono;font-size:10px;color:var(--text-muted);width:34px">${sp}%</span>
+      </div></td>
+    </tr>`;
+  }).join('');
+
+  // ── Categories ──────────────────────────────
+  const cats = (D.top_categories || []).map(c=>({...c,'SALES_CATEGORY_NAME':c['SALES_CATEGORY_NAME']||'No Category'})).filter(c=>c['SALES_CATEGORY_NAME']!='No Category').sort((a,b)=>(b['ITEM_NET_AMOUNT']||0)-(a['ITEM_NET_AMOUNT']||0));
+  const maxCat = cats[0]?.['ITEM_NET_AMOUNT']||1;
+  const catColors = ['#B8860B','#8A6800','#5C4400','#D4A017','#E8C048','#4FC3F7','#4CAF50','#FF8F00','#E53935','#AB47BC','#26A69A','#78909C'];
+
+  new Chart(document.getElementById('categoryDonut'), {
+    type:'doughnut',
+    data:{labels:cats.slice(0,8).map(c=>c['SALES_CATEGORY_NAME']),datasets:[{data:cats.slice(0,8).map(c=>c['ITEM_NET_AMOUNT']||0),backgroundColor:catColors,borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'right',labels:{boxWidth:8,padding:10,font:{size:10}}},tooltip:{callbacks:{label:c=>` ${c.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}}}
+  });
+
+  document.getElementById('categoryBars').innerHTML = cats.slice(0,12).map((cat,i) => {
+    const s=cat['ITEM_NET_AMOUNT']||0, pct=(s/maxCat*100).toFixed(1), share=(s/totalSales*100).toFixed(1);
+    return `<div class="progress-row">
+      <div class="progress-header"><span class="progress-name">${cat['SALES_CATEGORY_NAME']}</span><span class="progress-val">$${(s/1000).toFixed(0)}k <span style="color:var(--text-dim)">${share}%</span></span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${i<2?'var(--brass)':i<4?'var(--brass-light)':'rgba(184,134,11,0.5)'}"></div></div>
+    </div>`;
+  }).join('');
+
+  new Chart(document.getElementById('categoryPie'), {
+    type:'pie',
+    data:{labels:cats.map(c=>c['SALES_CATEGORY_NAME']),datasets:[{data:cats.map(c=>c['ITEM_NET_AMOUNT']||0),backgroundColor:catColors,borderWidth:1,borderColor:'#161616'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:8,padding:8,font:{size:9}}},tooltip:{callbacks:{label:c=>` ${c.label}: ${((c.raw/totalSales)*100).toFixed(1)}%`}}}}
+  });
+
+  // Bev metrics
+  const findCat = name => cats.find(c=>c['SALES_CATEGORY_NAME']===name)?.['ITEM_NET_AMOUNT']||0;
+  document.getElementById('bevMetrics').innerHTML = [
+    {label:'Draft Beer',val:findCat('Draft Beer')},
+    {label:'Liquor',val:findCat('Liquor')},
+    {label:'Bottle Beer',val:findCat('Bottle Beer')},
+    {label:'Wine',val:findCat('Wine')},
+  ].map(m=>`<div class="metric-box"><div class="metric-box-val">$${Math.round(m.val).toLocaleString()}</div><div class="metric-box-label">${m.label}</div></div>`).join('');
+
+  // Top items
+  const items = (D.top_items||[]).slice(0,15);
+  document.getElementById('topItemsTable').innerHTML = items.map((item,i)=>`<tr>
+    <td><span class="rank-num">${i+1}</span></td>
+    <td>${item['MENU_ITEM_NAME']||'—'}</td>
+    <td class="num">${(item['ITEM_QUANTITY']||0).toLocaleString()}</td>
+    <td class="num">$${(item['AVERAGE_ITEM_PRICE']||0).toFixed(2)}</td>
+    <td class="num" style="color:var(--brass-light)">$${(item['ITEM_NET_AMOUNT']||0).toLocaleString('en-US',{maximumFractionDigits:0})}</td>
+  </tr>`).join('');
+
+  // Discounts
+  const discs = (D.check_discounts||[]).sort((a,b)=>(b['Amount']||0)-(a['Amount']||0));
+  const maxDisc = discs[0]?.['Amount']||1;
+  document.getElementById('discountBars').innerHTML = discs.map(d=>`<div class="progress-row">
+    <div class="progress-header"><span class="progress-name">${d['Discount']||'—'}</span><span class="progress-val" style="color:var(--amber)">$${(d['Amount']||0).toLocaleString('en-US',{maximumFractionDigits:0})}</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${((d['Amount']||0)/maxDisc*100).toFixed(1)}%;background:var(--amber)"></div></div>
+  </div>`).join('');
+  document.getElementById('discountTotals').innerHTML = `
+    <div class="stat-pair"><span class="stat-pair-label">Total Discounts</span><span class="stat-pair-val" style="color:var(--amber)">$${Math.round(discounts).toLocaleString()}</span></div>
+    <div class="stat-pair"><span class="stat-pair-label">Void Amount</span><span class="stat-pair-val" style="color:var(--red)">$${Math.round(voidAmt).toLocaleString()}</span></div>
+    <div class="stat-pair"><span class="stat-pair-label">Void % of Gross</span><span class="stat-pair-val">${voidPct.toFixed(1)}%</span></div>`;
+
+  // Payments
+  const pays = D.payments||[];
+  const cashRow = pays.find(r=>r['Payment type']==='Cash');
+  const ccRow = pays.find(r=>r['Payment type']==='Credit/debit' && !r['Payment sub type']);
+  const gcRow = pays.find(r=>r['Payment type']==='Gift Card');
+  const otRow = pays.find(r=>r['Payment type']==='Other');
+  new Chart(document.getElementById('paymentChart'), {
+    type:'doughnut',
+    data:{labels:['Credit/Debit','Cash','Gift Card','Other'],datasets:[{data:[ccRow?.Amount||0,cashRow?.Amount||0,gcRow?.Amount||0,otRow?.Amount||0],backgroundColor:['#D4A017','#4A4440','#4FC3F7','#2E2E2E'],borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'right',labels:{boxWidth:8,padding:10}},tooltip:{callbacks:{label:c=>` ${c.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}}}
+  });
+
+  // Revenue breakdown
+  const revRow = D.revenue?.[0]||{};
+  const netSalesR = parseFloat(revRow['Net sales'])||totalSales;
+  const tax = parseFloat(revRow['Tax amount'])||0;
+  const tipsR = parseFloat(revRow['Tips'])||totalTips;
+  const grat = parseFloat(revRow['Gratuity'])||0;
+  const total = parseFloat(revRow['Paid in total'])||0;
+  const discR = parseFloat(netRow?.['Sales discounts'])||0;
+  const refunds = parseFloat(netRow?.['Sales refunds'])||0;
+  document.getElementById('revenueBreakdown').innerHTML = [
+    {label:'Gross Sales',val:'$'+Math.round(grossSales).toLocaleString(),color:'var(--text)'},
+    {label:'Sales Discounts',val:'−$'+Math.round(Math.abs(discR)).toLocaleString(),color:'var(--red)'},
+    {label:'Sales Refunds',val:'−$'+Math.round(Math.abs(refunds)).toLocaleString(),color:'var(--red)'},
+    {label:'Net Sales',val:'$'+Math.round(netSalesR).toLocaleString(),color:'var(--brass-light)'},
+    {label:'Tax Collected',val:'$'+Math.round(tax).toLocaleString(),color:'var(--text)'},
+    {label:'Tips Collected',val:'$'+Math.round(tipsR).toLocaleString(),color:'var(--green)'},
+    {label:'Gratuity',val:'$'+Math.round(grat).toLocaleString(),color:'var(--text)'},
+  ].map(r=>`<div class="stat-pair"><span class="stat-pair-label">${r.label}</span><span class="stat-pair-val" style="color:${r.color}">${r.val}</span></div>`).join('');
+
+  // Ops metrics
+  const svcRows = (D.service_mode||[]).filter(r=>r['Service mode']!=='Total');
+  const tableRow = svcRows.find(r=>r['Service mode']==='Table Service')||{};
+  const qsRow = svcRows.find(r=>r['Service mode']==='Quick Service')||{};
+  const dpRows = (D.daypart||[]).filter(r=>['Lunch','Dinner'].includes(r['Service / day part']));
+  const lunchRow = dpRows.find(r=>r['Service / day part']==='Lunch')||{};
+  const dinnerRow = dpRows.find(r=>r['Service / day part']==='Dinner')||{};
+  document.getElementById('opsMetrics').innerHTML = [
+    {label:'Table Avg Order', val:'$'+(parseFloat(tableRow['Avg/Order'])||0).toFixed(2)},
+    {label:'QS Avg Order', val:'$'+(parseFloat(qsRow['Avg/Order'])||0).toFixed(2)},
+    {label:'Table Turn Time', val:Math.round(parseFloat(tableRow['Turn time (minutes)'])||0)+' min'},
+    {label:'Avg Tip Rate', val:tipRate},
+  ].map(m=>`<div class="metric-box"><div class="metric-box-val">${m.val}</div><div class="metric-box-label">${m.label}</div></div>`).join('');
+
+  new Chart(document.getElementById('daypartChart'), {
+    type:'bar',
+    data:{labels:['Lunch','Dinner'],datasets:[{label:'Net Sales',data:[parseFloat(lunchRow['Net sales'])||0,parseFloat(dinnerRow['Net sales'])||0],backgroundColor:['rgba(184,134,11,0.6)',brass],borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+  });
+
+  document.getElementById('daypartStats').innerHTML = [
+    {label:'Lunch Orders',val:(parseInt(lunchRow['Orders'])||0).toLocaleString()},
+    {label:'Dinner Orders',val:(parseInt(dinnerRow['Orders'])||0).toLocaleString()},
+    {label:'Lunch Avg Order',val:'$'+((parseFloat(lunchRow['Net sales'])||0)/(parseInt(lunchRow['Orders'])||1)).toFixed(2)},
+    {label:'Dinner Avg Order',val:'$'+((parseFloat(dinnerRow['Net sales'])||0)/(parseInt(dinnerRow['Orders'])||1)).toFixed(2)},
+  ].map(r=>`<div class="stat-pair"><span class="stat-pair-label">${r.label}</span><span class="stat-pair-val">${r.val}</span></div>`).join('');
+
+  new Chart(document.getElementById('serviceModeChart'), {
+    type:'doughnut',
+    data:{labels:['Table Service','Quick Service'],datasets:[{data:[parseFloat(tableRow['Net sales'])||0,parseFloat(qsRow['Net sales'])||0],backgroundColor:[brass,'#3A3630'],borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:12}},tooltip:{callbacks:{label:c=>` ${c.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}}}
+  });
+
+  const tvs=parseFloat(tableRow['Net sales'])||0, qvs=parseFloat(qsRow['Net sales'])||0, tot2=tvs+qvs;
+  document.getElementById('serviceModeStats').innerHTML = [
+    {label:'Table Service Revenue',val:`$${Math.round(tvs).toLocaleString()} (${tot2?(tvs/tot2*100).toFixed(1):0}%)`},
+    {label:'QS Revenue',val:`$${Math.round(qvs).toLocaleString()} (${tot2?(qvs/tot2*100).toFixed(1):0}%)`},
+    {label:'Table Turn Time',val:Math.round(parseFloat(tableRow['Turn time (minutes)'])||0)+' min'},
+    {label:'QS Turn Time',val:Math.round(parseFloat(qsRow['Turn time (minutes)'])||0)+' min'},
+  ].map(r=>`<div class="stat-pair"><span class="stat-pair-label">${r.label}</span><span class="stat-pair-val">${r.val}</span></div>`).join('');
+
+  // Dining options
+  const diningRows = (D.dining_options||[]).filter(r=>r['Dining option']&&r['Dining option']!=='Total').sort((a,b)=>(b['Net sales']||0)-(a['Net sales']||0));
+  const maxDin = diningRows[0]?.['Net sales']||1;
+  document.getElementById('diningBars').innerHTML = diningRows.map(d=>`<div class="progress-row">
+    <div class="progress-header">
+      <span class="progress-name">${d['Dining option']} <span style="color:var(--text-dim);font-size:10px">(${(d['Orders']||0).toLocaleString()} orders)</span></span>
+      <span class="progress-val">$${(d['Net sales']||0).toLocaleString('en-US',{maximumFractionDigits:0})} <span style="color:var(--text-dim)">${((d['Net sales']||0)/totalSales*100).toFixed(1)}%</span></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${((d['Net sales']||0)/maxDin*100).toFixed(1)}%;background:var(--brass)"></div></div>
+  </div>`).join('');
+
+  // TOD chart
+  const todRows = (D.time_of_day||[]).sort((a,b)=>(parseInt(a['Hour of day'])||0)-(parseInt(b['Hour of day'])||0));
+  const todHours = todRows.map(r=>{const h=parseInt(r['Hour of day'])||0;return `${String(h).padStart(2,'0')}:00`;});
+  const todSales = todRows.map(r=>parseFloat(r['Net sales'])||0);
+  const peakIdx = todSales.indexOf(Math.max(...todSales));
+  const peakH = parseInt(todRows[peakIdx]?.['Hour of day'])||18;
+  document.getElementById('peak-hour').textContent = peakH >= 12 ? (peakH===12?'12pm':(peakH-12)+'pm') : peakH+'am';
+
+  new Chart(document.getElementById('todChart'), {
+    type:'bar',
+    data:{labels:todHours,datasets:[{label:'Net Sales',data:todSales,backgroundColor:todSales.map(v=>v>Math.max(...todSales)*0.7?brass:v>Math.max(...todSales)*0.4?'rgba(184,134,11,0.7)':'rgba(184,134,11,0.35)'),borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#1A1A1A'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:9}}}}}
+  });
+
+  // Build monthly, inventory, and pricing tabs
+  buildMonthlyTab(D.sales_by_day || []);
+  if(D.menu_items) buildInventoryTab(D.menu_items);
+  buildPricingTab(EMBEDDED_PRICING);
+  setTimeout(openTabFromHash, 0);
+
+  // Guest metrics
+  document.getElementById('guestMetrics').innerHTML = [
+    {label:'Year 1 Avg/Guest',val:'$'+y1AvgGuest.toFixed(2),color:'var(--text-muted)'},
+    {label:'Year 2 Avg/Guest',val:'$'+y2AvgGuest.toFixed(2),color:'var(--brass-light)'},
+    {label:'Improvement',val:'+'+(y2AvgGuest-y1AvgGuest).toFixed(2)+' (+'+(((y2AvgGuest/y1AvgGuest)-1)*100).toFixed(1)+'%)',color:'var(--green)'},
+    {label:'Year 1 Guests',val:y1g.toLocaleString(),color:'var(--text)'},
+    {label:'Year 2 Guests',val:y2g.toLocaleString(),color:'var(--text)'},
+    {label:'Guest Growth',val:'+'+(y2g-y1g).toLocaleString()+' (+'+(((y2g/y1g)-1)*100).toFixed(1)+'%)',color:'var(--green)'},
+    {label:'All-Time Guests',val:(y1g+y2g).toLocaleString(),color:'var(--text)'},
+  ].map(r=>`<div class="stat-pair"><span class="stat-pair-label">${r.label}</span><span class="stat-pair-val" style="color:${r.color}">${r.val}</span></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+// Deep links: dashboard/#pricing, #monthly, #inventory, etc.
+// Also opens pricing sub-tabs: #pricing/simulator, #pricing/opportunities, #pricing/items
+function openTabFromHash() {
+  const [id, sub] = (location.hash || '').replace('#','').split('/');
+  if (!id) return;
+  const tab = document.querySelector(`.tab[onclick*="'${id}'"]`);
+  if (tab && document.getElementById('tab-'+id)) showTab(id, tab);
+  if (id === 'pricing' && sub) {
+    const btn = document.querySelector(`.p-tabs button[onclick*="'${sub}'"]`);
+    if (btn && document.getElementById('p-sub-'+sub)) pShowSubTab(sub, btn);
+  }
+}
+window.addEventListener('hashchange', openTabFromHash);
+
+function showTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+
+// ═══════════════════════════════════════════════
+// MONTHLY DETAIL TAB
+// ═══════════════════════════════════════════════
+let allMonthData = [];
+let monthFilter = 'all';
+let invSortKey = 'net';
+let invSortDir = -1;
+let currentCatData = [];
+let invChartInstance = null;
+let invData = {};
+
+function buildMonthlyTab(sbd) {
+  const monthly = {};
+  sbd.forEach(r => {
+    const ds = String(r.yyyyMMdd || '');
+    if(ds.length !== 8) return;
+    const yr = ds.slice(0,4), mo = ds.slice(4,6), day = ds.slice(6,8);
+    const d = new Date(parseInt(yr), parseInt(mo)-1, parseInt(day));
+    if(isNaN(d.getTime())) return;
+    const key = yr + '-' + mo;
+    if(!monthly[key]) monthly[key] = {sales:[], orders:0, guests:0, days:0};
+    const s = parseFloat(r['Net sales'])||0;
+    if(s > 0) monthly[key].sales.push(s);
+    monthly[key].orders += parseInt(r['Total orders'])||0;
+    monthly[key].guests += parseInt(r['Total guests'])||0;
+    monthly[key].days++;
+  });
+
+  const y1cut = new Date('2025-06-01');
+  const y2cut2 = new Date('2026-06-01');
+  allMonthData = Object.entries(monthly).sort().map(([key, v]) => {
+    const [yr, mo] = key.split('-');
+    const d = new Date(parseInt(yr), parseInt(mo)-1, 1);
+    const totalSales = v.sales.reduce((a,b)=>a+b,0);
+    return {
+      key,
+      label: d.toLocaleDateString('en-US',{month:'short',year:'2-digit'}),
+      year: d < y1cut ? 'Y1' : d < y2cut2 ? 'Y2' : 'Y3',
+      net_sales: totalSales,
+      orders: v.orders,
+      guests: v.guests,
+      days: v.days,
+      best_day: v.sales.length ? Math.max(...v.sales) : 0,
+      worst_day: v.sales.length ? Math.min(...v.sales) : 0,
+      avg_day: v.days ? totalSales/v.days : 0,
+      avg_order: v.orders ? totalSales/v.orders : 0,
+      avg_guest: v.guests ? totalSales/v.guests : 0,
+    };
+  });
+
+  renderMonthCards();
+  renderMonthCharts();
+  renderMonthTable();
+}
+
+function filterMonths(filter, el) {
+  monthFilter = filter;
+  document.querySelectorAll('.year-toggle button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderMonthCards();
+  renderMonthTable();
+}
+
+function renderMonthCards() {
+  const filtered = monthFilter === 'all' ? allMonthData : allMonthData.filter(m=>m.year===monthFilter);
+  const y1map = {}, y2map = {};
+  allMonthData.forEach(m => {
+    const mo = m.key.split('-')[1];
+    if(m.year==='Y1') y1map[mo] = m;
+    else y2map[mo] = m;
+  });
+  const totalFiltered = filtered.reduce((s,m)=>s+m.net_sales,0);
+  document.getElementById('monthly-totals').innerHTML =
+    'Showing ' + filtered.length + ' months &nbsp;·&nbsp; Total: <strong style="color:var(--brass-light)">$' + totalFiltered.toLocaleString('en-US',{maximumFractionDigits:0}) + '</strong>';
+
+  document.getElementById('monthCards').innerHTML = filtered.map(m => {
+    const mo = m.key.split('-')[1];
+    const comp = m.year==='Y1' ? y2map[mo] : y1map[mo];
+    let pill = '';
+    if(comp && comp.net_sales > 0) {
+      const pct = ((m.net_sales/comp.net_sales)-1)*100;
+      const col = pct>0?'var(--green)':'var(--red)';
+      const bg = pct>0?'rgba(76,175,80,0.15)':'rgba(229,57,53,0.15)';
+      pill = '<span class="yoy-pill" style="background:'+bg+';color:'+col+'">'+(pct>0?'▲':'▼')+Math.abs(pct).toFixed(1)+'%</span>';
+    }
+    return '<div class="month-card ' + m.year.toLowerCase() + '">' +
+      '<div class="mc-label"><span>' + m.label + ' <span style="opacity:0.6">' + m.year + '</span></span>' + pill + '</div>' +
+      '<div class="mc-sales">$' + (m.net_sales/1000).toFixed(1) + 'k</div>' +
+      '<div class="mc-row"><span>Orders</span><span>' + m.orders.toLocaleString() + '</span></div>' +
+      '<div class="mc-row"><span>Guests</span><span>' + m.guests.toLocaleString() + '</span></div>' +
+      '<div class="mc-row"><span>Avg/Order</span><span>$' + m.avg_order.toFixed(2) + '</span></div>' +
+      '<div class="mc-row"><span>Avg Daily</span><span>$' + Math.round(m.avg_day).toLocaleString() + '</span></div>' +
+      '<div class="mc-row"><span>Best Day</span><span style="color:var(--green)">$' + m.best_day.toLocaleString('en-US',{maximumFractionDigits:0}) + '</span></div>' +
+      '<div class="mc-row"><span>Days Open</span><span>' + m.days + '</span></div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderMonthCharts() {
+  const labels = allMonthData.map(m=>m.label);
+  const colors = allMonthData.map(m=>m.year==='Y1'?'rgba(138,128,112,0.75)':m.year==='Y2'?'rgba(212,160,23,0.85)':'rgba(76,175,80,0.85)');
+  const brass = '#D4A017';
+
+  new Chart(document.getElementById('allMonthsBar'), {
+    type:'bar',
+    data:{labels:labels, datasets:[{label:'Net Sales',data:allMonthData.map(m=>m.net_sales),backgroundColor:colors,borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';}}}}}
+  });
+
+  new Chart(document.getElementById('avgDailyBar'), {
+    type:'bar',
+    data:{labels:labels, datasets:[{label:'Avg Daily',data:allMonthData.map(m=>m.avg_day),backgroundColor:colors,borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';}}}}}
+  });
+
+  new Chart(document.getElementById('avgOrderBar'), {
+    type:'line',
+    data:{labels:labels, datasets:[{label:'Avg/Order',data:allMonthData.map(m=>m.avg_order),borderColor:brass,backgroundColor:'rgba(184,134,11,0.1)',borderWidth:2,fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:brass}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toFixed(2);} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{callback:function(v){return '$'+v.toFixed(0);}}}}}
+  });
+
+  new Chart(document.getElementById('allOrdersBar'), {
+    type:'bar',
+    data:{labels:labels, datasets:[{label:'Orders',data:allMonthData.map(m=>m.orders),backgroundColor:colors,borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' '+c.raw.toLocaleString();} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+  });
+}
+
+function renderMonthTable() {
+  const filtered = monthFilter === 'all' ? allMonthData : allMonthData.filter(m=>m.year===monthFilter);
+  const maxSales = Math.max(...filtered.map(m=>m.net_sales));
+  document.getElementById('fullMonthTable').innerHTML = filtered.map(m => {
+    const ycol = m.year==='Y2'?'var(--brass-light)':'var(--text-muted)';
+    const ybg = m.year==='Y2'?'':'background:rgba(90,80,72,0.2);color:var(--text-muted)';
+    return '<tr>' +
+      '<td><strong>' + m.label + '</strong></td>' +
+      '<td><span class="badge ' + (m.year==='Y2'?'neutral':'') + '" style="' + ybg + '">' + m.year + '</span></td>' +
+      '<td class="num" style="color:' + ycol + '">$' + m.net_sales.toLocaleString('en-US',{maximumFractionDigits:0}) + '</td>' +
+      '<td class="num">' + m.orders.toLocaleString() + '</td>' +
+      '<td class="num">' + m.guests.toLocaleString() + '</td>' +
+      '<td class="num">$' + m.avg_order.toFixed(2) + '</td>' +
+      '<td class="num">$' + m.avg_guest.toFixed(2) + '</td>' +
+      '<td class="num">$' + Math.round(m.avg_day).toLocaleString() + '</td>' +
+      '<td class="num" style="color:var(--green)">$' + m.best_day.toLocaleString('en-US',{maximumFractionDigits:0}) + '</td>' +
+      '<td class="num" style="color:var(--text-dim)">$' + m.worst_day.toLocaleString('en-US',{maximumFractionDigits:0}) + '</td>' +
+      '<td class="num">' + m.days + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// INVENTORY TAB
+// ═══════════════════════════════════════════════
+function buildInventoryTab(menuItems) {
+  invData = {};
+  menuItems.forEach(r => {
+    const cat = r['SALES_CATEGORY_NAME'];
+    if(!cat || cat === 'No Sales Category Assigned' || cat === 'NULL' || cat === 'null') return;
+    if(!invData[cat]) invData[cat] = [];
+    invData[cat].push({
+      name: r['MENU_ITEM_NAME'] || '—',
+      qty:  parseFloat(r['ITEM_QUANTITY']) || 0,
+      avg:  parseFloat(r['AVERAGE_ITEM_PRICE']) || 0,
+      gross:parseFloat(r['ITEM_GROSS_AMOUNT']) || 0,
+      disc: parseFloat(r['DISCOUNT_AMOUNT']) || 0,
+      net:  parseFloat(r['ITEM_NET_AMOUNT']) || 0,
+    });
+  });
+
+  const sel = document.getElementById('catSelect');
+  // Clear existing options except first
+  while(sel.options.length > 1) sel.remove(1);
+
+  const catTotals = Object.entries(invData)
+    .map(([cat, items]) => ({cat, total: items.reduce((s,i)=>s+i.net,0)}))
+    .sort((a,b)=>b.total-a.total);
+
+  catTotals.forEach(function(ct) {
+    const opt = document.createElement('option');
+    opt.value = ct.cat;
+    opt.textContent = ct.cat + '  ($' + (ct.total/1000).toFixed(0) + 'k)';
+    sel.appendChild(opt);
+  });
+}
+
+function loadCategory() {
+  const cat = document.getElementById('catSelect').value;
+  if(!cat) {
+    document.getElementById('invStats').style.display='none';
+    document.getElementById('invTableWrap').style.display='none';
+    document.getElementById('invSearch').style.display='none';
+    document.getElementById('invEmpty').style.display='block';
+    return;
+  }
+  currentCatData = (invData[cat]||[]).slice();
+  invSortKey = 'net'; invSortDir = -1;
+  document.getElementById('invSearch').value = '';
+  document.getElementById('invSearch').style.display='block';
+  document.getElementById('invStats').style.display='grid';
+  document.getElementById('invTableWrap').style.display='block';
+  document.getElementById('invEmpty').style.display='none';
+
+  const items = currentCatData;
+  const totalNet  = items.reduce((s,i)=>s+i.net,0);
+  const totalQty  = items.reduce((s,i)=>s+i.qty,0);
+  const totalDisc = items.reduce((s,i)=>s+i.disc,0);
+
+  document.getElementById('invStats').innerHTML = [
+    {label:'Total Net Sales', val:'$'+Math.round(totalNet).toLocaleString()},
+    {label:'Total Qty Sold',  val:Math.round(totalQty).toLocaleString()},
+    {label:'Total Discounts', val:'$'+Math.round(totalDisc).toLocaleString()},
+    {label:'Unique Items',    val:items.length},
+  ].map(function(s){return '<div class="inv-stat"><div class="inv-stat-val">'+s.val+'</div><div class="inv-stat-label">'+s.label+'</div></div>';}).join('');
+
+  renderInvChart(items);
+  renderInvTable();
+}
+
+function renderInvChart(items) {
+  if(invChartInstance){ invChartInstance.destroy(); invChartInstance=null; }
+  const top = items.slice().sort(function(a,b){return b.net-a.net;}).slice(0,12);
+  invChartInstance = new Chart(document.getElementById('invBarChart'), {
+    type:'bar',
+    data:{
+      labels: top.map(function(i){return i.name.length>24?i.name.slice(0,24)+'…':i.name;}),
+      datasets:[{label:'Net Sales',data:top.map(function(i){return i.net;}),backgroundColor:'rgba(184,134,11,0.75)',borderRadius:2}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});}}}},
+      scales:{x:{grid:{color:'#1A1A1A'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';},font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}
+  });
+}
+
+function filterInvTable() { renderInvTable(); }
+
+function sortInv(key) {
+  if(invSortKey===key) invSortDir*=-1;
+  else { invSortKey=key; invSortDir=-1; }
+  renderInvTable();
+}
+
+function renderInvTable() {
+  const search = (document.getElementById('invSearch').value||'').toLowerCase();
+  let rows = currentCatData.filter(function(i){return !search||i.name.toLowerCase().includes(search);});
+  const keyMap = {name:'name',qty:'qty',avg:'avg',gross:'gross',disc:'disc',net:'net'};
+  rows.sort(function(a,b){
+    const av=a[keyMap[invSortKey]], bv=b[keyMap[invSortKey]];
+    return typeof av==='string' ? invSortDir*av.localeCompare(bv) : invSortDir*(bv-av);
+  });
+  const maxNet = Math.max(...rows.map(function(r){return r.net;}));
+  const totalNet = currentCatData.reduce(function(s,i){return s+i.net;},0);
+  document.getElementById('invTableBody').innerHTML = rows.map(function(item,i){
+    const share = totalNet?(item.net/totalNet*100).toFixed(1):0;
+    const barW  = maxNet?(item.net/maxNet*100).toFixed(1):0;
+    return '<tr>' +
+      '<td><span class="rank-num">'+(i+1)+'</span></td>' +
+      '<td>'+item.name+'</td>' +
+      '<td class="num">'+item.qty.toLocaleString()+'</td>' +
+      '<td class="num">$'+item.avg.toFixed(2)+'</td>' +
+      '<td class="num">$'+item.gross.toLocaleString('en-US',{maximumFractionDigits:0})+'</td>' +
+      '<td class="num" style="color:var(--amber)">$'+item.disc.toLocaleString('en-US',{maximumFractionDigits:0})+'</td>' +
+      '<td class="num" style="color:var(--brass-light)">$'+item.net.toLocaleString('en-US',{maximumFractionDigits:0})+'</td>' +
+      '<td><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:'+barW+'%;height:100%;background:var(--brass)"></div></div><span style="font-family:\'IBM Plex Mono\';font-size:10px;color:var(--text-muted);width:34px">'+share+'%</span></div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+
+// ═══════════════════════════════════════════════
+// PRICING ANALYSIS TAB
+// ═══════════════════════════════════════════════
+let PRICING = [];
+let pTarget = 20;
+let pCostFilter = 'all';
+let pSortKey = 'net_recent';
+let pSortDir = -1;
+let pSimPrices = {};
+let pCatChartInst = null;
+let pDraftDistInst = null;
+
+function buildPricingTab(data) {
+  if(!data || !data.length) {
+    document.getElementById('pricing-loading').textContent = 'No pricing data found. Upload pricing_data.json to /data/ folder.';
+    return;
+  }
+  PRICING = data.filter(d => (d.net_recent > 30 || d.net_all > 200));
+  document.getElementById('pricing-loading').style.display = 'none';
+  document.getElementById('pricing-content').style.display = 'block';
+  pRenderAll();
+}
+
+function pUpdateTarget() {
+  pTarget = parseFloat(document.getElementById('p-target-slider').value);
+  document.getElementById('p-target-display').textContent = pTarget + '%';
+  document.getElementById('p-suggest-hdr').textContent = 'Price @ ' + pTarget + '%';
+  pRenderAll();
+}
+
+function pRenderAll() {
+  pRenderCatCards();
+  pRenderOverview();
+  pRenderItems();
+  pRenderOpportunities();
+  pRenderSimKPIs();
+}
+
+function pGetColor(pct, target) {
+  if(pct == null) return '#3A3A3A';
+  if(pct <= target) return '#4CAF50';
+  if(pct <= target * 1.15) return '#FF8F00';
+  return '#E53935';
+}
+
+function pBadge(pct, target) {
+  if(pct == null) return '<span class="p-badge na">NO DATA</span>';
+  if(pct <= target) return '<span class="p-badge ok">✓ ' + pct.toFixed(1) + '%</span>';
+  if(pct <= target * 1.15) return '<span class="p-badge warn">⚠ ' + pct.toFixed(1) + '%</span>';
+  return '<span class="p-badge bad">✗ ' + pct.toFixed(1) + '%</span>';
+}
+
+function pSuggestPrice(item, target) {
+  if(!item.pour_cost) return '—';
+  const needed = item.pour_cost / (target/100);
+  const rounded = Math.ceil(needed * 4) / 4;
+  if(rounded <= item.sell_price + 0.01) return '<span style="color:#4CAF50;font-family:IBM Plex Mono,monospace;font-size:11px">$' + item.sell_price.toFixed(2) + ' ✓</span>';
+  return '<span style="color:var(--brass-light);font-family:IBM Plex Mono,monospace;font-size:11px">$' + rounded.toFixed(2) + '</span>';
+}
+
+function pWeightedCost(items, simP) {
+  let tc=0, tr=0;
+  items.forEach(i => {
+    if(!i.pour_cost) return;
+    const p = (simP && simP[i.item] != null) ? simP[i.item] : i.sell_price;
+    tc += i.pour_cost * i.qty_recent;
+    tr += p * i.qty_recent;
+  });
+  return tr > 0 ? (tc/tr*100) : 0;
+}
+
+function pRenderCatCards() {
+  const cats = ['Draft Beer','Bottle Beer','Liquor','Wine'];
+  const catColors = {'Draft Beer':brass,'Bottle Beer':amber,'Liquor':green,'Wine':blue};
+  const priced = PRICING.filter(i=>i.pour_cost);
+  let totalWC=0, totalWR=0;
+
+  const stats = cats.map(cat => {
+    const items = priced.filter(i=>i.category===cat);
+    let wc=0,wr=0;
+    items.forEach(i=>{wc+=i.pour_cost*i.qty_recent; wr+=i.sell_price*i.qty_recent;});
+    const pct = wr>0?wc/wr*100:0;
+    totalWC += wc; totalWR += wr;
+    return {cat, pct:Math.round(pct*10)/10, items:items.length, net:items.reduce((s,i)=>s+i.net_recent,0)};
+  });
+
+  const overall = totalWR>0?totalWC/totalWR*100:0;
+  document.getElementById('p-current-overall').textContent = overall.toFixed(1) + '%';
+
+  // Pills
+  const over = priced.filter(i=>i.cost_pct>pTarget);
+  const rev = over.reduce((s,i)=>s+i.net_recent,0);
+  const gain = over.reduce((s,i)=>{
+    const rnd = Math.ceil((i.pour_cost/(pTarget/100))*4)/4;
+    return s + (rnd - i.sell_price) * i.qty_recent * 3; // *3 = annualize 4mo
+  },0);
+  document.getElementById('p-pill-over').textContent = over.length;
+  document.getElementById('p-pill-rev').textContent = '$' + Math.round(rev/1000) + 'k';
+  document.getElementById('p-pill-gain').textContent = '+$' + Math.round(gain/1000) + 'k/yr';
+
+  document.getElementById('p-cat-cards').innerHTML = stats.map(s => {
+    const col = pGetColor(s.pct, pTarget);
+    const diff = s.pct - pTarget;
+    const barW = Math.min(s.pct/pTarget*100, 130).toFixed(0);
+    return '<div class="p-cat-card" style="border-top:2px solid '+catColors[s.cat]+'">' +
+      '<div class="p-cat-label">' + s.cat + '</div>' +
+      '<div class="p-cat-pct" style="color:'+col+'">' + s.pct.toFixed(1) + '%</div>' +
+      '<div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:'+col+';margin-bottom:8px">' +
+        (diff>0?'+':'')+diff.toFixed(1)+'% vs '+pTarget+'% target</div>' +
+      '<div class="p-cat-track"><div class="p-cat-fill" style="width:'+barW+'%;background:'+col+'"></div></div>' +
+      '<div class="p-cat-foot"><span>'+s.items+' items</span><span>$'+Math.round(s.net/1000)+'k recent</span></div>' +
+    '</div>';
+  }).join('');
+}
+
+function pRenderOverview() {
+  const priced = PRICING.filter(i=>i.cost_pct!=null);
+  const cats = ['Draft Beer','Bottle Beer','Liquor','Wine'];
+  const catColors = ['rgba(184,134,11,0.85)','rgba(255,143,0,0.85)','rgba(76,175,80,0.85)','rgba(79,195,247,0.85)'];
+
+  const catStats = cats.map(cat => {
+    const items = priced.filter(i=>i.category===cat);
+    let wc=0,wr=0;
+    items.forEach(i=>{wc+=i.pour_cost*i.qty_recent; wr+=i.sell_price*i.qty_recent;});
+    return wr>0?wc/wr*100:0;
+  });
+
+  if(pCatChartInst) pCatChartInst.destroy();
+  pCatChartInst = new Chart(document.getElementById('p-cat-chart'), {
+    type:'bar',
+    data:{labels:cats, datasets:[{label:'Cost %',data:catStats,backgroundColor:catStats.map(p=>pGetColor(p,pTarget)),borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toFixed(1)}%`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{callback:v=>v+'%'},max:Math.max(...catStats)*1.2}}}
+  });
+
+  // Draft dist
+  const draftItems = priced.filter(i=>i.category==='Draft Beer');
+  const buckets = ['<15%','15-20%','20-25%','25-30%','30-35%','35-40%','>40%'];
+  const ranges = [[0,15],[15,20],[20,25],[25,30],[30,35],[35,40],[40,100]];
+  const counts = ranges.map(([lo,hi])=>draftItems.filter(i=>i.cost_pct>=lo&&i.cost_pct<hi).length);
+  if(pDraftDistInst) pDraftDistInst.destroy();
+  pDraftDistInst = new Chart(document.getElementById('p-draft-dist'), {
+    type:'bar',
+    data:{labels:buckets, datasets:[{label:'Items',data:counts,backgroundColor:ranges.map(([lo,hi])=>pGetColor((lo+hi)/2,pTarget)),borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw} items`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{stepSize:1}}}}
+  });
+
+  // Top 15
+  const top15 = PRICING.filter(i=>i.cost_pct>pTarget).sort((a,b)=>b.net_recent-a.net_recent).slice(0,15);
+  document.getElementById('p-top15-body').innerHTML = top15.map((item,i)=>`<tr>
+    <td><span style="font-family:IBM Plex Mono;font-size:10px;color:var(--text-dim)">${i+1}</span></td>
+    <td>${item.item}${item.has_stock?'<span class="stock-dot" title="In stock">●</span>':''}</td>
+    <td style="color:var(--text-muted)">${item.category}</td>
+    <td class="num">$${item.sell_price.toFixed(2)}</td>
+    <td class="num">$${item.pour_cost?item.pour_cost.toFixed(3):'—'}</td>
+    <td class="num">${pBadge(item.cost_pct,pTarget)}</td>
+    <td class="num" style="color:var(--brass-light)">$${Math.round(item.net_recent).toLocaleString()}</td>
+    <td class="num">${pSuggestPrice(item,pTarget)}</td>
+  </tr>`).join('');
+}
+
+function pSetFilter(f, el) {
+  pCostFilter = f;
+  document.querySelectorAll('.p-filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  pRenderItems();
+}
+
+function pSort(key) {
+  if(pSortKey===key) pSortDir*=-1; else {pSortKey=key; pSortDir=-1;}
+  pRenderItems();
+}
+
+function pRenderItems() {
+  const cat = document.getElementById('p-cat-filter').value;
+  const search = (document.getElementById('p-search').value||'').toLowerCase();
+  let rows = PRICING.filter(i=>{
+    if(cat && i.category!==cat) return false;
+    if(search && !i.item.toLowerCase().includes(search)) return false;
+    if(pCostFilter==='ok') return i.cost_pct!=null && i.cost_pct<=pTarget;
+    if(pCostFilter==='over') return i.cost_pct!=null && i.cost_pct>pTarget;
+    if(pCostFilter==='stock') return i.has_stock;
+    if(pCostFilter==='nodata') return !i.has_cost;
+    return true;
+  });
+  rows.sort((a,b)=>{
+    const av=a[pSortKey], bv=b[pSortKey];
+    if(av==null&&bv==null) return 0; if(av==null) return 1; if(bv==null) return -1;
+    if(typeof av==='string') return pSortDir*av.localeCompare(bv);
+    return pSortDir*(bv-av);
+  });
+  document.getElementById('p-items-count').textContent = rows.length + ' items';
+  document.getElementById('p-items-body').innerHTML = rows.map(item=>{
+    const barW = item.cost_pct?Math.min(item.cost_pct/50*100,100).toFixed(0):0;
+    return `<tr>
+      <td>${item.item}${item.has_stock?'<span class="stock-dot">●</span>':''}</td>
+      <td style="color:var(--text-muted)">${item.category}</td>
+      <td class="num">$${item.sell_price.toFixed(2)}</td>
+      <td class="num">${item.pour_cost?'$'+item.pour_cost.toFixed(3):'—'}</td>
+      <td class="num"><div class="p-cost-bar"><div class="p-cost-track"><div class="p-cost-fill" style="width:${barW}%;background:${pGetColor(item.cost_pct,pTarget)}"></div></div><span style="font-size:10px;font-family:IBM Plex Mono;min-width:38px;text-align:right;color:${pGetColor(item.cost_pct,pTarget)}">${item.cost_pct?item.cost_pct.toFixed(1)+'%':'—'}</span></div></td>
+      <td>${pBadge(item.cost_pct,pTarget)}</td>
+      <td class="num" style="color:var(--brass-light)">$${Math.round(item.net_recent).toLocaleString()}</td>
+      <td class="num">${Math.round(item.qty_recent).toLocaleString()}</td>
+      <td class="num">${pSuggestPrice(item,pTarget)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function pRenderOpportunities() {
+  const over = PRICING.filter(i=>i.cost_pct>pTarget&&i.pour_cost);
+  function calcGain(item) {
+    const needed = item.pour_cost/(pTarget/100);
+    const rounded = Math.ceil(needed*4)/4;
+    const inc = rounded - item.sell_price;
+    const annualGain = inc * item.qty_recent * 3;
+    return {rounded, inc, annualGain};
+  }
+  const qw = over.map(i=>({...i,...calcGain(i)})).filter(i=>i.inc>0&&i.inc<1.50).sort((a,b)=>b.annualGain-a.annualGain);
+  const all = over.map(i=>({...i,...calcGain(i)})).filter(i=>i.inc>0).sort((a,b)=>b.annualGain-a.annualGain);
+
+  const rowHTML = (item,i) => `<tr>
+    <td style="font-family:IBM Plex Mono;font-size:10px;color:var(--text-dim)">${i+1}</td>
+    <td>${item.item}${item.has_stock?'<span class="stock-dot">●</span>':''}</td>
+    <td style="color:var(--text-muted)">${item.category}</td>
+    <td class="num">$${item.sell_price.toFixed(2)}</td>
+    <td class="num" style="color:var(--brass-light)">$${item.rounded.toFixed(2)}</td>
+    <td class="num" style="color:var(--amber)">+$${item.inc.toFixed(2)}</td>
+    <td class="num">${pBadge(item.cost_pct,pTarget)}</td>
+    <td class="num">${Math.round(item.qty_recent).toLocaleString()}</td>
+    <td class="num" style="color:#4CAF50">+$${Math.round(item.annualGain).toLocaleString()}/yr</td>
+  </tr>`;
+  document.getElementById('p-quickwins-body').innerHTML = qw.slice(0,20).map(rowHTML).join('');
+  document.getElementById('p-allover-body').innerHTML = all.slice(0,30).map(rowHTML).join('');
+}
+
+function pRenderSimKPIs() {
+  const priced = PRICING.filter(i=>i.pour_cost);
+  const current = pWeightedCost(priced);
+  const simmed = pWeightedCost(priced, pSimPrices);
+  const changed = Object.keys(pSimPrices).filter(k=>{
+    const item = priced.find(i=>i.item===k);
+    return item && pSimPrices[k]!==item.sell_price;
+  });
+  const gain = priced.reduce((s,i)=>{
+    const p = pSimPrices[i.item]!=null?pSimPrices[i.item]:i.sell_price;
+    return s + (p-i.sell_price)*i.qty_recent*3;
+  },0);
+  const avgInc = changed.length>0?changed.reduce((s,k)=>{
+    const item=priced.find(i=>i.item===k); return s+(pSimPrices[k]-item.sell_price);
+  },0)/changed.length:0;
+  document.getElementById('p-sim-current').textContent = current.toFixed(1)+'%';
+  const sn = document.getElementById('p-sim-new');
+  sn.textContent = simmed.toFixed(1)+'%';
+  sn.style.color = simmed<=pTarget?'#4CAF50':simmed<current?'#FF8F00':'#E53935';
+  document.getElementById('p-sim-changed').textContent = changed.length;
+  document.getElementById('p-sim-gain').textContent = (gain>=0?'+':'')+'$'+Math.round(Math.abs(gain)/1000)+'k';
+  document.getElementById('p-sim-avg').textContent = (avgInc>=0?'+':'')+'$'+Math.abs(avgInc).toFixed(2);
+}
+
+function pRenderSim() {
+  const cat = document.getElementById('p-sim-cat').value;
+  const search = (document.getElementById('p-sim-search').value||'').toLowerCase();
+  const rows = PRICING.filter(i=>i.pour_cost).filter(i=>{
+    if(cat&&i.category!==cat) return false;
+    if(search&&!i.item.toLowerCase().includes(search)) return false;
+    return true;
+  }).sort((a,b)=>b.net_recent-a.net_recent);
+  document.getElementById('p-sim-count').textContent = rows.length + ' items';
+  document.getElementById('p-sim-body').innerHTML = rows.map(item=>{
+    const simP = pSimPrices[item.item]!=null?pSimPrices[item.item]:item.sell_price;
+    const simCostPct = item.pour_cost?(item.pour_cost/simP*100):null;
+    const impact = (simP-item.sell_price)*item.qty_recent*3;
+    const changed = pSimPrices[item.item]!=null&&pSimPrices[item.item]!==item.sell_price;
+    return `<tr style="${changed?'background:rgba(184,134,11,0.05)':''}">
+      <td>${item.item}${item.has_stock?'<span class="stock-dot">●</span>':''}</td>
+      <td style="color:var(--text-muted)">${item.category}</td>
+      <td class="num">$${item.pour_cost.toFixed(3)}</td>
+      <td class="num" style="color:var(--text-muted)">$${item.sell_price.toFixed(2)}</td>
+      <td class="num"><input type="number" step="0.25" min="0.01" value="${simP.toFixed(2)}"
+        class="sim-input ${changed?'changed':''}" data-item="${encodeURIComponent(item.item)}"
+        onchange="pUpdateSim(decodeURIComponent(this.dataset.item),parseFloat(this.value))" onfocus="this.select()"></td>
+      <td class="num">${pBadge(item.cost_pct,pTarget)}</td>
+      <td class="num" style="color:${simCostPct?pGetColor(simCostPct,pTarget):'var(--text-dim)'}">
+        ${simCostPct?simCostPct.toFixed(1)+'%':'—'}</td>
+      <td class="num">${Math.round(item.qty_recent).toLocaleString()}</td>
+      <td class="num" style="color:${impact>=0?'#4CAF50':'#E53935'}">${impact>=0?'+':''}$${Math.round(Math.abs(impact)).toLocaleString()}/yr</td>
+    </tr>`;
+  }).join('');
+  pRenderSimKPIs();
+}
+
+function pUpdateSim(itemName, newPrice) {
+  if(!isNaN(newPrice)&&newPrice>0) { pSimPrices[itemName]=newPrice; pRenderSimKPIs(); }
+}
+function pApplyTargetAll() {
+  const cat=document.getElementById('p-sim-cat').value;
+  const search=(document.getElementById('p-sim-search').value||'').toLowerCase();
+  PRICING.filter(i=>i.pour_cost&&i.cost_pct>pTarget).filter(i=>{
+    if(cat&&i.category!==cat) return false;
+    if(search&&!i.item.toLowerCase().includes(search)) return false;
+    return true;
+  }).forEach(i=>{ pSimPrices[i.item]=Math.ceil((i.pour_cost/(pTarget/100))*4)/4; });
+  pRenderSim();
+}
+function pResetSim() { pSimPrices={}; pRenderSim(); }
+
+function pShowSubTab(id, el) {
+  document.querySelectorAll('.p-subtab').forEach(s=>s.style.display='none');
+  document.querySelectorAll('.p-tabs button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-sub-'+id).style.display='block';
+  el.classList.add('active');
+  if(id==='items') pRenderItems();
+  if(id==='opportunities') pRenderOpportunities();
+  if(id==='simulator') pRenderSim();
+}
+
+
+// ═══════════════════════════════════════════════
+// PRICING DATA — EMBEDDED (no fetch needed)
+// ═══════════════════════════════════════════════
+const EMBEDDED_PRICING = [{"item":"Old Mill Hazy IPA","category":"Draft Beer","sell_price":7.0,"qty_all":24945.0,"net_all":167625.6,"qty_recent":4930.5,"net_recent":33478.1,"pour_cost":1.241,"cost_pct":17.7,"price_for_20":6.21,"price_for_25":4.96,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Well Whiskey","category":"Liquor","sell_price":6.0,"qty_all":15085.0,"net_all":86612.79,"qty_recent":2896.0,"net_recent":16854.72,"pour_cost":0.739,"cost_pct":12.3,"price_for_20":3.69,"price_for_25":2.96,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Michelob Ultra","category":"Draft Beer","sell_price":5.0,"qty_all":15161.0,"net_all":72412.43,"qty_recent":2275.0,"net_recent":11033.75,"pour_cost":1.022,"cost_pct":20.4,"price_for_20":5.11,"price_for_25":4.09,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Northcutt Belgian Tripel","category":"Draft Beer","sell_price":8.5,"qty_all":5966.0,"net_all":48765.28,"qty_recent":1272.0,"net_recent":10487.64,"pour_cost":1.415,"cost_pct":16.6,"price_for_20":7.08,"price_for_25":5.66,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Riverbend Brown Ale","category":"Draft Beer","sell_price":6.0,"qty_all":6178.0,"net_all":36186.9,"qty_recent":1329.5,"net_recent":7737.69,"pour_cost":2.326,"cost_pct":38.8,"price_for_20":11.63,"price_for_25":9.3,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ketel One Vodka","category":"Liquor","sell_price":9.0,"qty_all":3625.0,"net_all":31909.81,"qty_recent":712.0,"net_recent":6215.76,"pour_cost":1.83,"cost_pct":20.3,"price_for_20":9.15,"price_for_25":7.32,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Well Rum","category":"Liquor","sell_price":6.0,"qty_all":5224.0,"net_all":29778.04,"qty_recent":874.0,"net_recent":5086.68,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Michelob Ultra btl","category":"Bottle Beer","sell_price":5.0,"qty_all":6154.0,"net_all":29711.51,"qty_recent":1322.0,"net_recent":6411.7,"pour_cost":1.325,"cost_pct":26.5,"price_for_20":6.62,"price_for_25":5.3,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Tito's Vodka","category":"Liquor","sell_price":8.0,"qty_all":3698.0,"net_all":28965.19,"qty_recent":638.0,"net_recent":4950.88,"pour_cost":1.826,"cost_pct":22.8,"price_for_20":9.13,"price_for_25":7.3,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Well Vodka","category":"Liquor","sell_price":6.0,"qty_all":4778.0,"net_all":27852.98,"qty_recent":636.5,"net_recent":3704.43,"pour_cost":1.074,"cost_pct":17.9,"price_for_20":5.37,"price_for_25":4.3,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Hillside Pinot Noir 6oz","category":"Wine","sell_price":11.0,"qty_all":2482.0,"net_all":26578.26,"qty_recent":313.5,"net_recent":3345.05,"pour_cost":2.829,"cost_pct":25.7,"price_for_20":14.14,"price_for_25":11.32,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Twin Pines Blonde Ale","category":"Draft Beer","sell_price":6.0,"qty_all":4561.0,"net_all":26070.32,"qty_recent":636.0,"net_recent":3701.52,"pour_cost":0.943,"cost_pct":15.7,"price_for_20":4.71,"price_for_25":3.77,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Modelo btl","category":"Bottle Beer","sell_price":6.5,"qty_all":4059.0,"net_all":25441.28,"qty_recent":668.0,"net_recent":4211.74,"pour_cost":1.442,"cost_pct":22.2,"price_for_20":7.21,"price_for_25":5.77,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Miller Lite btl","category":"Bottle Beer","sell_price":5.0,"qty_all":5080.0,"net_all":24682.87,"qty_recent":1089.0,"net_recent":5281.65,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Hendrick's Gin","category":"Liquor","sell_price":10.5,"qty_all":2329.0,"net_all":23786.79,"qty_recent":365.5,"net_recent":3722.62,"pour_cost":2.346,"cost_pct":22.3,"price_for_20":11.73,"price_for_25":9.38,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Jack Daniel's","category":"Liquor","sell_price":8.5,"qty_all":2903.0,"net_all":23472.77,"qty_recent":588.0,"net_recent":4848.06,"pour_cost":1.365,"cost_pct":16.1,"price_for_20":6.82,"price_for_25":5.46,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Bud Light btl","category":"Bottle Beer","sell_price":5.0,"qty_all":4769.0,"net_all":23461.22,"qty_recent":810.5,"net_recent":3930.92,"pour_cost":1.176,"cost_pct":23.5,"price_for_20":5.88,"price_for_25":4.7,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Maker's Mark","category":"Liquor","sell_price":9.5,"qty_all":2397.0,"net_all":21949.12,"qty_recent":470.0,"net_recent":4331.05,"pour_cost":2.106,"cost_pct":22.2,"price_for_20":10.53,"price_for_25":8.42,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Riverbend Amber Ale","category":"Draft Beer","sell_price":7.0,"qty_all":3161.0,"net_all":21653.83,"qty_recent":634.0,"net_recent":4304.86,"pour_cost":1.246,"cost_pct":17.8,"price_for_20":6.23,"price_for_25":4.98,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Jagermeister Shot","category":"Liquor","sell_price":6.5,"qty_all":3364.0,"net_all":21280.11,"qty_recent":719.0,"net_recent":4533.3,"pour_cost":1.296,"cost_pct":19.9,"price_for_20":6.48,"price_for_25":5.18,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Blue Moon Belgian White","category":"Draft Beer","sell_price":6.5,"qty_all":3055.0,"net_all":19515.72,"qty_recent":549.0,"net_recent":3461.44,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Granite Peak Fruited Gose","category":"Draft Beer","sell_price":8.5,"qty_all":2407.0,"net_all":19502.94,"qty_recent":322.5,"net_recent":2659.01,"pour_cost":2.224,"cost_pct":26.2,"price_for_20":11.12,"price_for_25":8.9,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"House Margarita","category":"Liquor","sell_price":10.0,"qty_all":1884.0,"net_all":18363.31,"qty_recent":364.0,"net_recent":3530.8,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Aperol Spritz","category":"Liquor","sell_price":11.0,"qty_all":1704.0,"net_all":18289.86,"qty_recent":227.5,"net_recent":2427.42,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Bourbon Smash","category":"Liquor","sell_price":11.0,"qty_all":1664.0,"net_all":17897.19,"qty_recent":337.5,"net_recent":3601.12,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Well Tequila","category":"Liquor","sell_price":6.0,"qty_all":2956.0,"net_all":17047.54,"qty_recent":382.0,"net_recent":2223.24,"pour_cost":0.691,"cost_pct":11.5,"price_for_20":3.45,"price_for_25":2.76,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Frozen Margarita","category":"Liquor","sell_price":10.0,"qty_all":1769.0,"net_all":17012.31,"qty_recent":322.5,"net_recent":3128.25,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Well Gin","category":"Liquor","sell_price":6.0,"qty_all":2856.0,"net_all":16427.21,"qty_recent":377.5,"net_recent":2197.05,"pour_cost":0.961,"cost_pct":16.0,"price_for_20":4.8,"price_for_25":3.84,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Old Mill West Coast IPA","category":"Draft Beer","sell_price":7.5,"qty_all":2299.0,"net_all":16380.73,"qty_recent":310.0,"net_recent":2255.25,"pour_cost":1.839,"cost_pct":24.5,"price_for_20":9.19,"price_for_25":7.36,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Spicy Paloma","category":"Liquor","sell_price":11.0,"qty_all":1484.0,"net_all":15742.64,"qty_recent":288.0,"net_recent":3072.96,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Red Clay West Coast IPA","category":"Draft Beer","sell_price":7.0,"qty_all":2265.0,"net_all":15420.44,"qty_recent":324.0,"net_recent":2199.96,"pour_cost":1.202,"cost_pct":17.2,"price_for_20":6.01,"price_for_25":4.81,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Prosecco Split","category":"Wine","sell_price":10.0,"qty_all":1578.0,"net_all":15277.58,"qty_recent":296.0,"net_recent":2871.2,"pour_cost":1.937,"cost_pct":19.4,"price_for_20":9.69,"price_for_25":7.75,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Grey Goose Vodka","category":"Liquor","sell_price":10.0,"qty_all":1491.0,"net_all":14421.12,"qty_recent":241.0,"net_recent":2337.7,"pour_cost":1.846,"cost_pct":18.5,"price_for_20":9.23,"price_for_25":7.38,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Harbor Lights Sour Ale","category":"Draft Beer","sell_price":7.5,"qty_all":1950.0,"net_all":14388.47,"qty_recent":307.0,"net_recent":2233.42,"pour_cost":2.118,"cost_pct":28.2,"price_for_20":10.59,"price_for_25":8.47,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Hillside Sauvignon Blanc 6oz","category":"Wine","sell_price":10.5,"qty_all":1366.0,"net_all":13884.04,"qty_recent":180.0,"net_recent":1833.3,"pour_cost":2.426,"cost_pct":23.1,"price_for_20":12.13,"price_for_25":9.7,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Red Clay Belgian Tripel","category":"Draft Beer","sell_price":8.0,"qty_all":1744.0,"net_all":13447.11,"qty_recent":278.0,"net_recent":2157.28,"pour_cost":1.403,"cost_pct":17.5,"price_for_20":7.01,"price_for_25":5.61,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Yuengling Lager","category":"Draft Beer","sell_price":5.5,"qty_all":2490.0,"net_all":13232.52,"qty_recent":522.0,"net_recent":2784.87,"pour_cost":1.206,"cost_pct":21.9,"price_for_20":6.03,"price_for_25":4.82,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Miller Lite","category":"Draft Beer","sell_price":5.0,"qty_all":2479.0,"net_all":12101.59,"qty_recent":396.0,"net_recent":1920.6,"pour_cost":0.824,"cost_pct":16.5,"price_for_20":4.12,"price_for_25":3.3,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Coastal Ridge Rose 6oz","category":"Wine","sell_price":10.0,"qty_all":1229.0,"net_all":12004.75,"qty_recent":229.0,"net_recent":2221.3,"pour_cost":2.381,"cost_pct":23.8,"price_for_20":11.9,"price_for_25":9.52,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Foxglove Pale Ale","category":"Draft Beer","sell_price":7.5,"qty_all":1494.0,"net_all":10986.55,"qty_recent":247.0,"net_recent":1796.92,"pour_cost":1.68,"cost_pct":22.4,"price_for_20":8.4,"price_for_25":6.72,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Twin Pines Porter","category":"Draft Beer","sell_price":7.0,"qty_all":1639.0,"net_all":10937.27,"qty_recent":237.5,"net_recent":1612.62,"pour_cost":2.563,"cost_pct":36.6,"price_for_20":12.81,"price_for_25":10.25,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Moscato 6oz","category":"Wine","sell_price":9.0,"qty_all":1245.0,"net_all":10864.26,"qty_recent":205.5,"net_recent":1794.01,"pour_cost":1.676,"cost_pct":18.6,"price_for_20":8.38,"price_for_25":6.7,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Lantern Brown Ale","category":"Draft Beer","sell_price":7.0,"qty_all":1576.0,"net_all":10855.58,"qty_recent":208.0,"net_recent":1412.32,"pour_cost":1.632,"cost_pct":23.3,"price_for_20":8.16,"price_for_25":6.53,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Aperol","category":"Liquor","sell_price":9.0,"qty_all":1210.0,"net_all":10467.48,"qty_recent":145.5,"net_recent":1270.21,"pour_cost":2.121,"cost_pct":23.6,"price_for_20":10.6,"price_for_25":8.48,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Riverbend Sour Ale","category":"Draft Beer","sell_price":8.0,"qty_all":1315.0,"net_all":10183.2,"qty_recent":233.5,"net_recent":1811.96,"pour_cost":1.951,"cost_pct":24.4,"price_for_20":9.75,"price_for_25":7.8,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Bacardi Superior Rum","category":"Liquor","sell_price":7.0,"qty_all":1416.0,"net_all":9763.32,"qty_recent":288.5,"net_recent":1958.91,"pour_cost":1.128,"cost_pct":16.1,"price_for_20":5.64,"price_for_25":4.51,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ridgeline Blonde Ale","category":"Draft Beer","sell_price":6.0,"qty_all":1678.0,"net_all":9750.38,"qty_recent":277.0,"net_recent":1612.14,"pour_cost":1.23,"cost_pct":20.5,"price_for_20":6.15,"price_for_25":4.92,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Northcutt Amber Ale","category":"Draft Beer","sell_price":6.5,"qty_all":1519.0,"net_all":9691.13,"qty_recent":260.5,"net_recent":1642.45,"pour_cost":1.707,"cost_pct":26.3,"price_for_20":8.54,"price_for_25":6.83,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Old Mill Blonde Ale","category":"Draft Beer","sell_price":5.5,"qty_all":1809.0,"net_all":9516.87,"qty_recent":314.5,"net_recent":1677.86,"pour_cost":0.932,"cost_pct":16.9,"price_for_20":4.66,"price_for_25":3.73,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Blackberry Lemonade","category":"Liquor","sell_price":10.0,"qty_all":965.0,"net_all":9488.1,"qty_recent":168.0,"net_recent":1629.6,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":true,"using_menu_price":true},{"item":"House Cabernet 6oz","category":"Wine","sell_price":9.5,"qty_all":980.0,"net_all":9125.24,"qty_recent":190.0,"net_recent":1750.85,"pour_cost":2.152,"cost_pct":22.7,"price_for_20":10.76,"price_for_25":8.61,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ridgeline Milk Stout","category":"Draft Beer","sell_price":7.5,"qty_all":1213.0,"net_all":8916.28,"qty_recent":212.5,"net_recent":1545.94,"pour_cost":1.573,"cost_pct":21.0,"price_for_20":7.86,"price_for_25":6.29,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Iron Hollow Imperial Stout","category":"Draft Beer","sell_price":9.0,"qty_all":998.0,"net_all":8603.74,"qty_recent":136.5,"net_recent":1191.64,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Patron Silver","category":"Liquor","sell_price":12.0,"qty_all":731.0,"net_all":8451.39,"qty_recent":108.5,"net_recent":1262.94,"pour_cost":2.492,"cost_pct":20.8,"price_for_20":12.46,"price_for_25":9.97,"has_cost":true,"has_stock":true,"using_menu_price":true},{"item":"Fireball Shot","category":"Liquor","sell_price":6.0,"qty_all":1473.0,"net_all":8420.18,"qty_recent":207.5,"net_recent":1207.65,"pour_cost":0.979,"cost_pct":16.3,"price_for_20":4.89,"price_for_25":3.92,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Old Mill Porter","category":"Draft Beer","sell_price":7.0,"qty_all":1250.0,"net_all":8342.37,"qty_recent":257.0,"net_recent":1745.03,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Granite Peak Lager","category":"Draft Beer","sell_price":6.0,"qty_all":1384.0,"net_all":8097.47,"qty_recent":283.0,"net_recent":1647.06,"pour_cost":1.369,"cost_pct":22.8,"price_for_20":6.84,"price_for_25":5.48,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"House Pinot Grigio 6oz","category":"Wine","sell_price":9.0,"qty_all":932.0,"net_all":8074.19,"qty_recent":139.0,"net_recent":1213.47,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Buffalo Trace","category":"Liquor","sell_price":9.5,"qty_all":894.0,"net_all":8073.18,"qty_recent":122.5,"net_recent":1128.84,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"House Chardonnay 6oz","category":"Wine","sell_price":9.0,"qty_all":918.0,"net_all":7869.15,"qty_recent":180.5,"net_recent":1575.76,"pour_cost":2.242,"cost_pct":24.9,"price_for_20":11.21,"price_for_25":8.97,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Twin Pines Amber Ale","category":"Draft Beer","sell_price":6.5,"qty_all":1231.0,"net_all":7724.6,"qty_recent":148.5,"net_recent":936.29,"pour_cost":1.684,"cost_pct":25.9,"price_for_20":8.42,"price_for_25":6.74,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Iron Hollow Pale Ale","category":"Draft Beer","sell_price":6.5,"qty_all":1194.0,"net_all":7559.92,"qty_recent":161.0,"net_recent":1015.11,"pour_cost":1.728,"cost_pct":26.6,"price_for_20":8.64,"price_for_25":6.91,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Granite Peak Belgian Tripel","category":"Draft Beer","sell_price":9.0,"qty_all":861.0,"net_all":7547.27,"qty_recent":166.5,"net_recent":1453.55,"pour_cost":2.318,"cost_pct":25.8,"price_for_20":11.59,"price_for_25":9.27,"has_cost":true,"has_stock":true,"using_menu_price":true},{"item":"Woodford Reserve","category":"Liquor","sell_price":11.0,"qty_all":698.0,"net_all":7527.54,"qty_recent":148.5,"net_recent":1584.49,"pour_cost":1.875,"cost_pct":17.0,"price_for_20":9.38,"price_for_25":7.5,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Espolon Blanco Tequila","category":"Liquor","sell_price":8.5,"qty_all":927.0,"net_all":7508.38,"qty_recent":157.5,"net_recent":1298.59,"pour_cost":1.625,"cost_pct":19.1,"price_for_20":8.12,"price_for_25":6.5,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Granite Peak Porter","category":"Draft Beer","sell_price":7.5,"qty_all":1028.0,"net_all":7500.75,"qty_recent":206.5,"net_recent":1502.29,"pour_cost":1.363,"cost_pct":18.2,"price_for_20":6.81,"price_for_25":5.45,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Iron Hollow Amber Ale","category":"Draft Beer","sell_price":6.0,"qty_all":1276.0,"net_all":7461.08,"qty_recent":183.0,"net_recent":1065.06,"pour_cost":1.925,"cost_pct":32.1,"price_for_20":9.62,"price_for_25":7.7,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Tanqueray Gin","category":"Liquor","sell_price":8.5,"qty_all":908.0,"net_all":7376.04,"qty_recent":125.5,"net_recent":1034.75,"pour_cost":1.115,"cost_pct":13.1,"price_for_20":5.57,"price_for_25":4.46,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Crown Royal","category":"Liquor","sell_price":9.0,"qty_all":832.0,"net_all":7364.79,"qty_recent":121.5,"net_recent":1060.69,"pour_cost":1.154,"cost_pct":12.8,"price_for_20":5.77,"price_for_25":4.62,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Glenlivet 12","category":"Liquor","sell_price":12.5,"qty_all":587.0,"net_all":7030.9,"qty_recent":83.0,"net_recent":1006.38,"pour_cost":2.577,"cost_pct":20.6,"price_for_20":12.88,"price_for_25":10.31,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Iron Hollow Porter","category":"Draft Beer","sell_price":6.5,"qty_all":1101.0,"net_all":6957.15,"qty_recent":188.5,"net_recent":1188.49,"pour_cost":1.096,"cost_pct":16.9,"price_for_20":5.48,"price_for_25":4.38,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Valley Oak Red Blend 6oz","category":"Wine","sell_price":11.0,"qty_all":659.0,"net_all":6952.76,"qty_recent":104.0,"net_recent":1109.68,"pour_cost":3.78,"cost_pct":34.4,"price_for_20":18.9,"price_for_25":15.12,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Seasonal Sangria","category":"Liquor","sell_price":10.0,"qty_all":726.0,"net_all":6939.0,"qty_recent":126.0,"net_recent":1222.2,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Old Mill Imperial Stout","category":"Draft Beer","sell_price":9.0,"qty_all":794.0,"net_all":6899.18,"qty_recent":170.0,"net_recent":1484.1,"pour_cost":1.514,"cost_pct":16.8,"price_for_20":7.57,"price_for_25":6.06,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Heineken btl","category":"Bottle Beer","sell_price":6.5,"qty_all":1108.0,"net_all":6883.13,"qty_recent":225.5,"net_recent":1421.78,"pour_cost":1.508,"cost_pct":23.2,"price_for_20":7.54,"price_for_25":6.03,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Harbor Lights Double IPA","category":"Draft Beer","sell_price":8.0,"qty_all":880.0,"net_all":6870.21,"qty_recent":186.0,"net_recent":1443.36,"pour_cost":1.336,"cost_pct":16.7,"price_for_20":6.68,"price_for_25":5.34,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ridgeline West Coast IPA","category":"Draft Beer","sell_price":7.0,"qty_all":1002.0,"net_all":6868.82,"qty_recent":214.5,"net_recent":1456.45,"pour_cost":1.548,"cost_pct":22.1,"price_for_20":7.74,"price_for_25":6.19,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Northcutt Cider","category":"Draft Beer","sell_price":7.5,"qty_all":929.0,"net_all":6815.45,"qty_recent":173.5,"net_recent":1262.21,"pour_cost":1.626,"cost_pct":21.7,"price_for_20":8.13,"price_for_25":6.5,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Riverbend Kolsch","category":"Draft Beer","sell_price":6.5,"qty_all":1100.0,"net_all":6795.47,"qty_recent":187.5,"net_recent":1182.19,"pour_cost":1.306,"cost_pct":20.1,"price_for_20":6.53,"price_for_25":5.22,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Bluff City Imperial Stout","category":"Draft Beer","sell_price":8.5,"qty_all":811.0,"net_all":6703.77,"qty_recent":161.0,"net_recent":1327.44,"pour_cost":1.998,"cost_pct":23.5,"price_for_20":9.99,"price_for_25":7.99,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Coors Light btl","category":"Bottle Beer","sell_price":5.0,"qty_all":1357.0,"net_all":6681.55,"qty_recent":173.5,"net_recent":841.48,"pour_cost":1.154,"cost_pct":23.1,"price_for_20":5.77,"price_for_25":4.62,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Malbec 6oz","category":"Wine","sell_price":10.5,"qty_all":667.0,"net_all":6659.81,"qty_recent":123.5,"net_recent":1257.85,"pour_cost":3.743,"cost_pct":35.6,"price_for_20":18.71,"price_for_25":14.97,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ridgeline Amber Ale","category":"Draft Beer","sell_price":7.0,"qty_all":973.0,"net_all":6567.88,"qty_recent":178.0,"net_recent":1208.62,"pour_cost":1.614,"cost_pct":23.1,"price_for_20":8.07,"price_for_25":6.46,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Stella Artois btl","category":"Bottle Beer","sell_price":6.5,"qty_all":1031.0,"net_all":6501.89,"qty_recent":182.0,"net_recent":1147.51,"pour_cost":1.954,"cost_pct":30.1,"price_for_20":9.77,"price_for_25":7.82,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Captain Morgan Spiced Rum","category":"Liquor","sell_price":7.5,"qty_all":896.0,"net_all":6463.69,"qty_recent":119.0,"net_recent":865.73,"pour_cost":2.326,"cost_pct":31.0,"price_for_20":11.63,"price_for_25":9.3,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Twin Pines Cider","category":"Draft Beer","sell_price":7.5,"qty_all":866.0,"net_all":6386.78,"qty_recent":184.5,"net_recent":1342.24,"pour_cost":1.781,"cost_pct":23.7,"price_for_20":8.9,"price_for_25":7.12,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Smoked Maple Old Fashioned","category":"Liquor","sell_price":13.0,"qty_all":494.0,"net_all":6122.07,"qty_recent":105.5,"net_recent":1330.36,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Casamigos Blanco","category":"Liquor","sell_price":12.0,"qty_all":524.0,"net_all":6114.58,"qty_recent":67.0,"net_recent":779.88,"pour_cost":1.833,"cost_pct":15.3,"price_for_20":9.16,"price_for_25":7.33,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"High Noon Pineapple","category":"Bottle Beer","sell_price":7.5,"qty_all":808.0,"net_all":5896.19,"qty_recent":142.0,"net_recent":1033.05,"pour_cost":1.745,"cost_pct":23.3,"price_for_20":8.72,"price_for_25":6.98,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ridgeline Pilsner","category":"Draft Beer","sell_price":6.5,"qty_all":914.0,"net_all":5755.51,"qty_recent":114.0,"net_recent":718.77,"pour_cost":1.678,"cost_pct":25.8,"price_for_20":8.39,"price_for_25":6.71,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Red Clay Fruited Gose","category":"Draft Beer","sell_price":8.5,"qty_all":705.0,"net_all":5735.28,"qty_recent":139.0,"net_recent":1146.06,"pour_cost":2.713,"cost_pct":31.9,"price_for_20":13.56,"price_for_25":10.85,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Long Island Iced Tea","category":"Liquor","sell_price":11.0,"qty_all":540.0,"net_all":5648.59,"qty_recent":110.0,"net_recent":1173.7,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Copper Mule","category":"Liquor","sell_price":10.0,"qty_all":585.0,"net_all":5585.8,"qty_recent":81.0,"net_recent":785.7,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Granite Peak Milk Stout","category":"Draft Beer","sell_price":7.5,"qty_all":768.0,"net_all":5584.72,"qty_recent":132.5,"net_recent":963.94,"pour_cost":1.752,"cost_pct":23.4,"price_for_20":8.76,"price_for_25":7.01,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Foxglove West Coast IPA","category":"Draft Beer","sell_price":7.5,"qty_all":759.0,"net_all":5580.38,"qty_recent":119.5,"net_recent":869.36,"pour_cost":1.498,"cost_pct":20.0,"price_for_20":7.49,"price_for_25":5.99,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Old Mill Lager","category":"Draft Beer","sell_price":5.5,"qty_all":1063.0,"net_all":5557.39,"qty_recent":151.0,"net_recent":805.58,"pour_cost":1.462,"cost_pct":26.6,"price_for_20":7.31,"price_for_25":5.85,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Lunazul Reposado","category":"Liquor","sell_price":8.0,"qty_all":726.0,"net_all":5522.67,"qty_recent":94.5,"net_recent":733.32,"pour_cost":1.376,"cost_pct":17.2,"price_for_20":6.88,"price_for_25":5.5,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Jameson Irish Whiskey","category":"Liquor","sell_price":8.5,"qty_all":658.0,"net_all":5510.58,"qty_recent":105.5,"net_recent":869.85,"pour_cost":1.461,"cost_pct":17.2,"price_for_20":7.3,"price_for_25":5.84,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Espresso Martini","category":"Liquor","sell_price":12.0,"qty_all":481.0,"net_all":5505.88,"qty_recent":95.0,"net_recent":1105.8,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Bulleit Rye","category":"Liquor","sell_price":10.0,"qty_all":565.0,"net_all":5477.72,"qty_recent":73.0,"net_recent":708.1,"pour_cost":3.142,"cost_pct":31.4,"price_for_20":15.71,"price_for_25":12.57,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Corona Extra btl","category":"Bottle Beer","sell_price":6.5,"qty_all":869.0,"net_all":5460.22,"qty_recent":158.0,"net_recent":996.19,"pour_cost":1.627,"cost_pct":25.0,"price_for_20":8.13,"price_for_25":6.51,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ridgeline Brown Ale","category":"Draft Beer","sell_price":6.5,"qty_all":870.0,"net_all":5451.78,"qty_recent":156.5,"net_recent":986.73,"pour_cost":0.998,"cost_pct":15.4,"price_for_20":4.99,"price_for_25":3.99,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Northcutt Blonde Ale","category":"Draft Beer","sell_price":6.0,"qty_all":942.0,"net_all":5407.38,"qty_recent":188.5,"net_recent":1097.07,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Twin Pines Milk Stout","category":"Draft Beer","sell_price":7.5,"qty_all":739.0,"net_all":5366.32,"qty_recent":99.0,"net_recent":720.23,"pour_cost":1.431,"cost_pct":19.1,"price_for_20":7.16,"price_for_25":5.72,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Red Clay Double IPA","category":"Draft Beer","sell_price":8.5,"qty_all":653.0,"net_all":5279.95,"qty_recent":104.0,"net_recent":857.48,"pour_cost":1.843,"cost_pct":21.7,"price_for_20":9.21,"price_for_25":7.37,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Basil Hayden","category":"Liquor","sell_price":12.0,"qty_all":460.0,"net_all":5279.62,"qty_recent":86.5,"net_recent":1006.86,"pour_cost":1.927,"cost_pct":16.1,"price_for_20":9.63,"price_for_25":7.71,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Bluff City Hazy IPA","category":"Draft Beer","sell_price":7.5,"qty_all":717.0,"net_all":5240.68,"qty_recent":114.0,"net_recent":829.35,"pour_cost":1.916,"cost_pct":25.5,"price_for_20":9.58,"price_for_25":7.66,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Red Clay Lager","category":"Draft Beer","sell_price":5.5,"qty_all":968.0,"net_all":5218.77,"qty_recent":202.0,"net_recent":1077.67,"pour_cost":1.827,"cost_pct":33.2,"price_for_20":9.13,"price_for_25":7.31,"has_cost":true,"has_stock":true,"using_menu_price":true},{"item":"Bluff City Porter","category":"Draft Beer","sell_price":7.0,"qty_all":741.0,"net_all":5029.67,"qty_recent":126.0,"net_recent":855.54,"pour_cost":1.634,"cost_pct":23.3,"price_for_20":8.17,"price_for_25":6.54,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Bluff City Pale Ale","category":"Draft Beer","sell_price":7.0,"qty_all":720.0,"net_all":4917.15,"qty_recent":147.5,"net_recent":1001.52,"pour_cost":1.274,"cost_pct":18.2,"price_for_20":6.37,"price_for_25":5.1,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Lantern Imperial Stout","category":"Draft Beer","sell_price":8.5,"qty_all":588.0,"net_all":4854.97,"qty_recent":105.0,"net_recent":865.73,"pour_cost":2.122,"cost_pct":25.0,"price_for_20":10.61,"price_for_25":8.49,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Ridgeline Imperial Stout","category":"Draft Beer","sell_price":9.0,"qty_all":556.0,"net_all":4815.35,"qty_recent":115.5,"net_recent":1008.31,"pour_cost":2.354,"cost_pct":26.2,"price_for_20":11.77,"price_for_25":9.42,"has_cost":true,"has_stock":true,"using_menu_price":true},{"item":"Northcutt Pale Ale","category":"Draft Beer","sell_price":7.0,"qty_all":700.0,"net_all":4722.01,"qty_recent":105.0,"net_recent":712.95,"pour_cost":1.181,"cost_pct":16.9,"price_for_20":5.91,"price_for_25":4.72,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Harbor Lights West Coast IPA","category":"Draft Beer","sell_price":7.5,"qty_all":642.0,"net_all":4610.01,"qty_recent":121.5,"net_recent":883.91,"pour_cost":1.687,"cost_pct":22.5,"price_for_20":8.44,"price_for_25":6.75,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Iron Hollow Hefeweizen","category":"Draft Beer","sell_price":7.0,"qty_all":655.0,"net_all":4438.41,"qty_recent":80.0,"net_recent":543.2,"pour_cost":1.633,"cost_pct":23.3,"price_for_20":8.16,"price_for_25":6.53,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Red Clay Pilsner can","category":"Bottle Beer","sell_price":6.5,"qty_all":703.0,"net_all":4398.31,"qty_recent":87.0,"net_recent":548.53,"pour_cost":1.397,"cost_pct":21.5,"price_for_20":6.98,"price_for_25":5.59,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Lantern Sour can","category":"Bottle Beer","sell_price":8.0,"qty_all":561.0,"net_all":4367.37,"qty_recent":116.0,"net_recent":900.16,"pour_cost":2.298,"cost_pct":28.7,"price_for_20":11.49,"price_for_25":9.19,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Athletic Run Wild NA","category":"Bottle Beer","sell_price":6.0,"qty_all":754.0,"net_all":4326.0,"qty_recent":128.5,"net_recent":747.87,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"White Claw Black Cherry","category":"Bottle Beer","sell_price":6.5,"qty_all":679.0,"net_all":4296.67,"qty_recent":125.0,"net_recent":788.12,"pour_cost":1.935,"cost_pct":29.8,"price_for_20":9.67,"price_for_25":7.74,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Modelo Especial","category":"Draft Beer","sell_price":6.5,"qty_all":677.0,"net_all":4274.03,"qty_recent":137.0,"net_recent":863.78,"pour_cost":1.117,"cost_pct":17.2,"price_for_20":5.58,"price_for_25":4.47,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Foxglove Imperial Stout","category":"Draft Beer","sell_price":9.0,"qty_all":478.0,"net_all":4190.39,"qty_recent":63.0,"net_recent":549.99,"pour_cost":2.089,"cost_pct":23.2,"price_for_20":10.44,"price_for_25":8.36,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Truly Wild Berry","category":"Bottle Beer","sell_price":6.5,"qty_all":661.0,"net_all":4146.76,"qty_recent":145.0,"net_recent":914.23,"pour_cost":1.955,"cost_pct":30.1,"price_for_20":9.78,"price_for_25":7.82,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Harbor Lights Brown Ale","category":"Draft Beer","sell_price":7.0,"qty_all":600.0,"net_all":4098.18,"qty_recent":115.5,"net_recent":784.25,"pour_cost":1.125,"cost_pct":16.1,"price_for_20":5.62,"price_for_25":4.5,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Northcutt Milk Stout","category":"Draft Beer","sell_price":7.5,"qty_all":554.0,"net_all":4066.97,"qty_recent":89.5,"net_recent":651.11,"pour_cost":1.815,"cost_pct":24.2,"price_for_20":9.07,"price_for_25":7.26,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Angry Orchard Cider","category":"Bottle Beer","sell_price":6.5,"qty_all":649.0,"net_all":4033.37,"qty_recent":126.0,"net_recent":794.43,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Twin Pines Hazy IPA can","category":"Bottle Beer","sell_price":7.5,"qty_all":536.0,"net_all":3917.74,"qty_recent":83.5,"net_recent":607.46,"pour_cost":1.55,"cost_pct":20.7,"price_for_20":7.75,"price_for_25":6.2,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Harbor Lights Belgian Tripel","category":"Draft Beer","sell_price":8.0,"qty_all":497.0,"net_all":3895.64,"qty_recent":96.0,"net_recent":744.96,"pour_cost":1.399,"cost_pct":17.5,"price_for_20":7.0,"price_for_25":5.6,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Bluff City West Coast IPA","category":"Draft Beer","sell_price":7.5,"qty_all":530.0,"net_all":3861.68,"qty_recent":67.5,"net_recent":491.06,"pour_cost":1.84,"cost_pct":24.5,"price_for_20":9.2,"price_for_25":7.36,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Guinness Draught","category":"Draft Beer","sell_price":7.0,"qty_all":561.0,"net_all":3758.67,"qty_recent":69.5,"net_recent":471.9,"pour_cost":1.194,"cost_pct":17.1,"price_for_20":5.97,"price_for_25":4.78,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Old Mill Milk Stout","category":"Draft Beer","sell_price":7.5,"qty_all":516.0,"net_all":3691.42,"qty_recent":99.5,"net_recent":723.86,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Iron Hollow Belgian Tripel","category":"Draft Beer","sell_price":8.5,"qty_all":451.0,"net_all":3650.09,"qty_recent":67.5,"net_recent":556.54,"pour_cost":1.685,"cost_pct":19.8,"price_for_20":8.42,"price_for_25":6.74,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Lantern Fruited Gose","category":"Draft Beer","sell_price":7.5,"qty_all":502.0,"net_all":3605.5,"qty_recent":98.5,"net_recent":716.59,"pour_cost":1.566,"cost_pct":20.9,"price_for_20":7.83,"price_for_25":6.26,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Twin Pines Brown Ale","category":"Draft Beer","sell_price":7.0,"qty_all":526.0,"net_all":3533.44,"qty_recent":80.5,"net_recent":546.6,"pour_cost":NaN,"cost_pct":NaN,"price_for_20":NaN,"price_for_25":NaN,"has_cost":false,"has_stock":false,"using_menu_price":true},{"item":"Iron Hollow Sour Ale","category":"Draft Beer","sell_price":8.0,"qty_all":455.0,"net_all":3530.6,"qty_recent":70.0,"net_recent":543.2,"pour_cost":2.114,"cost_pct":26.4,"price_for_20":10.57,"price_for_25":8.46,"has_cost":true,"has_stock":false,"using_menu_price":true},{"item":"Bluff City Milk Stout","category":"Draft Beer","sell_price":8.0,"qty_all":460.0,"net_all":3522.97,"qty_recent":59.5,"net_recent":461.72,"pour_cost":1.608,"cost_pct":20.1,"price_for_20":8.04,"price_for_25":6.43,"has_cost":true,"has_stock":false,"using_menu_price":true}];
+// KICK OFF
+// ═══════════════════════════════════════════════
+loadAll();
+</script>
+</body>
+</html>
