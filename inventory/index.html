@@ -79,8 +79,20 @@ footer a{color:inherit}
 @media(max-width:900px){.kpis,.weights{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){header,.tabs,.page,footer{padding-left:16px;padding-right:16px}.meta{text-align:left}.btn{margin-left:0}.kpi-val{font-size:28px}}
 </style>
+<style>
+.demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
+  padding:9px 20px;background:#0A0A0A;border-bottom:1px solid #2E2E2E;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.3}
+.demo-bar a{color:#A89F8C;text-decoration:none}
+.demo-bar a:hover{color:#EDE6D6}
+.demo-bar a:focus-visible{outline:2px solid #D4A017;outline-offset:2px}
+.demo-bar .back{color:#D4A017;font-weight:600}
+.demo-bar .back:hover{color:#EDE6D6}
+.demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
+.demo-bar nav a[aria-current="page"]{color:#EDE6D6;font-weight:600}
+</style>
 </head>
 <body>
+<div class="demo-bar"><a class="back" href="../" target="_top">&larr; Back to Blake Herring's portfolio</a><nav aria-label="Other demos"><a href="../dashboard/" target="_top">Sales dashboard</a><a href="../cocktails/" target="_top">Cocktail app</a><a href="../inventory/" target="_top" aria-current="page">Inventory planner</a></nav></div>
 <header>
   <div class="logo"><div class="logo-icon"></div><h1>COPPER STILL <span>TAPROOM</span></h1></div>
   <div class="meta">INVENTORY &amp; TAP PLANNER<br><span class="pill-demo">SAMPLE DATA</span></div>
