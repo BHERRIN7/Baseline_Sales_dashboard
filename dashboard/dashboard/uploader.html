@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copper Still Taproom — Dashboard Updater (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F1EA;--card:#FFFFFF;--soft:#FBF9F5;--track:#ECE7DE;--line:#E0DAD0;--ink:#1E2A28;--muted:#5F6B67;--dim:#8E9692;
+--teal:#2E7D6F;--teal-deep:#1F5A50;--teal-pale:#E1EFEB;--copper:#B65A32;--green:#2F8F5B;--amber:#C98A1B;--red:#C2453A;
+--disp:'Bricolage Grotesque',system-ui,sans-serif;--body:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3A9A89,#1F5A50);box-shadow:inset 0 0 0 3px #FFFFFF,0 0 0 2px #B65A32;flex:none}
+.logo h1{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.5px;margin:0}
+.logo h1 span{color:var(--teal)}
+.badge{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);background:var(--teal-pale);border:1px solid rgba(46,125,111,.3);padding:5px 10px;border-radius:999px}
+main{max-width:1080px;margin:0 auto;padding:32px 24px 64px}
+.hero h2{font-family:var(--disp);font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0 0 10px;max-width:22ch}
+.hero p{color:var(--muted);max-width:62ch;margin:0 0 26px}
+.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.card h3{font-family:var(--disp);font-weight:700;font-size:18px;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+.drop{border:2px dashed rgba(46,125,111,.45);border-radius:12px;background:var(--soft);padding:34px 20px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s}
+.drop:hover,.drop.over{background:var(--teal-pale);border-color:var(--teal)}
+.drop:focus-visible{outline:3px solid var(--copper);outline-offset:3px}
+.drop .icon{font-size:30px;margin-bottom:6px}
+.drop strong{display:block;font-size:16px;margin-bottom:4px}
+.drop span{color:var(--muted);font-size:13.5px}
+.or{display:flex;align-items:center;gap:12px;color:var(--dim);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:16px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;font-size:14.5px;border-radius:10px;padding:12px 18px;cursor:pointer;border:1px solid var(--teal);text-decoration:none}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:hover{background:var(--teal-deep)}
+.btn-ghost{background:#fff;color:var(--teal)}
+.btn-ghost:hover{background:var(--teal-pale)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible{outline:3px solid var(--copper);outline-offset:2px}
+.full{width:100%}
+.reports{list-style:none;margin:0;padding:0;font-size:13.5px}
+.reports li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--track)}
+.reports li:last-child{border-bottom:0}
+.dot{width:20px;height:20px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1.5px solid var(--line);color:var(--dim)}
+.ok .dot{background:var(--green);border-color:var(--green);color:#fff}
+.warn .dot{background:var(--amber);border-color:var(--amber);color:#fff}
+.reports .nm{flex:1;min-width:0}
+.reports .meta{color:var(--dim);font-size:12px;white-space:nowrap}
+.warn .meta{color:var(--amber)}
+.counts{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+.counts strong{color:var(--ink)}
+.prog{height:8px;background:var(--track);border-radius:99px;overflow:hidden;margin:18px 0 10px}
+.prog div{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#3A9A89);transition:width .35s ease}
+.steps{list-style:none;margin:0;padding:0;font-size:13.5px}
+.steps li{display:flex;gap:10px;align-items:center;padding:5px 0;color:var(--dim)}
+.steps li.on{color:var(--ink)}
+.steps li.done{color:var(--green)}
+.steps li::before{content:"○";width:16px;text-align:center}
+.steps li.on::before{content:"◔";color:var(--teal)}
+.steps li.done::before{content:"✓";font-weight:700}
+.extra{margin-top:12px;font-size:13px;color:var(--muted)}
+.extra.bad{color:var(--amber)}
+.success{display:none;margin-top:20px;background:var(--teal-pale);border:1px solid rgba(46,125,111,.35);border-radius:12px;padding:18px}
+.success.show{display:block}
+.success h4{font-family:var(--disp);font-size:20px;margin:0 0 4px;color:var(--teal-deep)}
+.success p{margin:0 0 14px;color:var(--muted);font-size:14px}
+.how{margin-top:20px}
+.how ol{margin:0;padding-left:20px;color:var(--muted);font-size:14px}
+.how li{margin-bottom:6px}
+.how li strong{color:var(--ink)}
+.note{font-size:12.5px;color:var(--dim);margin-top:14px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+</style>
+<style>
+.demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
+  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid #E0DAD0;font-family:Manrope,system-ui,sans-serif;font-size:12.5px;line-height:1.3}
+.demo-bar a{color:#5F6B67;text-decoration:none}
+.demo-bar a:hover{color:#1E2A28}
+.demo-bar a:focus-visible{outline:2px solid #B65A32;outline-offset:2px}
+.demo-bar .back{color:#B65A32;font-weight:600}
+.demo-bar .back:hover{color:#1E2A28}
+.demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
+.demo-bar nav a[aria-current="page"]{color:#1E2A28;font-weight:600}
+</style>
+</head>
+<body>
+<div class="demo-bar"><a class="back" href="../" target="_top">&larr; Back to Blake Herring's portfolio</a><nav aria-label="Other demos"><a href="../dashboard/" target="_top" aria-current="page">Sales dashboard</a><a href="../cocktails/" target="_top">Cocktail app</a><a href="../inventory/" target="_top">Inventory planner</a></nav></div>
+<header>
+  <div class="logo"><div class="logo-icon"></div><h1>COPPER STILL <span>TAPROOM</span></h1></div>
+  <span class="badge">Dashboard updater · Demo</span>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Monthly updates take one drag and drop.</h2>
+    <p>At the end of each month, a manager exports the standard sales reports from the POS and drops them here. The updater recognizes each report, checks its columns, and refreshes the dashboard. No spreadsheets to copy, nothing to retype. In this demo, nothing is uploaded anywhere.</p>
+  </section>
+
+  <div class="grid">
+    <div class="card">
+      <h3>1. Add this month's exports</h3>
+      <p class="sub">Drop CSV files from your POS, or load the sample set to see how it works.</p>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose CSV files to add">
+        <div class="icon">📂</div>
+        <strong>Drag &amp; drop your CSV exports</strong>
+        <span>or click to choose files</span>
+        <input type="file" id="file" accept=".csv" multiple hidden>
+      </div>
+      <div class="or">or</div>
+      <button class="btn btn-ghost full" id="sample">Load the sample month (16 reports)</button>
+
+      <h3 style="margin-top:26px">2. Update the dashboard</h3>
+      <p class="sub">Runs the checks, then refreshes every chart and table.</p>
+      <button class="btn btn-primary full" id="run" disabled>Update dashboard</button>
+      <div class="prog" aria-hidden="true"><div id="bar"></div></div>
+      <ul class="steps" id="steps">
+        <li data-s="0">Check that every report is present</li>
+        <li data-s="1">Validate columns and date range</li>
+        <li data-s="2">Save to the dashboard's secure data folder</li>
+        <li data-s="3">Rebuild charts, KPIs, and pricing analysis</li>
+      </ul>
+      <div class="extra" id="extra"></div>
+      <div class="success" id="success" role="status">
+        <h4>Dashboard updated</h4>
+        <p id="successText"></p>
+        <a class="btn btn-primary" href="./" target="_top">View the dashboard &rarr;</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="counts"><span>Reports found</span><strong id="count">0 of 16</strong></div>
+        <ul class="reports" id="reports"></ul>
+      </div>
+      <div class="card how">
+        <h3>How it works for clients</h3>
+        <ol>
+          <li><strong>Export</strong> the month's standard reports from the POS (about two minutes).</li>
+          <li><strong>Drop them in</strong> here, or into a shared Google Drive folder that's watched automatically.</li>
+          <li><strong>That's it.</strong> The private dashboard refreshes on its own, and the owner gets an email summary.</li>
+        </ol>
+        <p class="note">Client dashboards live on private, sign-in protected hosting. This public demo runs on sample data only.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const REPORTS = [
+  {key:"sales by day",          label:"Sales by day",                  cols:["yyyyMMdd","Net sales","Total orders","Total guests"]},
+  {key:"top items",             label:"Top items",                     cols:["MENU_ITEM_NAME","ITEM_QUANTITY","AVERAGE_ITEM_PRICE","ITEM_NET_AMOUNT"]},
+  {key:"top sales categories",  label:"Top sales categories",          cols:["SALES_CATEGORY_NAME","ITEM_NET_AMOUNT"]},
+  {key:"sales category summary",label:"Sales category summary",        cols:["SALES_CATEGORY_NAME","ITEM_NET_AMOUNT"]},
+  {key:"day of week",           label:"Day of week (totals)",          cols:["Day of week","Net sales","Total orders","Total guests"]},
+  {key:"time of day",           label:"Time of day (totals)",          cols:["Hour of day","Net sales"]},
+  {key:"payments summary",      label:"Payments summary",              cols:["Payment type","Payment sub type","Amount"]},
+  {key:"service mode summary",  label:"Service mode summary",          cols:["Service mode","Net sales","Avg/Order","Turn time (minutes)"]},
+  {key:"service daypart",       label:"Service daypart summary",       cols:["Service / day part","Net sales","Orders"]},
+  {key:"net sales summary",     label:"Net sales summary",             cols:["Gross sales","Sales discounts","Sales refunds","Net sales"]},
+  {key:"revenue summary",       label:"Revenue summary",               cols:["Net sales","Tax amount","Tips","Gratuity","Paid in total"]},
+  {key:"tip summary",           label:"Tip summary",                   cols:["Total tips"]},
+  {key:"void summary",          label:"Void summary",                  cols:["Void amount","Void amount %"]},
+  {key:"check discounts",       label:"Check discounts",               cols:["Discount","Amount"]},
+  {key:"dining options",        label:"Dining options summary",        cols:["Dining option","Orders","Net sales"]},
+  {key:"menu item by sales category",label:"Menu item by sales category",cols:["SALES_CATEGORY_NAME","MENU_ITEM_NAME","ITEM_QUANTITY","ITEM_NET_AMOUNT","ITEM_GROSS_AMOUNT","DISCOUNT_AMOUNT","AVERAGE_ITEM_PRICE"]},
+];
+const FILE_NAMES = ["Sales by day.csv","Top Items.csv","Top Sales Categories.csv","Sales category summary.csv","Day of week (totals).csv","Time of day (totals).csv","Payments summary.csv","Service mode summary.csv","Service Daypart summary.csv","Net sales summary.csv","Revenue summary.csv","Tip summary.csv","Void summary.csv","Check Discounts.csv","Dining options summary.csv","Menu Item by Sales Category.csv"];
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let found = {};      // report key -> {name, rows, missingCols, range}
+let skipped = [];
+
+function matchReport(name) {
+  const n = name.toLowerCase().replace(/\s*\(\d+\)(?=\.csv$)/,'').replace(/[_-]+/g,' ');
+  // longest key first so "sales category summary" doesn't match "menu item by sales category"
+  return [...REPORTS].sort((a,b)=>b.key.length-a.key.length).find(r => n.includes(r.key));
+}
+function parseHeader(line) {
+  const out=[]; let cur='', q=false;
+  for (const ch of line) { if (ch==='"') { q=!q; continue; } if (ch===',' && !q) { out.push(cur.trim()); cur=''; } else cur+=ch; }
+  out.push(cur.trim()); return out;
+}
+function analyze(name, text) {
+  const rep = matchReport(name);
+  if (!rep) { skipped.push(name); return; }
+  const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  const hdr = parseHeader(lines[0]||'').map(h=>h.replace(/^\uFEFF/,''));
+  const missing = rep.cols.filter(c => !hdr.includes(c));
+  let range = null;
+  if (rep.key === 'sales by day' && !missing.length) {
+    const i = hdr.indexOf('yyyyMMdd');
+    const ds = lines.slice(1).map(l=>parseHeader(l)[i]).filter(d=>/^\d{8}$/.test(d)).sort();
+    if (ds.length) range = [ds[0], ds[ds.length-1]];
+  }
+  found[rep.key] = {name, rows: Math.max(0, lines.length-1), missing, range};
+}
+const fmtDate = d => new Date(+d.slice(0,4), +d.slice(4,6)-1, +d.slice(6,8)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+function renderReports() {
+  const n = Object.keys(found).length;
+  $('count').textContent = `${n} of ${REPORTS.length}`;
+  $('reports').innerHTML = REPORTS.map(r => {
+    const f = found[r.key];
+    if (!f) return `<li><span class="dot">·</span><span class="nm">${r.label}</span><span class="meta">waiting</span></li>`;
+    if (f.missing.length) return `<li class="warn"><span class="dot">!</span><span class="nm">${r.label}</span><span class="meta">missing ${esc(f.missing[0])}${f.missing.length>1?' +'+(f.missing.length-1):''}</span></li>`;
+    return `<li class="ok"><span class="dot">✓</span><span class="nm">${r.label}</span><span class="meta">${f.rows.toLocaleString()} row${f.rows===1?'':'s'}</span></li>`;
+  }).join('');
+  const bad = Object.values(found).filter(f=>f.missing.length).length;
+  const missingCount = REPORTS.length - n;
+  const msgs = [];
+  if (skipped.length) msgs.push(`Skipped ${skipped.length} file${skipped.length>1?'s':''} that ${skipped.length>1?"aren't":"isn't a"} recognized report${skipped.length>1?'s':''}: ${skipped.slice(0,3).map(esc).join(', ')}${skipped.length>3?'…':''}.`);
+  if (bad) msgs.push(`${bad} report${bad>1?'s have':' has'} unexpected columns. Re-export ${bad>1?'them':'it'} with the standard settings.`);
+  else if (n && missingCount) msgs.push(`${missingCount} report${missingCount>1?'s':''} still missing. You can update now; missing sections keep last month's numbers.`);
+  $('extra').innerHTML = msgs.join(' ');
+  $('extra').className = 'extra' + ((bad||skipped.length) ? ' bad' : '');
+  $('run').disabled = n === 0 || bad > 0;
+}
+
+async function addFiles(files) {
+  for (const f of files) {
+    if (!/\.csv$/i.test(f.name)) { skipped.push(f.name); continue; }
+    analyze(f.name, await f.text());
+  }
+  resetRun(); renderReports();
+}
+async function loadSample() {
+  $('sample').disabled = true; $('sample').textContent = 'Loading sample month…';
+  for (const name of FILE_NAMES) {
+    try {
+      const r = await fetch('data/' + encodeURIComponent(name));
+      if (!r.ok) throw 0;
+      analyze(name, await r.text());
+    } catch (e) {
+      const rep = matchReport(name);
+      found[rep.key] = {name, rows: 0, missing: [], range: rep.key==='sales by day' ? ['20240601','20260930'] : null};
+    }
+    renderReports();
+  }
+  $('sample').textContent = 'Sample month loaded';
+  resetRun();
+}
+function resetRun() {
+  $('bar').style.width = '0';
+  document.querySelectorAll('#steps li').forEach(li=>li.className='');
+  $('success').classList.remove('show');
+}
+async function run() {
+  $('run').disabled = true; resetRun();
+  const steps = [...document.querySelectorAll('#steps li')];
+  const wait = ms => new Promise(r=>setTimeout(r,ms));
+  for (let i=0;i<steps.length;i++) {
+    steps[i].className = 'on';
+    await wait(650 + i*150);
+    steps[i].className = 'done';
+    $('bar').style.width = ((i+1)/steps.length*100) + '%';
+  }
+  const sbd = found['sales by day'];
+  const n = Object.keys(found).length;
+  const totalRows = Object.values(found).reduce((s,f)=>s+f.rows,0);
+  $('successText').innerHTML = `${n} report${n>1?'s':''} processed${totalRows?` (${totalRows.toLocaleString()} rows)`:''}` +
+    (sbd && sbd.range ? `. Sales data now runs <strong>${fmtDate(sbd.range[0])} – ${fmtDate(sbd.range[1])}</strong>.` : '.') +
+    ` Demo mode: nothing was actually uploaded.`;
+  $('success').classList.add('show');
+  $('run').disabled = false; $('run').textContent = 'Run again';
+}
+
+const drop = $('drop'), input = $('file');
+drop.onclick = () => input.click();
+drop.onkeydown = e => { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); input.click(); } };
+input.onchange = () => { const list = [...input.files]; input.value=''; addFiles(list); };
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+$('sample').onclick = loadSample;
+$('run').onclick = run;
+renderReports();
+</script>
+</body>
+</html>
