@@ -242,9 +242,21 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
 ::-webkit-scrollbar-thumb{background:var(--border);}
 ::-webkit-scrollbar-thumb:hover{background:var(--brass);}
 </style>
+<style>
+.demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
+  padding:9px 20px;background:#0A0A0A;border-bottom:1px solid #2E2E2E;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.3}
+.demo-bar a{color:#A89F8C;text-decoration:none}
+.demo-bar a:hover{color:#EDE6D6}
+.demo-bar a:focus-visible{outline:2px solid #D4A017;outline-offset:2px}
+.demo-bar .back{color:#D4A017;font-weight:600}
+.demo-bar .back:hover{color:#EDE6D6}
+.demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
+.demo-bar nav a[aria-current="page"]{color:#EDE6D6;font-weight:600}
+</style>
 </head>
 <body>
 
+<div class="demo-bar"><a class="back" href="../" target="_top">&larr; Back to Blake Herring's portfolio</a><nav aria-label="Other demos"><a href="../dashboard/" target="_top" aria-current="page">Sales dashboard</a><a href="../cocktails/" target="_top">Cocktail app</a><a href="../inventory/" target="_top">Inventory planner</a></nav></div>
 <!-- LOADING SCREEN -->
 <div id="loading-screen">
   <div class="loading-logo">COPPER STILL <span>TAPROOM</span></div>
