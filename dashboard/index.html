@@ -8,46 +8,46 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --brass:#B8860B; --brass-light:#D4A017; --brass-pale:#F5E6A3;
-  --dark:#0E0E0E; --dark-2:#161616; --dark-3:#1E1E1E; --dark-4:#272727;
-  --border:#2E2E2E; --text:#E8E0D0; --text-muted:#8A8070; --text-dim:#555050;
-  --green:#4CAF50; --red:#E53935; --amber:#FF8F00; --blue:#4FC3F7;
+  --brass:#2E7D6F; --brass-light:#B65A32; --brass-pale:#E1EFEB;
+  --dark:#F4F1EA; --dark-2:#FFFFFF; --dark-3:#FBF9F5; --dark-4:#ECE7DE;
+  --border:#E0DAD0; --text:#1E2A28; --text-muted:#6B7672; --text-dim:#8E9692;
+  --green:#2F8F5B; --red:#C2453A; --amber:#C98A1B; --blue:#3E6F9E;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--dark);color:var(--text);font-family:IBM Plex Sans,sans-serif;font-size:13px;line-height:1.5;}
+body{background:var(--dark);color:var(--text);font-family:Manrope,system-ui,sans-serif;font-size:13px;line-height:1.5;}
 
 /* LOADING */
 #loading-screen{position:fixed;inset:0;background:var(--dark);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;}
-.loading-logo{font-family:Bebas Neue,sans-serif;font-size:32px;letter-spacing:4px;color:var(--text);}
+.loading-logo{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:32px;letter-spacing:4px;color:var(--text);}
 .loading-logo span{color:var(--brass);}
 .loading-bar-track{width:320px;height:3px;background:var(--dark-4);}
 .loading-bar-fill{height:100%;background:var(--brass);transition:width 0.3s ease;width:0%;}
-.loading-status{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim);}
-.loading-files{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);text-align:center;line-height:2;}
+.loading-status{font-family:Manrope,system-ui,sans-serif;font-size:11px;color:var(--text-dim);}
+.loading-files{font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);text-align:center;line-height:2;}
 #error-screen{position:fixed;inset:0;background:var(--dark);z-index:9998;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;}
-.error-title{font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--red);letter-spacing:2px;}
-.error-msg{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;line-height:2;}
-.error-files{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);max-width:500px;line-height:2;}
+.error-title{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:28px;color:var(--red);letter-spacing:2px;}
+.error-msg{font-family:Manrope,system-ui,sans-serif;font-size:11px;color:var(--text-muted);text-align:center;max-width:500px;line-height:2;}
+.error-files{font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);max-width:500px;line-height:2;}
 
 /* HEADER */
 header{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:16px;}
-.logo-icon{width:36px;height:36px;background:var(--brass);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);}
-.logo h1{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:3px;}
+.logo-icon{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3A9A89,#1F5A50);box-shadow:inset 0 0 0 3px #FFFFFF,0 0 0 2px #B65A32;flex:none;}
+.logo h1{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:22px;letter-spacing:3px;}
 .logo h1 span{color:var(--brass);}
-.header-meta{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-muted);text-align:right;line-height:1.8;}
+.header-meta{font-family:Manrope,system-ui,sans-serif;font-size:11px;color:var(--text-muted);text-align:right;line-height:1.8;}
 .header-meta strong{color:var(--brass);}
 .header-right{display:flex;align-items:center;gap:16px;}
-.live-badge{display:flex;align-items:center;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--green);background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.2);padding:4px 10px;}
+.live-badge{display:flex;align-items:center;gap:6px;font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--green);background:rgba(47,143,91,0.1);border:1px solid rgba(47,143,91,0.2);padding:4px 10px;}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
 /* TABS */
 .tabs{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 32px;display:flex;}
-.tab{font-family:IBM Plex Mono,monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:14px 20px;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.2s;}
+.tab{font-family:Manrope,system-ui,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:14px 20px;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.2s;}
 .tab:hover{color:var(--text);}
 .tab.active{color:var(--brass);border-bottom-color:var(--brass);}
 .tab-content{display:none;}
@@ -55,7 +55,7 @@ header{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 
 
 /* LAYOUT */
 .page{padding:28px 32px;max-width:1600px;margin:0 auto;}
-.section-label{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label{font-family:Manrope,system-ui,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* KPI */
@@ -65,97 +65,97 @@ header{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 
 .kpi-card.green::before{background:var(--green);}
 .kpi-card.blue::before{background:var(--blue);}
 .kpi-card.amber::before{background:var(--amber);}
-.kpi-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
-.kpi-value{font-family:Bebas Neue,sans-serif;font-size:28px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:8px;}
-.kpi-sub{display:flex;align-items:center;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;}
-.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;font-size:10px;font-family:IBM Plex Mono,monospace;font-weight:600;}
-.badge.up{background:rgba(76,175,80,0.15);color:var(--green);}
-.badge.down{background:rgba(229,57,53,0.15);color:var(--red);}
-.badge.neutral{background:rgba(184,134,11,0.15);color:var(--brass);}
+.kpi-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.kpi-value{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:28px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:8px;}
+.kpi-sub{display:flex;align-items:center;gap:6px;font-family:Manrope,system-ui,sans-serif;font-size:10px;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;font-size:10px;font-family:Manrope,system-ui,sans-serif;font-weight:600;}
+.badge.up{background:rgba(47,143,91,0.15);color:var(--green);}
+.badge.down{background:rgba(194,69,58,0.15);color:var(--red);}
+.badge.neutral{background:rgba(46,125,111,0.15);color:var(--brass);}
 .kpi-prev{color:var(--text-dim);}
 
 /* YOY CARDS */
 .yoy-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
 .yoy-card{background:var(--dark-2);border:1px solid var(--border);padding:24px 28px;position:relative;overflow:hidden;}
-.yoy-card.y1{border-top:3px solid #5A5048;}
+.yoy-card.y1{border-top:3px solid #AAB1AD;}
 .yoy-card.y2{border-top:3px solid var(--brass);}
 .yoy-card.y3{border-top:3px solid var(--green);}
-.yoy-card-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
-.yoy-card-amount{font-family:Bebas Neue,sans-serif;font-size:48px;letter-spacing:1px;line-height:1;margin-bottom:8px;}
+.yoy-card-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+.yoy-card-amount{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:48px;letter-spacing:1px;line-height:1;margin-bottom:8px;}
 .yoy-card-amount.y1{color:var(--text-muted);}
 .yoy-card-amount.y2{color:var(--brass-light);}
 .yoy-card-amount.y3{color:var(--green);}
-.yoy-card-sub{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-bottom:16px;line-height:1.8;}
+.yoy-card-sub{font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);margin-bottom:16px;line-height:1.8;}
 .yoy-card-bar{height:3px;background:var(--dark-4);}
 .yoy-card-bar-fill{height:100%;transition:width 1s ease;}
-.yoy-card-bar-fill.y1{background:#5A5048;}
+.yoy-card-bar-fill.y1{background:#AAB1AD;}
 .yoy-card-bar-fill.y2{background:var(--brass);}
 .yoy-card-bar-fill.y3{background:var(--green);}
 /* YOY METRICS */
 .yoy-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px;}
 .yoy-metric{background:var(--dark-3);border:1px solid var(--border);padding:16px 20px;}
-.yoy-metric-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
-.yoy-metric-val{font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:4px;color:var(--text);}
+.yoy-metric-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.yoy-metric-val{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:4px;color:var(--text);}
 .yoy-metric-val.green{color:var(--green);}
 .yoy-metric-val.brass{color:var(--brass-light);}
 .yoy-metric-val.blue{color:var(--blue);}
-.yoy-metric-sub{font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+.yoy-metric-sub{font-family:Manrope,system-ui,sans-serif;font-size:9px;color:var(--text-dim);}
 /* legacy — keep for other uses */
-.yoy-amount{font-family:Bebas Neue,sans-serif;font-size:36px;letter-spacing:1px;line-height:1;margin-bottom:4px;}
+.yoy-amount{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:36px;letter-spacing:1px;line-height:1;margin-bottom:4px;}
 .yoy-amount.y1{color:var(--text-muted);}
 .yoy-amount.y2{color:var(--brass-light);}
 .yoy-amount.growth{color:var(--green);}
-.yoy-sub{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);}
+.yoy-sub{font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);}
 
 /* CHARTS */
 .chart-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
 .chart-grid-3{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:28px;}
 .chart-grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:28px;}
 .chart-box{background:var(--dark-2);border:1px solid var(--border);padding:20px;}
-.chart-title{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+.chart-title{font-family:Manrope,system-ui,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
 .chart-subtitle{font-size:11px;color:var(--text-dim);margin-bottom:16px;}
 .chart-container{position:relative;width:100%;}
 .chart-row-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
-.chart-stat-val{font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--brass-light);line-height:1;}
-.chart-stat-label{font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+.chart-stat-val{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:22px;color:var(--brass-light);line-height:1;}
+.chart-stat-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;color:var(--text-dim);}
 .legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
-.legend-item{display:flex;align-items:center;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);}
 .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
 /* TABLES */
 .data-table{width:100%;border-collapse:collapse;}
-.data-table th{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
-.data-table td{padding:9px 12px;font-size:12px;border-bottom:1px solid rgba(46,46,46,0.5);}
+.data-table th{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.data-table td{padding:9px 12px;font-size:12px;border-bottom:1px solid rgba(224,218,208,0.5);}
 .data-table tr:last-child td{border-bottom:none;}
-.data-table tr:hover td{background:rgba(184,134,11,0.04);}
-.data-table .num{font-family:IBM Plex Mono,monospace;font-size:11px;text-align:right;}
+.data-table tr:hover td{background:rgba(46,125,111,0.04);}
+.data-table .num{font-family:Manrope,system-ui,sans-serif;font-size:11px;text-align:right;}
 
 /* STAT PAIRS */
 .stat-pair{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
 .stat-pair:last-child{border-bottom:none;}
 .stat-pair-label{font-size:12px;color:var(--text-muted);}
-.stat-pair-val{font-family:IBM Plex Mono,monospace;font-size:12px;font-weight:600;color:var(--text);}
+.stat-pair-val{font-family:Manrope,system-ui,sans-serif;font-size:12px;font-weight:600;color:var(--text);}
 
 /* HEAT GRID */
 .heat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px;}
 .heat-cell{background:var(--dark-4);padding:12px 8px;text-align:center;transition:transform 0.15s;cursor:default;}
 .heat-cell:hover{transform:scale(1.03);}
-.heat-cell .day-name{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
-.heat-cell .day-sales{font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;line-height:1;margin-bottom:4px;}
-.heat-cell .day-sub{font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+.heat-cell .day-name{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.heat-cell .day-sales{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:18px;letter-spacing:1px;line-height:1;margin-bottom:4px;}
+.heat-cell .day-sub{font-family:Manrope,system-ui,sans-serif;font-size:9px;color:var(--text-dim);}
 
 /* PROGRESS */
 .progress-row{margin-bottom:12px;}
 .progress-header{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;}
 .progress-name{color:var(--text-muted);}
-.progress-val{font-family:IBM Plex Mono,monospace;color:var(--text);font-size:11px;}
+.progress-val{font-family:Manrope,system-ui,sans-serif;color:var(--text);font-size:11px;}
 .progress-track{height:6px;background:var(--dark-4);overflow:hidden;}
 .progress-fill{height:100%;transition:width 1s ease;}
 
 /* METRIC BOXES */
 .metric-box{background:var(--dark-3);border:1px solid var(--border);padding:16px;text-align:center;}
-.metric-box-val{font-family:Bebas Neue,sans-serif;font-size:32px;letter-spacing:1px;line-height:1;color:var(--brass-light);}
-.metric-box-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-top:6px;}
+.metric-box-val{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:32px;letter-spacing:1px;line-height:1;color:var(--brass-light);}
+.metric-box-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-top:6px;}
 
 
 
@@ -163,79 +163,79 @@ header{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 
 .pricing-target-bar{background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--brass);padding:16px 24px;margin-bottom:20px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
 .pricing-target-bar input[type=range]{-webkit-appearance:none;width:180px;height:4px;background:var(--dark-4);outline:none;border-radius:2px;}
 .pricing-target-bar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--brass);border-radius:50%;cursor:pointer;}
-.pricing-target-val{font-family:Bebas Neue,sans-serif;font-size:32px;color:var(--brass-light);line-height:1;}
-.pricing-target-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.pricing-target-val{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:32px;color:var(--brass-light);line-height:1;}
+.pricing-target-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
 .p-cat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 .p-cat-card{background:var(--dark-2);border:1px solid var(--border);padding:16px;position:relative;}
-.p-cat-pct{font-family:Bebas Neue,sans-serif;font-size:34px;line-height:1;margin-bottom:4px;}
-.p-cat-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.p-cat-pct{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:34px;line-height:1;margin-bottom:4px;}
+.p-cat-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
 .p-cat-track{height:5px;background:var(--dark-4);margin-bottom:8px;}
 .p-cat-fill{height:100%;transition:width 0.5s;}
-.p-cat-foot{display:flex;justify-content:space-between;font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--text-dim);}
+.p-cat-foot{display:flex;justify-content:space-between;font-family:Manrope,system-ui,sans-serif;font-size:9px;color:var(--text-dim);}
 .p-pills{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto;}
 .p-pill{background:var(--dark-4);border:1px solid var(--border);padding:8px 14px;}
-.p-pill-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
-.p-pill-val{font-family:Bebas Neue,sans-serif;font-size:20px;line-height:1;}
+.p-pill-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
+.p-pill-val{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:20px;line-height:1;}
 .p-tabs{display:flex;gap:0;background:var(--dark-4);border:1px solid var(--border);padding:2px;margin-bottom:16px;width:fit-content;}
-.p-tabs button{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;background:none;border:none;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
+.p-tabs button{font-family:Manrope,system-ui,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;background:none;border:none;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
 .p-tabs button.active{background:var(--brass);color:var(--dark);}
 .p-tbl-wrap{background:var(--dark-2);border:1px solid var(--border);margin-bottom:20px;}
 .p-tbl-controls{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.p-tbl-controls select,.p-tbl-controls input[type=text]{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:6px 10px;}
+.p-tbl-controls select,.p-tbl-controls input[type=text]{font-family:Manrope,system-ui,sans-serif;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:6px 10px;}
 .p-tbl-controls select{min-width:150px;cursor:pointer;}
 .p-tbl-controls input[type=text]{width:200px;}
-.p-filter-btn{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:6px 10px;background:none;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;}
+.p-filter-btn{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:6px 10px;background:none;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;}
 .p-filter-btn.active{background:var(--brass);color:var(--dark);border-color:var(--brass);}
-.sim-input{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:4px 8px;width:75px;text-align:right;}
-.sim-input.changed{background:rgba(184,134,11,0.1);border-color:var(--brass);}
-.p-badge{display:inline-block;padding:2px 6px;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:600;}
-.p-badge.ok{background:rgba(76,175,80,0.15);color:#4CAF50;}
-.p-badge.warn{background:rgba(255,143,0,0.15);color:#FF8F00;}
-.p-badge.bad{background:rgba(229,57,53,0.15);color:#E53935;}
-.p-badge.na{background:rgba(85,80,80,0.2);color:var(--text-dim);}
+.sim-input{font-family:Manrope,system-ui,sans-serif;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:4px 8px;width:75px;text-align:right;}
+.sim-input.changed{background:rgba(46,125,111,0.1);border-color:var(--brass);}
+.p-badge{display:inline-block;padding:2px 6px;font-family:Manrope,system-ui,sans-serif;font-size:9px;font-weight:600;}
+.p-badge.ok{background:rgba(47,143,91,0.15);color:#2F8F5B;}
+.p-badge.warn{background:rgba(201,138,27,0.15);color:#C98A1B;}
+.p-badge.bad{background:rgba(194,69,58,0.15);color:#C2453A;}
+.p-badge.na{background:rgba(142,150,146,0.2);color:var(--text-dim);}
 .p-cost-bar{display:flex;align-items:center;gap:6px;}
 .p-cost-track{flex:1;height:5px;background:var(--dark-4);}
 .p-cost-fill{height:100%;}
-.stock-dot{color:#4CAF50;font-size:9px;margin-left:4px;}
-.p-loading{padding:40px;text-align:center;font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim);}
+.stock-dot{color:#2F8F5B;font-size:9px;margin-left:4px;}
+.p-loading{padding:40px;text-align:center;font-family:Manrope,system-ui,sans-serif;font-size:11px;color:var(--text-dim);}
 
 /* MONTHLY & INVENTORY */
 .month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
 .month-card{background:var(--dark-2);border:1px solid var(--border);padding:16px;position:relative;cursor:pointer;transition:border-color 0.2s;}
 .month-card:hover{border-color:var(--brass);}
-.month-card.y1{border-top:2px solid #5A5048;}
+.month-card.y1{border-top:2px solid #AAB1AD;}
 .month-card.y2{border-top:2px solid var(--brass);}
 .month-card.y3{border-top:2px solid var(--green);}
-.month-card .mc-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-.month-card .mc-sales{font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:8px;}
-.month-card .mc-row{display:flex;justify-content:space-between;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-top:3px;}
+.month-card .mc-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.month-card .mc-sales{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:8px;}
+.month-card .mc-row{display:flex;justify-content:space-between;font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);margin-top:3px;}
 .month-card .mc-row span:last-child{color:var(--text-muted);}
-.month-card .yoy-pill{font-family:IBM Plex Mono,monospace;font-size:9px;padding:1px 5px;}
+.month-card .yoy-pill{font-family:Manrope,system-ui,sans-serif;font-size:9px;padding:1px 5px;}
 .year-toggle{display:flex;gap:0;background:var(--dark-4);border:1px solid var(--border);padding:2px;margin-bottom:20px;width:fit-content;}
-.year-toggle button{font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 16px;background:none;border:none;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
+.year-toggle button{font-family:Manrope,system-ui,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 16px;background:none;border:none;color:var(--text-dim);cursor:pointer;transition:all 0.15s;}
 .year-toggle button.active{background:var(--brass);color:var(--dark);}
 
 /* INVENTORY */
 .inv-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
-.inv-select{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:8px 14px;cursor:pointer;min-width:200px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8070'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.inv-select{font-family:Manrope,system-ui,sans-serif;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:8px 14px;cursor:pointer;min-width:200px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8070'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
 .inv-select:focus{outline:none;border-color:var(--brass);}
 .inv-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 .inv-stat{background:var(--dark-3);border:1px solid var(--border);padding:14px 16px;}
-.inv-stat-val{font-family:Bebas Neue,sans-serif;font-size:24px;color:var(--brass-light);line-height:1;margin-bottom:4px;}
-.inv-stat-label{font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);}
+.inv-stat-val{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:24px;color:var(--brass-light);line-height:1;margin-bottom:4px;}
+.inv-stat-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);}
 .inv-table-wrap{background:var(--dark-2);border:1px solid var(--border);padding:20px;}
-.inv-search{font-family:IBM Plex Mono,monospace;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:7px 12px;width:260px;margin-bottom:14px;}
+.inv-search{font-family:Manrope,system-ui,sans-serif;font-size:11px;background:var(--dark-3);border:1px solid var(--border);color:var(--text);padding:7px 12px;width:260px;margin-bottom:14px;}
 .inv-search:focus{outline:none;border-color:var(--brass);}
 .sort-arrow{cursor:pointer;user-select:none;}
 .sort-arrow:hover{color:var(--brass);}
 
 /* DATA SOURCE INFO */
-.data-source{background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--blue);padding:12px 16px;margin-bottom:28px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);line-height:2;}
+.data-source{background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--blue);padding:12px 16px;margin-bottom:28px;font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);line-height:2;}
 .data-source strong{color:var(--blue);}
 
-.rank-num{font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);width:20px;flex-shrink:0;}
+.rank-num{font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);width:20px;flex-shrink:0;}
 
-footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text-dim);font-family:IBM Plex Mono,monospace;font-size:10px;margin-top:40px;}
+footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;color:var(--text-dim);font-family:Manrope,system-ui,sans-serif;font-size:10px;margin-top:40px;}
 
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:var(--dark-2);}
@@ -244,14 +244,14 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
 </style>
 <style>
 .demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
-  padding:9px 20px;background:#0A0A0A;border-bottom:1px solid #2E2E2E;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.3}
-.demo-bar a{color:#A89F8C;text-decoration:none}
-.demo-bar a:hover{color:#EDE6D6}
-.demo-bar a:focus-visible{outline:2px solid #D4A017;outline-offset:2px}
-.demo-bar .back{color:#D4A017;font-weight:600}
-.demo-bar .back:hover{color:#EDE6D6}
+  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid #E0DAD0;font-family:Manrope,system-ui,sans-serif;font-size:12.5px;line-height:1.3}
+.demo-bar a{color:#5F6B67;text-decoration:none}
+.demo-bar a:hover{color:#1E2A28}
+.demo-bar a:focus-visible{outline:2px solid #B65A32;outline-offset:2px}
+.demo-bar .back{color:#B65A32;font-weight:600}
+.demo-bar .back:hover{color:#1E2A28}
 .demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
-.demo-bar nav a[aria-current="page"]{color:#EDE6D6;font-weight:600}
+.demo-bar nav a[aria-current="page"]{color:#1E2A28;font-weight:600}
 </style>
 </head>
 <body>
@@ -270,7 +270,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
   <div class="error-title">⚠ Data Load Failed</div>
   <div class="error-msg">Could not fetch CSV files from GitHub. Make sure your files are uploaded to:<br><strong>BHERRIN7/Landing_Page/dashboard/data/</strong></div>
   <div class="error-files" id="error-files"></div>
-  <div style="margin-top:16px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim)">Check the browser console for details.</div>
+  <div style="margin-top:16px;font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim)">Check the browser console for details.</div>
 </div>
 
 <!-- MAIN APP (hidden until loaded) -->
@@ -368,8 +368,8 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
     <div class="chart-row-top">
       <div><div class="chart-title">Monthly Revenue Comparison</div><div class="chart-subtitle">Jun → May fiscal year alignment</div></div>
       <div style="display:flex;gap:16px;align-items:center">
-        <div class="legend-item"><div class="legend-dot" style="background:#8A8070"></div>Year 1</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#D4A017"></div>Year 2</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#6B7672"></div>Year 1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#B65A32"></div>Year 2</div>
       </div>
     </div>
     <div class="chart-container" style="height:220px"><canvas id="monthlyBarChart"></canvas></div>
@@ -392,8 +392,8 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
       <div class="chart-subtitle">Monthly order counts</div>
       <div class="chart-container" style="height:180px"><canvas id="ordersBarChart"></canvas></div>
       <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#4A4440"></div>Year 1</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#4FC3F7"></div>Year 2</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#AAB1AD"></div>Year 1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3E6F9E"></div>Year 2</div>
       </div>
     </div>
     <div class="chart-box">
@@ -401,8 +401,8 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
       <div class="chart-subtitle">Monthly guest counts</div>
       <div class="chart-container" style="height:180px"><canvas id="guestsBarChart"></canvas></div>
       <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#4A4440"></div>Year 1</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#4CAF50"></div>Year 2</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#AAB1AD"></div>Year 1</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2F8F5B"></div>Year 2</div>
       </div>
     </div>
   </div>
@@ -549,7 +549,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
       <button onclick="filterMonths('Y2',this)">Year 2</button>
       <button onclick="filterMonths('Y3',this)">Year 3</button>
     </div>
-    <div id="monthly-totals" style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim)"></div>
+    <div id="monthly-totals" style="font-family:Manrope,system-ui,sans-serif;font-size:11px;color:var(--text-dim)"></div>
   </div>
   <div class="month-grid" id="monthCards"></div>
   <div class="section-label">Monthly Trend Charts</div>
@@ -625,7 +625,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
       <tbody id="invTableBody"></tbody>
     </table>
   </div>
-  <div id="invEmpty" style="padding:60px;text-align:center;font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--text-dim)">
+  <div id="invEmpty" style="padding:60px;text-align:center;font-family:Manrope,system-ui,sans-serif;font-size:11px;color:var(--text-dim)">
     Select a category above to view item performance
   </div>
 </div>
@@ -714,7 +714,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
           <button class="p-filter-btn" onclick="pSetFilter('over',this)">✗ Over Target</button>
           <button class="p-filter-btn" onclick="pSetFilter('stock',this)">● In Stock</button>
           <button class="p-filter-btn" onclick="pSetFilter('nodata',this)">No Cost</button>
-          <span style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-left:auto" id="p-items-count"></span>
+          <span style="font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);margin-left:auto" id="p-items-count"></span>
         </div>
         <table class="data-table">
           <thead><tr>
@@ -735,7 +735,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
 
     <!-- OPPORTUNITIES sub-tab -->
     <div id="p-sub-opportunities" class="p-subtab" style="display:none">
-      <div style="background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--amber);padding:12px 16px;margin-bottom:16px;font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-muted);line-height:2">
+      <div style="background:var(--dark-3);border:1px solid var(--border);border-left:3px solid var(--amber);padding:12px 16px;margin-bottom:16px;font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-muted);line-height:2">
         Ranked by estimated annual revenue gain if priced at target. <strong style="color:var(--green)">●</strong> = currently in stock. Annual gain estimated from recent 4-month run rate × 3.
       </div>
       <div class="section-label">Quick Wins — Price Increase Under $1.50</div>
@@ -775,7 +775,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
           <input type="text" id="p-sim-search" placeholder="Search..." oninput="pRenderSim()">
           <button class="p-filter-btn" onclick="pApplyTargetAll()">Apply Target to Visible</button>
           <button class="p-filter-btn" onclick="pResetSim()">Reset All</button>
-          <span style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--text-dim);margin-left:auto" id="p-sim-count"></span>
+          <span style="font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim);margin-left:auto" id="p-sim-count"></span>
         </div>
         <table class="data-table">
           <thead><tr>
@@ -831,16 +831,16 @@ const FILES = {
 };
 
 // Chart defaults
-Chart.defaults.color = '#8A8070';
-Chart.defaults.borderColor = '#2E2E2E';
-Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.color = '#6B7672';
+Chart.defaults.borderColor = '#E0DAD0';
+Chart.defaults.font.family = "Manrope, sans-serif";
 Chart.defaults.font.size = 10;
 
-const brass = '#D4A017', brassA = 'rgba(212,160,23,0.85)';
-const amber = '#FF8F00';
-const green = '#4CAF50';
-const blue  = '#4FC3F7';
-const y1C = 'rgba(138,128,112,0.7)', y2C = brassA;
+const brass = '#2E7D6F', brassA = 'rgba(46,125,111,0.85)';
+const amber = '#C98A1B';
+const green = '#2F8F5B';
+const blue  = '#3E6F9E';
+const y1C = 'rgba(142,150,146,0.7)', y2C = brassA;
 
 // ═══════════════════════════════════════════════
 // CSV FETCHER
@@ -1048,37 +1048,37 @@ function buildDashboard(D) {
       {label:'Year 1', data:y1Sales, backgroundColor:y1C, borderRadius:2, barPercentage:0.85, categoryPercentage:0.7},
       {label:'Year 2', data:y2Sales, backgroundColor:y2C, borderRadius:2, barPercentage:0.85, categoryPercentage:0.7},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#ECE7DE'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
   });
 
   // ── Orders bar ──────────────────────────────
   new Chart(document.getElementById('ordersBarChart'), {
     type:'bar',
     data:{labels:monthNames,datasets:[
-      {label:'Y1',data:y1Orders,backgroundColor:'rgba(74,68,64,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
-      {label:'Y2',data:y2Orders,backgroundColor:'rgba(79,195,247,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y1',data:y1Orders,backgroundColor:'rgba(170,177,173,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y2',data:y2Orders,backgroundColor:'rgba(62,111,158,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#ECE7DE'},ticks:{font:{size:9}}}}}
   });
 
   // ── Guests bar ──────────────────────────────
   new Chart(document.getElementById('guestsBarChart'), {
     type:'bar',
     data:{labels:monthNames,datasets:[
-      {label:'Y1',data:y1Guests,backgroundColor:'rgba(74,68,64,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
-      {label:'Y2',data:y2Guests,backgroundColor:'rgba(76,175,80,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y1',data:y1Guests,backgroundColor:'rgba(170,177,173,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y2',data:y2Guests,backgroundColor:'rgba(47,143,91,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#ECE7DE'},ticks:{font:{size:9}}}}}
   });
 
   // ── Guest YOY ───────────────────────────────
   new Chart(document.getElementById('guestYOYChart'), {
     type:'bar',
     data:{labels:monthNames,datasets:[
-      {label:'Y1 Guests',data:y1Guests,backgroundColor:'rgba(74,68,64,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
-      {label:'Y2 Guests',data:y2Guests,backgroundColor:'rgba(76,175,80,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y1 Guests',data:y1Guests,backgroundColor:'rgba(170,177,173,0.9)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
+      {label:'Y2 Guests',data:y2Guests,backgroundColor:'rgba(47,143,91,0.8)',borderRadius:2,barPercentage:0.85,categoryPercentage:0.7},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:10}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:10}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#ECE7DE'},ticks:{font:{size:9}}}}}
   });
 
   // ── Monthly table ───────────────────────────
@@ -1096,7 +1096,7 @@ function buildDashboard(D) {
       <td class="num" style="color:${col}">${s1&&s2?(diff>0?'+':'')+' $'+Math.abs(diff).toLocaleString('en-US',{maximumFractionDigits:0}):'—'}</td>
       <td class="num" style="color:${col}">${s1&&s2?arr+' '+Math.abs(pct).toFixed(1)+'%':'—'}</td>
       <td><div style="display:flex;flex-direction:column;gap:3px">
-        <div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:var(--text-dim);width:18px">Y1</span><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:${b1}%;height:100%;background:#5A5048"></div></div></div>
+        <div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:var(--text-dim);width:18px">Y1</span><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:${b1}%;height:100%;background:#AAB1AD"></div></div></div>
         <div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:var(--text-dim);width:18px">Y2</span><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:${b2}%;height:100%;background:var(--brass)"></div></div></div>
       </div></td>
     </tr>`;
@@ -1112,8 +1112,8 @@ function buildDashboard(D) {
 
   new Chart(document.getElementById('dailyAreaChart'), {
     type:'line',
-    data:{labels:usedLabels,datasets:[{label:'Net Sales',data:usedSales,borderColor:brass,backgroundColor:'rgba(184,134,11,0.12)',borderWidth:2,fill:true,tension:0.3,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:brass}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false},ticks:{maxRotation:45,font:{size:9}}},y:{grid:{color:'#1A1A1A'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:9}}}}}
+    data:{labels:usedLabels,datasets:[{label:'Net Sales',data:usedSales,borderColor:brass,backgroundColor:'rgba(46,125,111,0.12)',borderWidth:2,fill:true,tension:0.3,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:brass}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false},ticks:{maxRotation:45,font:{size:9}}},y:{grid:{color:'#EEE9E1'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:9}}}}}
   });
 
   // ── DOW Grid ────────────────────────────────
@@ -1126,9 +1126,9 @@ function buildDashboard(D) {
     const d = dowMap[day] || {sales:0,orders:0,guests:0};
     const pct = d.sales/maxDow;
     const alpha = 0.15 + pct*0.65;
-    return `<div class="heat-cell" style="background:rgba(184,134,11,${alpha})">
+    return `<div class="heat-cell" style="background:rgba(46,125,111,${alpha})">
       <div class="day-name">${day}</div>
-      <div class="day-sales" style="color:${pct>0.7?'#F5E6A3':'#D4A017'}">${(d.sales/1000).toFixed(0)}k</div>
+      <div class="day-sales" style="color:${pct>0.55?'#FFFFFF':'#1E2A28'}">${(d.sales/1000).toFixed(0)}k</div>
       <div class="day-sub">${d.orders.toLocaleString()} orders</div>
     </div>`;
   }).join('');
@@ -1148,7 +1148,7 @@ function buildDashboard(D) {
       <td class="num">$${ag.toFixed(2)}</td>
       <td><div style="display:flex;align-items:center;gap:8px">
         <div style="flex:1;height:6px;background:var(--dark-4)"><div style="width:${parseFloat(sp)/20*100}%;height:100%;background:var(--brass)"></div></div>
-        <span style="font-family:IBM Plex Mono;font-size:10px;color:var(--text-muted);width:34px">${sp}%</span>
+        <span style="font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-muted);width:34px">${sp}%</span>
       </div></td>
     </tr>`;
   }).join('');
@@ -1156,7 +1156,7 @@ function buildDashboard(D) {
   // ── Categories ──────────────────────────────
   const cats = (D.top_categories || []).map(c=>({...c,'SALES_CATEGORY_NAME':c['SALES_CATEGORY_NAME']||'No Category'})).filter(c=>c['SALES_CATEGORY_NAME']!='No Category').sort((a,b)=>(b['ITEM_NET_AMOUNT']||0)-(a['ITEM_NET_AMOUNT']||0));
   const maxCat = cats[0]?.['ITEM_NET_AMOUNT']||1;
-  const catColors = ['#B8860B','#8A6800','#5C4400','#D4A017','#E8C048','#4FC3F7','#4CAF50','#FF8F00','#E53935','#AB47BC','#26A69A','#78909C'];
+  const catColors = ['#2E7D6F','#B65A32','#3E6F9E','#C98A1B','#8A4F7D','#5B8C85','#E0A47E','#7D8A96','#1F5A50','#C2453A','#8FC1B5','#AAB1AD'];
 
   new Chart(document.getElementById('categoryDonut'), {
     type:'doughnut',
@@ -1168,13 +1168,13 @@ function buildDashboard(D) {
     const s=cat['ITEM_NET_AMOUNT']||0, pct=(s/maxCat*100).toFixed(1), share=(s/totalSales*100).toFixed(1);
     return `<div class="progress-row">
       <div class="progress-header"><span class="progress-name">${cat['SALES_CATEGORY_NAME']}</span><span class="progress-val">$${(s/1000).toFixed(0)}k <span style="color:var(--text-dim)">${share}%</span></span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${i<2?'var(--brass)':i<4?'var(--brass-light)':'rgba(184,134,11,0.5)'}"></div></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${i<2?'var(--brass)':i<4?'var(--brass-light)':'rgba(46,125,111,0.5)'}"></div></div>
     </div>`;
   }).join('');
 
   new Chart(document.getElementById('categoryPie'), {
     type:'pie',
-    data:{labels:cats.map(c=>c['SALES_CATEGORY_NAME']),datasets:[{data:cats.map(c=>c['ITEM_NET_AMOUNT']||0),backgroundColor:catColors,borderWidth:1,borderColor:'#161616'}]},
+    data:{labels:cats.map(c=>c['SALES_CATEGORY_NAME']),datasets:[{data:cats.map(c=>c['ITEM_NET_AMOUNT']||0),backgroundColor:catColors,borderWidth:1,borderColor:'#FFFFFF'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:8,padding:8,font:{size:9}}},tooltip:{callbacks:{label:c=>` ${c.label}: ${((c.raw/totalSales)*100).toFixed(1)}%`}}}}
   });
 
@@ -1217,7 +1217,7 @@ function buildDashboard(D) {
   const otRow = pays.find(r=>r['Payment type']==='Other');
   new Chart(document.getElementById('paymentChart'), {
     type:'doughnut',
-    data:{labels:['Credit/Debit','Cash','Gift Card','Other'],datasets:[{data:[ccRow?.Amount||0,cashRow?.Amount||0,gcRow?.Amount||0,otRow?.Amount||0],backgroundColor:['#D4A017','#4A4440','#4FC3F7','#2E2E2E'],borderWidth:0,hoverOffset:4}]},
+    data:{labels:['Credit/Debit','Cash','Gift Card','Other'],datasets:[{data:[ccRow?.Amount||0,cashRow?.Amount||0,gcRow?.Amount||0,otRow?.Amount||0],backgroundColor:['#B65A32','#AAB1AD','#3E6F9E','#E0DAD0'],borderWidth:0,hoverOffset:4}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'right',labels:{boxWidth:8,padding:10}},tooltip:{callbacks:{label:c=>` ${c.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}}}
   });
 
@@ -1256,8 +1256,8 @@ function buildDashboard(D) {
 
   new Chart(document.getElementById('daypartChart'), {
     type:'bar',
-    data:{labels:['Lunch','Dinner'],datasets:[{label:'Net Sales',data:[parseFloat(lunchRow['Net sales'])||0,parseFloat(dinnerRow['Net sales'])||0],backgroundColor:['rgba(184,134,11,0.6)',brass],borderRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+    data:{labels:['Lunch','Dinner'],datasets:[{label:'Net Sales',data:[parseFloat(lunchRow['Net sales'])||0,parseFloat(dinnerRow['Net sales'])||0],backgroundColor:['rgba(46,125,111,0.6)',brass],borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#ECE7DE'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
   });
 
   document.getElementById('daypartStats').innerHTML = [
@@ -1269,7 +1269,7 @@ function buildDashboard(D) {
 
   new Chart(document.getElementById('serviceModeChart'), {
     type:'doughnut',
-    data:{labels:['Table Service','Quick Service'],datasets:[{data:[parseFloat(tableRow['Net sales'])||0,parseFloat(qsRow['Net sales'])||0],backgroundColor:[brass,'#3A3630'],borderWidth:0,hoverOffset:4}]},
+    data:{labels:['Table Service','Quick Service'],datasets:[{data:[parseFloat(tableRow['Net sales'])||0,parseFloat(qsRow['Net sales'])||0],backgroundColor:[brass,'#C9C2B6'],borderWidth:0,hoverOffset:4}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:12}},tooltip:{callbacks:{label:c=>` ${c.label}: $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}}}
   });
 
@@ -1302,8 +1302,8 @@ function buildDashboard(D) {
 
   new Chart(document.getElementById('todChart'), {
     type:'bar',
-    data:{labels:todHours,datasets:[{label:'Net Sales',data:todSales,backgroundColor:todSales.map(v=>v>Math.max(...todSales)*0.7?brass:v>Math.max(...todSales)*0.4?'rgba(184,134,11,0.7)':'rgba(184,134,11,0.35)'),borderRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#1A1A1A'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:9}}}}}
+    data:{labels:todHours,datasets:[{label:'Net Sales',data:todSales,backgroundColor:todSales.map(v=>v>Math.max(...todSales)*0.7?brass:v>Math.max(...todSales)*0.4?'rgba(46,125,111,0.7)':'rgba(46,125,111,0.35)'),borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#EEE9E1'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:9}}}}}
   });
 
   // Build monthly, inventory, and pricing tabs
@@ -1431,7 +1431,7 @@ function renderMonthCards() {
     if(comp && comp.net_sales > 0) {
       const pct = ((m.net_sales/comp.net_sales)-1)*100;
       const col = pct>0?'var(--green)':'var(--red)';
-      const bg = pct>0?'rgba(76,175,80,0.15)':'rgba(229,57,53,0.15)';
+      const bg = pct>0?'rgba(47,143,91,0.15)':'rgba(194,69,58,0.15)';
       pill = '<span class="yoy-pill" style="background:'+bg+';color:'+col+'">'+(pct>0?'▲':'▼')+Math.abs(pct).toFixed(1)+'%</span>';
     }
     return '<div class="month-card ' + m.year.toLowerCase() + '">' +
@@ -1449,31 +1449,31 @@ function renderMonthCards() {
 
 function renderMonthCharts() {
   const labels = allMonthData.map(m=>m.label);
-  const colors = allMonthData.map(m=>m.year==='Y1'?'rgba(138,128,112,0.75)':m.year==='Y2'?'rgba(212,160,23,0.85)':'rgba(76,175,80,0.85)');
-  const brass = '#D4A017';
+  const colors = allMonthData.map(m=>m.year==='Y1'?'rgba(142,150,146,0.75)':m.year==='Y2'?'rgba(182,90,50,0.85)':'rgba(47,143,91,0.85)');
+  const brass = '#B65A32';
 
   new Chart(document.getElementById('allMonthsBar'), {
     type:'bar',
     data:{labels:labels, datasets:[{label:'Net Sales',data:allMonthData.map(m=>m.net_sales),backgroundColor:colors,borderRadius:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#ECE7DE'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';}}}}}
   });
 
   new Chart(document.getElementById('avgDailyBar'), {
     type:'bar',
     data:{labels:labels, datasets:[{label:'Avg Daily',data:allMonthData.map(m=>m.avg_day),backgroundColor:colors,borderRadius:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#ECE7DE'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';}}}}}
   });
 
   new Chart(document.getElementById('avgOrderBar'), {
     type:'line',
-    data:{labels:labels, datasets:[{label:'Avg/Order',data:allMonthData.map(m=>m.avg_order),borderColor:brass,backgroundColor:'rgba(184,134,11,0.1)',borderWidth:2,fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:brass}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toFixed(2);} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{callback:function(v){return '$'+v.toFixed(0);}}}}}
+    data:{labels:labels, datasets:[{label:'Avg/Order',data:allMonthData.map(m=>m.avg_order),borderColor:brass,backgroundColor:'rgba(46,125,111,0.1)',borderWidth:2,fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:brass}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toFixed(2);} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#ECE7DE'},ticks:{callback:function(v){return '$'+v.toFixed(0);}}}}}
   });
 
   new Chart(document.getElementById('allOrdersBar'), {
     type:'bar',
     data:{labels:labels, datasets:[{label:'Orders',data:allMonthData.map(m=>m.orders),backgroundColor:colors,borderRadius:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' '+c.raw.toLocaleString();} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#222'},ticks:{font:{size:9}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' '+c.raw.toLocaleString();} }}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#ECE7DE'},ticks:{font:{size:9}}}}}
   });
 }
 
@@ -1482,7 +1482,7 @@ function renderMonthTable() {
   const maxSales = Math.max(...filtered.map(m=>m.net_sales));
   document.getElementById('fullMonthTable').innerHTML = filtered.map(m => {
     const ycol = m.year==='Y2'?'var(--brass-light)':'var(--text-muted)';
-    const ybg = m.year==='Y2'?'':'background:rgba(90,80,72,0.2);color:var(--text-muted)';
+    const ybg = m.year==='Y2'?'':'background:rgba(142,150,146,0.2);color:var(--text-muted)';
     return '<tr>' +
       '<td><strong>' + m.label + '</strong></td>' +
       '<td><span class="badge ' + (m.year==='Y2'?'neutral':'') + '" style="' + ybg + '">' + m.year + '</span></td>' +
@@ -1574,11 +1574,11 @@ function renderInvChart(items) {
     type:'bar',
     data:{
       labels: top.map(function(i){return i.name.length>24?i.name.slice(0,24)+'…':i.name;}),
-      datasets:[{label:'Net Sales',data:top.map(function(i){return i.net;}),backgroundColor:'rgba(184,134,11,0.75)',borderRadius:2}]
+      datasets:[{label:'Net Sales',data:top.map(function(i){return i.net;}),backgroundColor:'rgba(46,125,111,0.75)',borderRadius:2}]
     },
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
       plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' $'+c.raw.toLocaleString('en-US',{maximumFractionDigits:0});}}}},
-      scales:{x:{grid:{color:'#1A1A1A'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';},font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}
+      scales:{x:{grid:{color:'#EEE9E1'},ticks:{callback:function(v){return '$'+(v/1000).toFixed(0)+'k';},font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}
   });
 }
 
@@ -1611,7 +1611,7 @@ function renderInvTable() {
       '<td class="num">$'+item.gross.toLocaleString('en-US',{maximumFractionDigits:0})+'</td>' +
       '<td class="num" style="color:var(--amber)">$'+item.disc.toLocaleString('en-US',{maximumFractionDigits:0})+'</td>' +
       '<td class="num" style="color:var(--brass-light)">$'+item.net.toLocaleString('en-US',{maximumFractionDigits:0})+'</td>' +
-      '<td><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:'+barW+'%;height:100%;background:var(--brass)"></div></div><span style="font-family:\'IBM Plex Mono\';font-size:10px;color:var(--text-muted);width:34px">'+share+'%</span></div></td>' +
+      '<td><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:4px;background:var(--dark-4)"><div style="width:'+barW+'%;height:100%;background:var(--brass)"></div></div><span style="font-family:\'Manrope,system-ui,sans-serif\';font-size:10px;color:var(--text-muted);width:34px">'+share+'%</span></div></td>' +
     '</tr>';
   }).join('');
 }
@@ -1656,10 +1656,10 @@ function pRenderAll() {
 }
 
 function pGetColor(pct, target) {
-  if(pct == null) return '#3A3A3A';
-  if(pct <= target) return '#4CAF50';
-  if(pct <= target * 1.15) return '#FF8F00';
-  return '#E53935';
+  if(pct == null) return '#D5CFC4';
+  if(pct <= target) return '#2F8F5B';
+  if(pct <= target * 1.15) return '#C98A1B';
+  return '#C2453A';
 }
 
 function pBadge(pct, target) {
@@ -1673,8 +1673,8 @@ function pSuggestPrice(item, target) {
   if(!item.pour_cost) return '—';
   const needed = item.pour_cost / (target/100);
   const rounded = Math.ceil(needed * 4) / 4;
-  if(rounded <= item.sell_price + 0.01) return '<span style="color:#4CAF50;font-family:IBM Plex Mono,monospace;font-size:11px">$' + item.sell_price.toFixed(2) + ' ✓</span>';
-  return '<span style="color:var(--brass-light);font-family:IBM Plex Mono,monospace;font-size:11px">$' + rounded.toFixed(2) + '</span>';
+  if(rounded <= item.sell_price + 0.01) return '<span style="color:#2F8F5B;font-family:Manrope,system-ui,sans-serif;font-size:11px">$' + item.sell_price.toFixed(2) + ' ✓</span>';
+  return '<span style="color:var(--brass-light);font-family:Manrope,system-ui,sans-serif;font-size:11px">$' + rounded.toFixed(2) + '</span>';
 }
 
 function pWeightedCost(items, simP) {
@@ -1724,7 +1724,7 @@ function pRenderCatCards() {
     return '<div class="p-cat-card" style="border-top:2px solid '+catColors[s.cat]+'">' +
       '<div class="p-cat-label">' + s.cat + '</div>' +
       '<div class="p-cat-pct" style="color:'+col+'">' + s.pct.toFixed(1) + '%</div>' +
-      '<div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:'+col+';margin-bottom:8px">' +
+      '<div style="font-family:Manrope,system-ui,sans-serif;font-size:9px;color:'+col+';margin-bottom:8px">' +
         (diff>0?'+':'')+diff.toFixed(1)+'% vs '+pTarget+'% target</div>' +
       '<div class="p-cat-track"><div class="p-cat-fill" style="width:'+barW+'%;background:'+col+'"></div></div>' +
       '<div class="p-cat-foot"><span>'+s.items+' items</span><span>$'+Math.round(s.net/1000)+'k recent</span></div>' +
@@ -1735,7 +1735,7 @@ function pRenderCatCards() {
 function pRenderOverview() {
   const priced = PRICING.filter(i=>i.cost_pct!=null);
   const cats = ['Draft Beer','Bottle Beer','Liquor','Wine'];
-  const catColors = ['rgba(184,134,11,0.85)','rgba(255,143,0,0.85)','rgba(76,175,80,0.85)','rgba(79,195,247,0.85)'];
+  const catColors = ['rgba(46,125,111,0.85)','rgba(201,138,27,0.85)','rgba(47,143,91,0.85)','rgba(62,111,158,0.85)'];
 
   const catStats = cats.map(cat => {
     const items = priced.filter(i=>i.category===cat);
@@ -1750,7 +1750,7 @@ function pRenderOverview() {
     data:{labels:cats, datasets:[{label:'Cost %',data:catStats,backgroundColor:catStats.map(p=>pGetColor(p,pTarget)),borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toFixed(1)}%`}}},
-      scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{callback:v=>v+'%'},max:Math.max(...catStats)*1.2}}}
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#ECE7DE'},ticks:{callback:v=>v+'%'},max:Math.max(...catStats)*1.2}}}
   });
 
   // Draft dist
@@ -1762,13 +1762,13 @@ function pRenderOverview() {
   pDraftDistInst = new Chart(document.getElementById('p-draft-dist'), {
     type:'bar',
     data:{labels:buckets, datasets:[{label:'Items',data:counts,backgroundColor:ranges.map(([lo,hi])=>pGetColor((lo+hi)/2,pTarget)),borderRadius:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw} items`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#222'},ticks:{stepSize:1}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw} items`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#ECE7DE'},ticks:{stepSize:1}}}}
   });
 
   // Top 15
   const top15 = PRICING.filter(i=>i.cost_pct>pTarget).sort((a,b)=>b.net_recent-a.net_recent).slice(0,15);
   document.getElementById('p-top15-body').innerHTML = top15.map((item,i)=>`<tr>
-    <td><span style="font-family:IBM Plex Mono;font-size:10px;color:var(--text-dim)">${i+1}</span></td>
+    <td><span style="font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim)">${i+1}</span></td>
     <td>${item.item}${item.has_stock?'<span class="stock-dot" title="In stock">●</span>':''}</td>
     <td style="color:var(--text-muted)">${item.category}</td>
     <td class="num">$${item.sell_price.toFixed(2)}</td>
@@ -1817,7 +1817,7 @@ function pRenderItems() {
       <td style="color:var(--text-muted)">${item.category}</td>
       <td class="num">$${item.sell_price.toFixed(2)}</td>
       <td class="num">${item.pour_cost?'$'+item.pour_cost.toFixed(3):'—'}</td>
-      <td class="num"><div class="p-cost-bar"><div class="p-cost-track"><div class="p-cost-fill" style="width:${barW}%;background:${pGetColor(item.cost_pct,pTarget)}"></div></div><span style="font-size:10px;font-family:IBM Plex Mono;min-width:38px;text-align:right;color:${pGetColor(item.cost_pct,pTarget)}">${item.cost_pct?item.cost_pct.toFixed(1)+'%':'—'}</span></div></td>
+      <td class="num"><div class="p-cost-bar"><div class="p-cost-track"><div class="p-cost-fill" style="width:${barW}%;background:${pGetColor(item.cost_pct,pTarget)}"></div></div><span style="font-size:10px;font-family:Manrope,system-ui,sans-serif;min-width:38px;text-align:right;color:${pGetColor(item.cost_pct,pTarget)}">${item.cost_pct?item.cost_pct.toFixed(1)+'%':'—'}</span></div></td>
       <td>${pBadge(item.cost_pct,pTarget)}</td>
       <td class="num" style="color:var(--brass-light)">$${Math.round(item.net_recent).toLocaleString()}</td>
       <td class="num">${Math.round(item.qty_recent).toLocaleString()}</td>
@@ -1839,7 +1839,7 @@ function pRenderOpportunities() {
   const all = over.map(i=>({...i,...calcGain(i)})).filter(i=>i.inc>0).sort((a,b)=>b.annualGain-a.annualGain);
 
   const rowHTML = (item,i) => `<tr>
-    <td style="font-family:IBM Plex Mono;font-size:10px;color:var(--text-dim)">${i+1}</td>
+    <td style="font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim)">${i+1}</td>
     <td>${item.item}${item.has_stock?'<span class="stock-dot">●</span>':''}</td>
     <td style="color:var(--text-muted)">${item.category}</td>
     <td class="num">$${item.sell_price.toFixed(2)}</td>
@@ -1847,7 +1847,7 @@ function pRenderOpportunities() {
     <td class="num" style="color:var(--amber)">+$${item.inc.toFixed(2)}</td>
     <td class="num">${pBadge(item.cost_pct,pTarget)}</td>
     <td class="num">${Math.round(item.qty_recent).toLocaleString()}</td>
-    <td class="num" style="color:#4CAF50">+$${Math.round(item.annualGain).toLocaleString()}/yr</td>
+    <td class="num" style="color:#2F8F5B">+$${Math.round(item.annualGain).toLocaleString()}/yr</td>
   </tr>`;
   document.getElementById('p-quickwins-body').innerHTML = qw.slice(0,20).map(rowHTML).join('');
   document.getElementById('p-allover-body').innerHTML = all.slice(0,30).map(rowHTML).join('');
@@ -1871,7 +1871,7 @@ function pRenderSimKPIs() {
   document.getElementById('p-sim-current').textContent = current.toFixed(1)+'%';
   const sn = document.getElementById('p-sim-new');
   sn.textContent = simmed.toFixed(1)+'%';
-  sn.style.color = simmed<=pTarget?'#4CAF50':simmed<current?'#FF8F00':'#E53935';
+  sn.style.color = simmed<=pTarget?'#2F8F5B':simmed<current?'#C98A1B':'#C2453A';
   document.getElementById('p-sim-changed').textContent = changed.length;
   document.getElementById('p-sim-gain').textContent = (gain>=0?'+':'')+'$'+Math.round(Math.abs(gain)/1000)+'k';
   document.getElementById('p-sim-avg').textContent = (avgInc>=0?'+':'')+'$'+Math.abs(avgInc).toFixed(2);
@@ -1891,7 +1891,7 @@ function pRenderSim() {
     const simCostPct = item.pour_cost?(item.pour_cost/simP*100):null;
     const impact = (simP-item.sell_price)*item.qty_recent*3;
     const changed = pSimPrices[item.item]!=null&&pSimPrices[item.item]!==item.sell_price;
-    return `<tr style="${changed?'background:rgba(184,134,11,0.05)':''}">
+    return `<tr style="${changed?'background:rgba(46,125,111,0.05)':''}">
       <td>${item.item}${item.has_stock?'<span class="stock-dot">●</span>':''}</td>
       <td style="color:var(--text-muted)">${item.category}</td>
       <td class="num">$${item.pour_cost.toFixed(3)}</td>
@@ -1903,7 +1903,7 @@ function pRenderSim() {
       <td class="num" style="color:${simCostPct?pGetColor(simCostPct,pTarget):'var(--text-dim)'}">
         ${simCostPct?simCostPct.toFixed(1)+'%':'—'}</td>
       <td class="num">${Math.round(item.qty_recent).toLocaleString()}</td>
-      <td class="num" style="color:${impact>=0?'#4CAF50':'#E53935'}">${impact>=0?'+':''}$${Math.round(Math.abs(impact)).toLocaleString()}/yr</td>
+      <td class="num" style="color:${impact>=0?'#2F8F5B':'#C2453A'}">${impact>=0?'+':''}$${Math.round(Math.abs(impact)).toLocaleString()}/yr</td>
     </tr>`;
   }).join('');
   pRenderSimKPIs();
