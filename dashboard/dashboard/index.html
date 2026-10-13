@@ -169,7 +169,7 @@ header{background:var(--dark-2);border-bottom:1px solid var(--border);padding:0 
 .p-cat-card{background:var(--dark-2);border:1px solid var(--border);padding:16px;position:relative;}
 .p-cat-pct{font-family:'Bricolage Grotesque',system-ui,sans-serif,sans-serif;font-size:34px;line-height:1;margin-bottom:4px;}
 .p-cat-label{font-family:Manrope,system-ui,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
-.p-cat-track{height:5px;background:var(--dark-4);margin-bottom:8px;}
+.p-cat-track{overflow:hidden;height:5px;background:var(--dark-4);margin-bottom:8px;}
 .p-cat-fill{height:100%;transition:width 0.5s;}
 .p-cat-foot{display:flex;justify-content:space-between;font-family:Manrope,system-ui,sans-serif;font-size:9px;color:var(--text-dim);}
 .p-pills{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto;}
@@ -241,6 +241,44 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
 ::-webkit-scrollbar-track{background:var(--dark-2);}
 ::-webkit-scrollbar-thumb{background:var(--border);}
 ::-webkit-scrollbar-thumb:hover{background:var(--brass);}
+
+/* ---------- phones & tablets ---------- */
+@media (max-width: 1100px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .yoy-metrics{grid-template-columns:repeat(3,1fr);}
+  .chart-grid-4{grid-template-columns:1fr 1fr;}
+  .month-grid,.p-cat-cards,.inv-stats{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width: 760px){
+  header{height:auto;padding:14px 16px;flex-wrap:wrap;gap:10px;position:static;}
+  .logo{gap:10px;}
+  .logo-icon{width:30px;height:30px;}
+  .logo h1{font-size:17px;letter-spacing:1.5px;}
+  .header-right{width:100%;justify-content:space-between;gap:10px;}
+  .header-meta{text-align:left;font-size:10px;}
+  .tabs{padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:0;z-index:90;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{padding:12px 12px;white-space:nowrap;flex:none;}
+  .page{padding:18px 14px;}
+  .yoy-cards,.chart-grid-2,.chart-grid-3,.chart-grid-4{grid-template-columns:1fr;}
+  .kpi-grid,.yoy-metrics,.month-grid,.p-cat-cards,.inv-stats{grid-template-columns:1fr 1fr;gap:10px;}
+  .heat-grid{gap:3px;}
+  .data-source{font-size:11px;line-height:1.7;}
+  table{font-size:12px;}
+  .tab-content [style*="overflow"]{max-width:100%;}
+  canvas{max-width:100% !important;}
+  .loading-bar-track{width:min(320px,80vw);}
+  .yoy-cards>*,.kpi-grid>*,.yoy-metrics>*,.chart-grid-2>*,.chart-grid-3>*,.chart-grid-4>*,.month-grid>*,.p-cat-cards>*,.inv-stats>*{min-width:0;}
+  .chart-box{min-width:0;overflow:hidden;}
+  table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;}
+  .heat-cell{min-width:0;padding:6px 2px !important;}
+  .heat-cell .day-sub{display:none;}
+  .heat-cell .day-name,.heat-cell .day-sales,.heat-cell .day-sub{font-size:9px !important;letter-spacing:0 !important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+}
+@media (max-width: 420px){
+  .kpi-grid,.yoy-metrics{grid-template-columns:1fr 1fr;}
+  .month-grid,.p-cat-cards,.inv-stats{grid-template-columns:1fr;}
+}
 </style>
 <style>
 .demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
@@ -261,16 +299,14 @@ footer{border-top:1px solid var(--border);padding:16px 32px;display:flex;justify
 <div id="loading-screen">
   <div class="loading-logo">COPPER STILL <span>TAPROOM</span></div>
   <div class="loading-bar-track"><div class="loading-bar-fill" id="loading-bar"></div></div>
-  <div class="loading-status" id="loading-status">Connecting to data...</div>
-  <div class="loading-files" id="loading-files"></div>
+  <div class="loading-status" id="loading-status">Getting your numbers ready…</div>
 </div>
 
 <!-- ERROR SCREEN -->
 <div id="error-screen">
-  <div class="error-title">⚠ Data Load Failed</div>
-  <div class="error-msg">Could not fetch CSV files from GitHub. Make sure your files are uploaded to:<br><strong>BHERRIN7/Landing_Page/dashboard/data/</strong></div>
-  <div class="error-files" id="error-files"></div>
-  <div style="margin-top:16px;font-family:Manrope,system-ui,sans-serif;font-size:10px;color:var(--text-dim)">Check the browser console for details.</div>
+  <div class="error-title">The dashboard didn't load</div>
+  <div class="error-msg">Check your connection and refresh the page.</div>
+  <div class="error-files" id="error-files" hidden></div>
 </div>
 
 <!-- MAIN APP (hidden until loaded) -->
@@ -878,6 +914,7 @@ async function fetchCSV(key) {
 // ═══════════════════════════════════════════════
 // LOAD ALL FILES
 // ═══════════════════════════════════════════════
+const LOAD_STEPS = ['Pulling sales history…','Comparing to last year…','Sorting the sales mix…','Checking guest traffic…','Lining up the monthly numbers…','Crunching pour costs…'];
 async function loadAll() {
   const keys = Object.keys(FILES);
   const total = keys.length;
@@ -886,7 +923,7 @@ async function loadAll() {
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
-    setLoading(`Loading ${FILES[key]}...`, ((i+1)/total*100));
+    setLoading(LOAD_STEPS[Math.min(LOAD_STEPS.length-1, Math.floor(i/total*LOAD_STEPS.length))], ((i+1)/total*100));
     try {
       results[key] = await fetchCSV(key);
     } catch(e) {
@@ -896,14 +933,13 @@ async function loadAll() {
   }
 
   if (failed.length > 3) {
-    document.getElementById('error-files').innerHTML =
-      'Missing files:<br>' + failed.join('<br>');
+    console.warn('Missing data:', failed);
     document.getElementById('error-screen').style.display = 'flex';
     document.getElementById('loading-screen').style.display = 'none';
     return;
   }
 
-  setLoading('Building dashboard...', 100);
+  setLoading('Almost there…', 100);
   setTimeout(() => buildDashboard(results), 300);
 }
 
@@ -950,7 +986,7 @@ function buildDashboard(D) {
   document.getElementById('header-date-range').innerHTML = `<strong>${fmt(minDate)} — ${fmt(maxDate)}</strong>`;
   document.getElementById('last-updated').textContent = fmt(maxDate);
   document.getElementById('rev-date-range').textContent = `${fmt(minDate)} — ${fmt(maxDate)} · ${sbd.length} trading days`;
-  document.getElementById('footer-range').textContent = `DATA: ${fmt(minDate)} — ${fmt(maxDate)}`;
+  document.getElementById('footer-range').textContent = `Through ${fmt(maxDate)}`;
 
   // ── YOY Banner ──────────────────────────────
   // Year cards
