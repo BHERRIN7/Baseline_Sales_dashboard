@@ -168,7 +168,21 @@
   .pp-head{display:flex;align-items:center;gap:9px;padding:10px 12px;font-size:13px;font-weight:700;font-family:system-ui,sans-serif}
   .pp-av{width:30px;height:30px;border-radius:50%;background:#2E7D6F url(icon.png) center/cover;flex:none}
   .pp-head small{display:block;font-weight:400;color:#666;font-size:11px}
-  .post-preview canvas{display:block;width:100%;height:auto}
+  .slide-strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#0f2a26}
+  .slide-strip::-webkit-scrollbar{display:none}
+  .slide-strip canvas{flex:0 0 100%;width:100%;height:auto;scroll-snap-align:start;display:block}
+  .slide-dots{display:flex;align-items:center;gap:6px;justify-content:center;padding:10px 12px 0;font-family:system-ui,sans-serif}
+  .slide-dots span{width:7px;height:7px;border-radius:50%;background:#C9CFCC}
+  .slide-dots span.on{background:#2E7D6F}
+  .slide-dots em{font-style:normal;font-size:12px;color:#666;margin-left:8px}
+  .photo-row{margin:0 0 12px}
+  .photo-btn{display:flex;align-items:center;justify-content:center;width:100%;cursor:pointer;border-style:dashed}
+  .photo-tools{display:flex;align-items:center;gap:10px;margin:-2px 0 12px;font-size:13px;color:var(--muted)}
+  .photo-tools[hidden]{display:none}
+  .photo-tools input[type=range]{flex:1;accent-color:var(--brass)}
+  .linkish{background:none;border:0;color:var(--brass-bright);font:inherit;font-weight:700;font-size:13px;cursor:pointer;padding:4px}
+  .post-check{list-style:none;margin:12px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font-size:13px;color:var(--muted);display:grid;gap:4px}
+  .post-check li.warn{color:#C2453A;font-weight:700}
   .pp-cap{padding:10px 12px 14px;font-family:system-ui,sans-serif;font-size:13.5px;line-height:1.45;white-space:pre-wrap;color:#111}
   .pp-cap b{font-weight:700}
   .post-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
@@ -297,26 +311,36 @@
   </section>
 
   <div class="scrim" id="postScrim"></div>
-  <section class="modal post-modal" id="postModal" role="dialog" aria-modal="true" aria-label="Social post generator">
+  <section class="modal post-modal" id="postModal" role="dialog" aria-modal="true" aria-label="Social post builder">
     <button class="m-close" id="postClose" aria-label="Close">×</button>
-    <h2>Social Post</h2>
-    <p class="m-sub">Built automatically from the cocktail sheet: graphic, caption, and hashtags. Pick a platform, then copy, download, or schedule.</p>
+    <h2>This week's post</h2>
+    <p class="m-sub">Add a photo of the drink at your bar. The slides and caption are built from the recipe sheet.</p>
+    <div class="photo-row">
+      <label class="btn btn-ghost photo-btn"><input type="file" id="photoInput" accept="image/*" capture="environment" hidden><span id="photoBtnText">Add a photo of the drink</span></label>
+    </div>
+    <div class="photo-tools" id="photoTools" hidden>
+      <label for="photoShift">Move photo</label>
+      <input type="range" id="photoShift" min="-50" max="50" value="0">
+      <button class="linkish" id="photoRemove" type="button">Remove photo</button>
+    </div>
     <div class="post-tabs chips" id="postTabs">
       <button class="chip" data-p="ig" aria-pressed="true">Instagram</button>
       <button class="chip" data-p="fb" aria-pressed="false">Facebook</button>
       <button class="chip" data-p="story" aria-pressed="false">Story</button>
     </div>
     <div class="post-preview">
-      <div class="pp-head"><span class="pp-av"></span><span>copperstilltaproom<small id="ppSub">Sponsored · Demo</small></span></div>
-      <canvas id="postCanvas" width="1080" height="1350" aria-label="Generated post graphic"></canvas>
+      <div class="pp-head"><span class="pp-av"></span><span>copperstilltaproom<small id="ppSub">Instagram</small></span></div>
+      <div class="slide-strip" id="slideStrip" tabindex="0" aria-label="Post slides, swipe to see each one"></div>
+      <div class="slide-dots" id="slideDots"></div>
       <div class="pp-cap" id="ppCap"></div>
     </div>
+    <ul class="post-check" id="postCheck" aria-label="Alcohol advertising check"></ul>
     <div class="post-actions">
       <button class="btn btn-ghost" id="postCopy">Copy caption</button>
-      <button class="btn btn-ghost" id="postDownload">Download image</button>
-      <button class="btn btn-primary btn-wide" id="postSchedule">Schedule for Monday 11:00 AM</button>
+      <button class="btn btn-ghost" id="postDownload">Download images</button>
+      <button class="btn btn-primary btn-wide" id="postSchedule">Send to owner to approve</button>
     </div>
-    <div class="post-sched" id="postNote">In the live version this posts through Meta Business Suite or a scheduler. The demo doesn't publish anything.</div>
+    <div class="post-sched">Demo only: nothing is posted or sent.</div>
   </section>
   <div class="toast" id="toast"></div>
 
@@ -677,106 +701,211 @@ hqInput.oninput = () => { hQuery = hqInput.value.trim(); hclearBtn.style.display
 hclearBtn.onclick = () => { hqInput.value=""; hQuery=""; hclearBtn.style.display="none"; renderHouse(); hqInput.focus(); };
 
 
-/* ── Social post generator ─────────────────────────────── */
-let postDrink = null, postFmt = "ig";
+/* ── Social post builder: photo carousel ───────────────── */
+let postDrink = null, postFmt = "ig", postPhoto = null, photoShift = 0, slideIdx = 0;
 const postModal = document.getElementById("postModal"), postScrim = document.getElementById("postScrim");
-const postCanvas = document.getElementById("postCanvas");
+const strip = document.getElementById("slideStrip");
 
-function plainIngredients(d) {
-  const parts = (d.ingredients||"").split(" | ").map(x => x
+/* Georgia: no spirit pour sizes or alcohol content in public posts, no coupons, no timed specials. */
+function publicSafe(t) {
+  return String(t||"")
+    .replace(/\b\d+(\.\d+)?\s*(oz|ounces?|ml|shots?|cl)\b\.?/gi, "")
+    .replace(/\b\d+(\.\d+)?\s*%\s*(abv|alc\.?)?/gi, "")
+    .replace(/\b(double|strong|stiff|extra pour|heavy pour)\b/gi, "")
+    .replace(/\s{2,}/g, " ").replace(/\s+([,.;])/g, "$1").trim();
+}
+const RISKY = [
+  {re:/\b\d+(\.\d+)?\s*(oz|ounces?|ml|shots?|cl)\b|\babv\b|\b\d+(\.\d+)?\s*%/i, ok:"No pour sizes or alcohol content", bad:"Mentions a pour size or alcohol content"},
+  {re:/\b(coupon|promo code|show this|\$\d+\s*off|% off|bogo|buy one|free drink)\b/i, ok:"No coupons or giveaways", bad:"Looks like a coupon or giveaway"},
+  {re:/\b(happy hour|\d{1,2}\s*(–|-|to)\s*\d{1,2}\s*(pm|am)|until \d|all you can drink|unlimited)\b/i, ok:"No timed or unlimited drink specials", bad:"Mentions a timed or unlimited special"},
+];
+function ingredientList(d) {
+  return (d.ingredients||"").split(" | ").map(x => publicSafe(x
     .replace(/^\s*(top with|top|splash of|fill with)\s+/i,"")
     .replace(/^\s*[\d.\/]+\s*(oz|ml|dash(es)?|leaves|leaf|slices?|coins?|cups?|bottle|l)\b\.?\s*(\([^)]*\)\s*)?/i,"")
-    .replace(/^\s*\d+\s+/,"")
-    .replace(/\s*\([^)]*\)/g,"").trim()).filter(Boolean);
-  if (parts.length <= 1) return parts.join("");
-  return parts.slice(0,-1).join(", ") + " and " + parts[parts.length-1];
+    .replace(/^\s*\d+\s+/,"").replace(/\s*\([^)]*\)/g,""))).filter(Boolean)
+    .map(s => s.charAt(0).toUpperCase() + s.slice(1));
+}
+function plainIngredients(d) {
+  const p = ingredientList(d).map(s => s.toLowerCase());
+  return p.length <= 1 ? p.join("") : p.slice(0,-1).join(", ") + " and " + p[p.length-1];
+}
+function hookFor(d) {
+  const first = (d.science||"").split(/(?<=\.)\s/)[0] || "";
+  return (first && !/\d/.test(first)) ? first : `A ${String(d.family||"cocktail").toLowerCase()} made for ${d.occasion}.`;
 }
 function hashtagsFor(d) {
   const base = {whiskey:["#Bourbon","#WhiskeyCocktails"],agave:["#Tequila","#Mezcal"],gin:["#GinCocktails"],rum:["#RumCocktails","#Tiki"],vodka:["#VodkaCocktails"],beer:["#BeerCocktails"],other:["#CraftCocktails"]}[d.cat]||[];
-  const name = "#" + d.name.replace(/[^A-Za-z0-9]/g,"");
-  return ["#CopperStillTaproom","#DrinkOfTheWeek",name,...base,"#CocktailsOfInstagram"].join(" ");
+  return ["#CopperStillTaproom","#DrinkOfTheWeek","#" + d.name.replace(/[^A-Za-z0-9]/g,""),...base,"#CraftCocktails"].join(" ");
+}
+function whenText(d) {
+  return isCurrentWeek(d) ? "this week only" : "the week of " + new Date(d.week+"T00:00:00").toLocaleDateString(undefined,{month:"long",day:"numeric"});
 }
 function captionFor(d, fmt) {
-  const isThis = isCurrentWeek(d);
-  const when = isThis ? "this week only" : "the week of " + new Date(d.week+"T00:00:00").toLocaleDateString(undefined,{month:"long",day:"numeric"});
-  const emoji = d.garnishEmoji || "🍸";
-  const ing = plainIngredients(d);
-  const hook = `The perfect ${d.occasion} pour.`;
-  const garnish = (d.garnish||"").replace(/\s*\([^)]*\)/g,"");
-  const gl = garnish.charAt(0).toLowerCase() + garnish.slice(1);
-  if (fmt === "story") return `${emoji} DRINK OF THE WEEK\n${d.name}\n${DOW_PRICE} · ${when}`;
-  if (fmt === "fb") return `${emoji} Drink of the Week: ${d.name}\n\n${ing.charAt(0).toUpperCase()+ing.slice(1)}, finished with ${gl}. ${hook}\n\nIt's ${DOW_PRICE} ${when}. Come grab one at the bar and tell us what you think!\n\n${hashtagsFor(d).split(" ").slice(0,3).join(" ")}`;
-  return `${emoji} Drink of the Week: ${d.name}\n\n${ing.charAt(0).toUpperCase()+ing.slice(1)}. ${hook}\n\n${DOW_PRICE} ${when} 🍻\n.\n.\n${hashtagsFor(d)}`;
+  const emoji = d.garnishEmoji || "🍸", ing = plainIngredients(d);
+  const lead = ing.charAt(0).toUpperCase() + ing.slice(1);
+  let t;
+  if (fmt === "story") t = `${emoji} Drink of the Week: ${d.name}\n${DOW_PRICE}, ${whenText(d)}`;
+  else if (fmt === "fb") t = `${emoji} Drink of the Week: ${d.name}\n\n${lead}. ${hookFor(d)}\n\nIt's ${DOW_PRICE} ${whenText(d)}. Ask your bartender for the Drink of the Week.\n\n${hashtagsFor(d).split(" ").slice(0,3).join(" ")}`;
+  else t = `${emoji} Drink of the Week: ${d.name}\n\nSwipe for what's in it ➡️\n\n${lead}. ${hookFor(d)}\n\n${DOW_PRICE} ${whenText(d)}.\n.\n.\n${hashtagsFor(d)}`;
+  return t.split("\n").map(publicSafe).join("\n");
 }
 
 function wrapLines(ctx, text, maxW) {
-  const words = text.split(" "), lines = []; let line = "";
+  const words = String(text).split(" "), lines = []; let line = "";
   words.forEach(w => { const t = line ? line+" "+w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
   if (line) lines.push(line);
   return lines;
 }
-function drawPost(d, fmt) {
-  const W = 1080, H = fmt === "story" ? 1920 : fmt === "fb" ? 1080 : 1350;
-  postCanvas.width = W; postCanvas.height = H;
-  const c = postCanvas.getContext("2d");
-  // background
+function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function tealBg(c, W, H) {
   const g = c.createRadialGradient(W/2, -H*0.1, 50, W/2, H*0.3, H);
   g.addColorStop(0,"#3A9A89"); g.addColorStop(0.55,"#24685D"); g.addColorStop(1,"#173F39");
   c.fillStyle = g; c.fillRect(0,0,W,H);
-  // frame
-  c.strokeStyle = "rgba(242,198,168,.85)"; c.lineWidth = 3; c.strokeRect(48,48,W-96,H-96);
-  c.strokeStyle = "rgba(255,255,255,.25)"; c.lineWidth = 1.5; c.strokeRect(64,64,W-128,H-128);
-  c.textAlign = "center"; c.textBaseline = "alphabetic";
-  const cx = W/2; let y = fmt === "story" ? 330 : fmt === "fb" ? 170 : 200;
-  c.fillStyle = "#F2C6A8"; c.font = "800 30px Manrope, sans-serif";
-  c.fillText("D R I N K   O F   T H E   W E E K", cx, y);
-  // emoji
-  y += fmt === "fb" ? 150 : 210;
-  c.font = (fmt === "fb" ? 130 : 180) + "px serif"; c.fillText(d.garnishEmoji || "🍸", cx, y);
-  // name
-  y += fmt === "fb" ? 135 : 150;
-  c.fillStyle = "#FFFFFF";
-  const size = Math.round((d.name.length > 22 ? 88 : 104) * (fmt === "fb" ? 0.86 : 1));
-  c.font = `800 ${size}px 'Bricolage Grotesque', sans-serif`;
-  const lines = wrapLines(c, d.name, W - 220);
-  lines.forEach((ln,i) => c.fillText(ln, cx, y + i*size*1.02));
-  y += (lines.length-1)*size*1.02 + 70;
-  // base · occasion
-  c.fillStyle = "rgba(255,255,255,.82)"; c.font = "600 38px Manrope, sans-serif";
-  c.fillText(`${d.base}  ·  ${d.occasion}`, cx, y);
-  // divider
-  y += 60; c.strokeStyle = "rgba(242,198,168,.7)"; c.lineWidth = 2;
-  c.beginPath(); c.moveTo(cx-120,y); c.lineTo(cx+120,y); c.stroke();
-  // ingredients
-  if (fmt !== "fb") {
-    y += 80; c.fillStyle = "#FFFFFF"; c.font = "500 40px Manrope, sans-serif";
-    const ing = plainIngredients(d);
-    const il = wrapLines(c, ing.charAt(0).toUpperCase()+ing.slice(1), W - 260).slice(0,3);
-    il.forEach((ln,i)=> c.fillText(ln, cx, y + i*54));
-    y += (il.length-1)*54;
-  }
-  // price badge
-  const by = fmt === "story" ? Math.min(H - 420, y + 260) : H - (fmt === "fb" ? 230 : 300);
-  const badge = isCurrentWeek(d) ? `${DOW_PRICE} THIS WEEK` : DOW_PRICE;
-  c.font = "700 56px Manrope, sans-serif";
-  const bw = Math.min(W - 200, c.measureText(badge).width + 130), bh = 110;
-  c.fillStyle = "#B65A32"; roundRect(c, cx-bw/2, by-bh/2, bw, bh, 55); c.fill();
-  c.fillStyle = "#FFFFFF"; c.textBaseline = "middle";
-  c.fillText(badge, cx, by+2);
-  c.textBaseline = "alphabetic";
-  // footer
-  c.fillStyle = "rgba(255,255,255,.7)"; c.font = "800 28px Manrope, sans-serif";
-  c.fillText("C O P P E R   S T I L L   T A P R O O M", cx, H - (fmt === "story" ? 200 : 120));
 }
-function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function drawPhoto(c, W, H, y0, h, dim) {
+  const img = postPhoto, s = Math.max(W/img.width, h/img.height);
+  const dw = img.width*s, dh = img.height*s;
+  const dx = (W-dw)/2, dy = y0 + (h-dh)/2 + (dh-h)/2 * (photoShift/50);
+  c.save(); c.beginPath(); c.rect(0,y0,W,h); c.clip(); c.drawImage(img, dx, dy, dw, dh);
+  if (dim) { c.fillStyle = `rgba(16,40,36,${dim})`; c.fillRect(0,y0,W,h); }
+  c.restore();
+}
+function label(c, text, x, y, align) {
+  c.textAlign = align || "left"; c.fillStyle = "#F2C6A8"; c.font = "800 30px Manrope, sans-serif";
+  c.fillText(text.split("").join(String.fromCharCode(8202)), x, y);
+}
+function pricePill(c, text, x, y, align) {
+  c.font = "800 50px Manrope, sans-serif";
+  const w = c.measureText(text).width + 90, h = 100, left = align === "center" ? x - w/2 : x;
+  c.fillStyle = "#B65A32"; roundRect(c, left, y - h/2, w, h, 50); c.fill();
+  c.fillStyle = "#FFFFFF"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(text, left + w/2, y + 2); c.textBaseline = "alphabetic";
+}
+function nameBlock(c, d, x, y, maxW, align, size) {
+  c.textAlign = align; c.fillStyle = "#FFFFFF"; c.font = `800 ${size}px 'Bricolage Grotesque', sans-serif`;
+  const lines = wrapLines(c, d.name, maxW).slice(0,3);
+  lines.forEach((ln,i) => c.fillText(ln, x, y + i*size*1.0));
+  return y + (lines.length-1)*size;
+}
 
+/* Slide 1: the photo (or the branded cover if there's no photo yet) */
+function slideCover(c, d, W, H) {
+  const badge = isCurrentWeek(d) ? `${DOW_PRICE} this week` : DOW_PRICE;
+  if (postPhoto) {
+    drawPhoto(c, W, H, 0, H, 0);
+    const g = c.createLinearGradient(0, H*0.45, 0, H);
+    g.addColorStop(0,"rgba(16,40,36,0)"); g.addColorStop(1,"rgba(16,40,36,.92)");
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+    const size = d.name.length > 22 ? 92 : 110;
+    const lines = (c.font = `800 ${size}px 'Bricolage Grotesque', sans-serif`, wrapLines(c, d.name, W-160).slice(0,3)).length;
+    const top = H - 150 - 70 - (lines-1)*size - 40;
+    label(c, "DRINK OF THE WEEK", 80, top - size - 10);
+    nameBlock(c, d, 80, top, W-160, "left", size);
+    pricePill(c, badge, 80, H - 150, "left");
+    return;
+  }
+  tealBg(c, W, H);
+  c.strokeStyle = "rgba(242,198,168,.85)"; c.lineWidth = 3; c.strokeRect(48,48,W-96,H-96);
+  const cx = W/2; let y = H*0.17;
+  label(c, "DRINK OF THE WEEK", cx, y, "center");
+  c.textAlign = "center"; c.font = "190px serif"; c.fillText(d.garnishEmoji || "🍸", cx, y + 250);
+  const end = nameBlock(c, d, cx, y + 420, W-200, "center", d.name.length > 22 ? 92 : 108);
+  c.fillStyle = "rgba(255,255,255,.82)"; c.font = "600 38px Manrope, sans-serif"; c.textAlign = "center";
+  c.fillText(`${d.base}, made for ${d.occasion}`, cx, end + 85);
+  pricePill(c, badge, cx, H - 230, "center");
+}
+/* Slide 2: what's in it */
+function slideInside(c, d, W, H) {
+  tealBg(c, W, H);
+  label(c, "WHAT'S IN IT", 90, 170);
+  c.fillStyle = "#FFFFFF"; c.textAlign = "left"; c.font = "800 84px 'Bricolage Grotesque', sans-serif";
+  wrapLines(c, d.name, W-180).slice(0,2).forEach((ln,i)=> c.fillText(ln, 90, 270 + i*84));
+  const items = ingredientList(d).slice(0,6);
+  let y = H > 1200 ? 520 : 480;
+  const gap = H > 1200 ? 104 : 86;
+  items.forEach(t => {
+    c.fillStyle = "#F2C6A8"; c.beginPath(); c.arc(108, y - 16, 10, 0, Math.PI*2); c.fill();
+    c.fillStyle = "#FFFFFF"; c.font = "600 50px Manrope, sans-serif"; c.fillText(wrapLines(c, t, W-260)[0], 145, y);
+    y += gap;
+  });
+  if (d.garnish) {
+    c.fillStyle = "rgba(255,255,255,.75)"; c.font = "500 40px Manrope, sans-serif";
+    c.fillText("Finished with " + publicSafe(d.garnish.replace(/\s*\([^)]*\)/g,"")).toLowerCase(), 90, Math.min(H - 120, y + 50));
+  }
+}
+/* Slide 3: why you'll like it */
+function slideWhy(c, d, W, H) {
+  if (postPhoto) { drawPhoto(c, W, H, 0, H, 0.78); } else tealBg(c, W, H);
+  label(c, "WHY IT WORKS", 90, H*0.3);
+  c.fillStyle = "#FFFFFF"; c.textAlign = "left"; c.font = "700 66px 'Bricolage Grotesque', sans-serif";
+  const lines = wrapLines(c, publicSafe(hookFor(d)), W-180).slice(0,6);
+  lines.forEach((ln,i)=> c.fillText(ln, 90, H*0.3 + 110 + i*78));
+}
+/* Slide 4: come get one */
+function slideVisit(c, d, W, H) {
+  tealBg(c, W, H);
+  const cx = W/2;
+  label(c, isCurrentWeek(d) ? "THIS WEEK ONLY" : "COMING UP", cx, H*0.28, "center");
+  c.fillStyle = "#FFFFFF"; c.textAlign = "center"; c.font = "800 96px 'Bricolage Grotesque', sans-serif";
+  ["Ask your bartender","for the Drink","of the Week"].forEach((t,i)=> c.fillText(t, cx, H*0.28 + 130 + i*100));
+  pricePill(c, DOW_PRICE, cx, H*0.28 + 500, "center");
+  c.fillStyle = "rgba(255,255,255,.75)"; c.font = "800 30px Manrope, sans-serif";
+  c.fillText("COPPER STILL TAPROOM".split("").join(String.fromCharCode(8202)), cx, H - 110);
+}
+/* Story: one tall slide */
+function slideStory(c, d, W, H) {
+  tealBg(c, W, H);
+  if (postPhoto) {
+    drawPhoto(c, W, H, 0, H*0.58, 0);
+    const g = c.createLinearGradient(0, H*0.38, 0, H*0.58); g.addColorStop(0,"rgba(23,63,57,0)"); g.addColorStop(1,"rgba(23,63,57,1)");
+    c.fillStyle = g; c.fillRect(0, H*0.38, W, H*0.2);
+  } else { c.textAlign = "center"; c.font = "260px serif"; c.fillText(d.garnishEmoji || "🍸", W/2, H*0.4); }
+  label(c, "DRINK OF THE WEEK", W/2, H*0.64, "center");
+  const end = nameBlock(c, d, W/2, H*0.64 + 120, W-160, "center", d.name.length > 22 ? 92 : 108);
+  pricePill(c, isCurrentWeek(d) ? `${DOW_PRICE} this week` : DOW_PRICE, W/2, Math.min(H - 260, end + 170), "center");
+}
+
+function slidesFor(fmt) {
+  if (fmt === "story") return [{name:"Story", draw:slideStory, w:1080, h:1920}];
+  const h = fmt === "fb" ? 1080 : 1350;
+  return [
+    {name:"Cover", draw:slideCover, w:1080, h},
+    {name:"What's in it", draw:slideInside, w:1080, h},
+    {name:"Why it works", draw:slideWhy, w:1080, h},
+    {name:"Come get one", draw:slideVisit, w:1080, h},
+  ];
+}
 function renderPost() {
   if (!postDrink) return;
-  drawPost(postDrink, postFmt);
+  const list = slidesFor(postFmt);
+  strip.innerHTML = "";
+  list.forEach((s, i) => {
+    const cv = document.createElement("canvas");
+    cv.width = s.w; cv.height = s.h; cv.setAttribute("aria-label", `Slide ${i+1}: ${s.name}`);
+    s.draw(cv.getContext("2d"), postDrink, s.w, s.h);
+    strip.appendChild(cv);
+  });
+  slideIdx = 0; strip.scrollLeft = 0; updateDots();
   const cap = captionFor(postDrink, postFmt);
   document.getElementById("ppCap").innerHTML = "<b>copperstilltaproom</b> " + esc(cap);
-  document.getElementById("ppSub").textContent = postFmt === "fb" ? "Facebook · Demo" : postFmt === "story" ? "Story · Demo" : "Instagram · Demo";
+  document.getElementById("ppSub").textContent = postFmt === "fb" ? "Facebook" : postFmt === "story" ? "Story" : "Instagram";
+  const n = list.length;
+  document.getElementById("postDownload").textContent = n > 1 ? `Download ${n} images` : "Download image";
+  // compliance check on everything that goes public
+  const publicText = cap + " " + ingredientList(postDrink).join(" ") + " " + hookFor(postDrink);
+  document.getElementById("postCheck").innerHTML = RISKY.map(r => r.re.test(publicText)
+    ? `<li class="warn">⚠️ ${r.bad}. Edit before posting.</li>` : `<li>✓ ${r.ok}</li>`).join("");
+  document.getElementById("photoTools").hidden = !postPhoto;
 }
+function updateDots() {
+  const n = strip.children.length;
+  document.getElementById("slideDots").innerHTML = n > 1 ? [...Array(n)].map((_,i)=>`<span class="${i===slideIdx?'on':''}"></span>`).join("") + `<em>${slideIdx+1} of ${n}: ${slidesFor(postFmt)[slideIdx].name}</em>` : "";
+}
+strip.addEventListener("scroll", () => {
+  const i = Math.round(strip.scrollLeft / strip.clientWidth);
+  if (i !== slideIdx) { slideIdx = i; updateDots(); }
+}, {passive:true});
+
 function openPost(d) {
   postDrink = d || currentDrink();
   if (!postDrink) return;
@@ -797,19 +926,37 @@ document.querySelectorAll("#postTabs .chip").forEach(b => b.onclick = () => {
   document.querySelectorAll("#postTabs .chip").forEach(x => x.setAttribute("aria-pressed", x === b));
   renderPost();
 });
+document.getElementById("photoInput").onchange = e => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  const img = new Image();
+  img.onload = () => { postPhoto = img; photoShift = 0; document.getElementById("photoShift").value = 0;
+    document.getElementById("photoBtnText").textContent = "Change photo"; renderPost(); showToast("Photo added to the cover and slide 3"); };
+  img.onerror = () => showToast("That file didn't open as a photo. Try a JPG or PNG.");
+  img.src = URL.createObjectURL(f);
+  e.target.value = "";
+};
+document.getElementById("photoShift").oninput = e => { photoShift = +e.target.value; renderPost(); };
+document.getElementById("photoRemove").onclick = () => {
+  postPhoto = null; document.getElementById("photoBtnText").textContent = "Add a photo of the drink"; renderPost();
+};
 document.getElementById("postCopy").onclick = async () => {
-  try { await navigator.clipboard.writeText(captionFor(postDrink, postFmt)); showToast("Caption copied 📋"); }
+  try { await navigator.clipboard.writeText(captionFor(postDrink, postFmt)); showToast("Caption copied"); }
   catch(e) { showToast("Copy is blocked here. Open the app in its own tab."); }
 };
-document.getElementById("postDownload").onclick = () => {
-  const a = document.createElement("a");
-  a.href = postCanvas.toDataURL("image/png");
-  a.download = postDrink.name.replace(/[^A-Za-z0-9]+/g,"-").toLowerCase() + "-" + postFmt + ".png";
-  document.body.appendChild(a); a.click(); a.remove();
+document.getElementById("postDownload").onclick = async () => {
+  const cvs = [...strip.querySelectorAll("canvas")], base = postDrink.name.replace(/[^A-Za-z0-9]+/g,"-").toLowerCase();
+  for (let i = 0; i < cvs.length; i++) {
+    const a = document.createElement("a");
+    a.href = cvs[i].toDataURL("image/jpeg", 0.92);
+    a.download = `${base}-${postFmt}${cvs.length>1 ? "-" + (i+1) : ""}.jpg`;
+    document.body.appendChild(a); a.click(); a.remove();
+    await new Promise(r => setTimeout(r, 350));
+  }
+  showToast(cvs.length > 1 ? `Downloaded ${cvs.length} images, in posting order` : "Image downloaded");
 };
 document.getElementById("postSchedule").onclick = () => {
   closePost();
-  showToast("Demo mode: in the live app this queues the post for Monday 11:00 AM 📅");
+  showToast("Demo mode: in the live app this goes to the owner to approve, then posts Monday at 11:00 AM");
 };
 
 /* ── Utility ── */
