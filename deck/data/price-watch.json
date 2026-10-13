@@ -1,0 +1,137 @@
+{
+ "target": 20,
+ "items": [
+  {
+   "item": "Riverbend Brown Ale",
+   "category": "Draft Beer",
+   "price": 6.0,
+   "cost_pct": 38.8,
+   "suggested": 7.5,
+   "reaches_target": false,
+   "new_cost_pct": 31.0,
+   "per_month": 332.4,
+   "gain": 498.56
+  },
+  {
+   "item": "Michelob Ultra btl",
+   "category": "Bottle Beer",
+   "price": 5.0,
+   "cost_pct": 26.5,
+   "suggested": 6.5,
+   "reaches_target": false,
+   "new_cost_pct": 20.4,
+   "per_month": 330.5,
+   "gain": 495.75
+  },
+  {
+   "item": "Bud Light btl",
+   "category": "Bottle Beer",
+   "price": 5.0,
+   "cost_pct": 23.5,
+   "suggested": 6.0,
+   "reaches_target": true,
+   "new_cost_pct": 19.6,
+   "per_month": 202.6,
+   "gain": 202.62
+  },
+  {
+   "item": "Tito's Vodka",
+   "category": "Liquor",
+   "price": 8.0,
+   "cost_pct": 22.8,
+   "suggested": 9.25,
+   "reaches_target": true,
+   "new_cost_pct": 19.7,
+   "per_month": 159.5,
+   "gain": 199.38
+  },
+  {
+   "item": "Maker's Mark",
+   "category": "Liquor",
+   "price": 9.5,
+   "cost_pct": 22.2,
+   "suggested": 10.75,
+   "reaches_target": true,
+   "new_cost_pct": 19.6,
+   "per_month": 117.5,
+   "gain": 146.88
+  },
+  {
+   "item": "Modelo btl",
+   "category": "Bottle Beer",
+   "price": 6.5,
+   "cost_pct": 22.2,
+   "suggested": 7.25,
+   "reaches_target": true,
+   "new_cost_pct": 19.9,
+   "per_month": 167.0,
+   "gain": 125.25
+  },
+  {
+   "item": "Granite Peak Fruited Gose",
+   "category": "Draft Beer",
+   "price": 8.5,
+   "cost_pct": 26.2,
+   "suggested": 10.0,
+   "reaches_target": false,
+   "new_cost_pct": 22.3,
+   "per_month": 80.6,
+   "gain": 120.94
+  },
+  {
+   "item": "Hillside Pinot Noir 6oz",
+   "category": "Wine",
+   "price": 11.0,
+   "cost_pct": 25.7,
+   "suggested": 12.5,
+   "reaches_target": false,
+   "new_cost_pct": 22.6,
+   "per_month": 78.4,
+   "gain": 117.56
+  },
+  {
+   "item": "Old Mill West Coast IPA",
+   "category": "Draft Beer",
+   "price": 7.5,
+   "cost_pct": 24.5,
+   "suggested": 9.0,
+   "reaches_target": false,
+   "new_cost_pct": 20.4,
+   "per_month": 77.5,
+   "gain": 116.25
+  },
+  {
+   "item": "Harbor Lights Sour Ale",
+   "category": "Draft Beer",
+   "price": 7.5,
+   "cost_pct": 28.2,
+   "suggested": 9.0,
+   "reaches_target": false,
+   "new_cost_pct": 23.5,
+   "per_month": 76.8,
+   "gain": 115.12
+  },
+  {
+   "item": "Hendrick's Gin",
+   "category": "Liquor",
+   "price": 10.5,
+   "cost_pct": 22.3,
+   "suggested": 11.75,
+   "reaches_target": true,
+   "new_cost_pct": 19.9,
+   "per_month": 91.4,
+   "gain": 114.22
+  },
+  {
+   "item": "Yuengling Lager",
+   "category": "Draft Beer",
+   "price": 5.5,
+   "cost_pct": 21.9,
+   "suggested": 6.25,
+   "reaches_target": true,
+   "new_cost_pct": 19.3,
+   "per_month": 130.5,
+   "gain": 97.88
+  }
+ ]
+}

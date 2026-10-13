@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copper Still Taproom — Owner Deck (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --stone:#F4F1EA; --card:#FFFFFF; --ink:#1E2A28; --muted:#5F6B67; --dim:#8E9692; --line:#E0DAD0; --track:#ECE7DE;
+  --teal:#138A75; --teal-deep:#1F5A50; --teal-pale:#E1EFEB; --copper:#B65A32; --ly:#B9C0BC;
+  --good:#2F8F5B; --bad:#C2453A;
+  --disp:'Bricolage Grotesque',system-ui,sans-serif; --body:Manrope,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--stone);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+button,select{font:inherit}
+:focus-visible{outline:3px solid var(--copper);outline-offset:2px}
+
+/* ---------- control bar ---------- */
+.controls{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);}
+.controls .in{max-width:1100px;margin:0 auto;padding:14px 20px;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center}
+.controls h1{font-family:var(--disp);font-weight:800;font-size:20px;margin:0;margin-right:auto}
+.controls label{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.controls select{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;color:var(--ink);font-weight:600}
+.btn{border-radius:8px;padding:10px 16px;font-weight:700;font-size:14px;cursor:pointer;border:1px solid var(--teal-deep)}
+.btn-primary{background:var(--teal-deep);color:#fff}
+.btn-primary:hover{background:#163F38}
+.btn-ghost{background:#fff;color:var(--teal-deep)}
+.btn-ghost:hover{background:var(--teal-pale)}
+.hint{max-width:1100px;margin:14px auto 0;padding:0 20px;color:var(--muted);font-size:14px}
+.status{font-size:14px;color:var(--teal-deep);font-weight:600;min-height:20px}
+
+/* ---------- slides ---------- */
+.deck{max-width:1100px;margin:16px auto 60px;padding:0 20px;display:grid;gap:22px}
+.slide{position:relative;aspect-ratio:16/9;background:var(--card);border-radius:10px;box-shadow:0 1px 0 var(--line),0 12px 30px -18px rgba(30,42,40,.35);
+  container-type:inline-size;overflow:hidden;padding:4.2cqw 5cqw 3.6cqw;display:flex;flex-direction:column}
+.slide .foot{position:absolute;left:5cqw;right:5cqw;bottom:2.2cqw;display:flex;justify-content:space-between;font-size:1.05cqw;color:var(--dim)}
+.slide h2{font-family:var(--disp);font-weight:800;font-size:3.3cqw;line-height:1.08;margin:0;letter-spacing:-.01em;max-width:80%}
+.slide .sub{font-size:1.5cqw;color:var(--muted);margin-top:.8cqw}
+.slide .body{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;padding-bottom:2cqw}
+.building .slide{opacity:.25;transition:opacity .25s}
+@media (prefers-reduced-motion:no-preference){ .slide.reveal{animation:pop .45s ease both} @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}} }
+
+/* cover */
+.cover{background:var(--teal-deep);color:#fff}
+.cover .mark{width:5.5cqw;height:5.5cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3A9A89,#173F39);box-shadow:inset 0 0 0 .45cqw #fff,0 0 0 .3cqw var(--copper)}
+.cover h2{font-size:5.6cqw;max-width:70%;margin-top:auto}
+.cover .sub{color:rgba(255,255,255,.8);font-size:1.9cqw;margin-top:1.4cqw}
+.cover .foot{color:rgba(255,255,255,.65)}
+
+/* KPI tiles */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6cqw}
+.tile{border:1px solid var(--line);border-radius:.8cqw;padding:1.8cqw 1.8cqw 1.6cqw}
+.tile .lab{font-size:1.35cqw;color:var(--muted);font-weight:600}
+.tile .val{font-family:var(--disp);font-weight:800;font-size:3.6cqw;margin-top:.5cqw;letter-spacing:-.01em}
+.tile .chg{font-size:1.3cqw;font-weight:700;margin-top:.5cqw}
+.up{color:var(--good)} .down{color:var(--bad)} .flat{color:var(--muted)}
+.tile .ly{font-size:1.2cqw;color:var(--dim);margin-top:.2cqw}
+
+/* takeaways */
+.takeaways{margin:2.6cqw 0 0;padding:0;list-style:none;display:grid;gap:1cqw}
+.takeaways li{font-size:1.65cqw;line-height:1.4;padding-left:2.2cqw;position:relative}
+.takeaways li::before{content:"";position:absolute;left:0;top:.75cqw;width:.9cqw;height:.9cqw;border-radius:50%;background:var(--teal)}
+
+/* charts */
+.legend{display:flex;gap:2cqw;font-size:1.3cqw;color:var(--muted);margin-top:1.2cqw}
+.legend span{display:inline-flex;align-items:center;gap:.6cqw}
+.legend i{width:1.2cqw;height:1.2cqw;border-radius:.25cqw;display:inline-block}
+.chart{width:100%;height:auto;display:block;margin-top:1.2cqw}
+.chart text{font-family:var(--body)}
+.slide .split{display:grid;grid-template-columns:1.5fr 1fr;gap:3cqw;align-items:center}
+.callout{border-left:.4cqw solid var(--teal);padding:.4cqw 0 .4cqw 1.6cqw}
+.callout .big{font-family:var(--disp);font-weight:800;font-size:3.4cqw}
+.callout p{font-size:1.5cqw;color:var(--muted);margin:.6cqw 0 0;line-height:1.45}
+
+/* tables */
+table.t{width:100%;border-collapse:collapse;font-size:1.45cqw;font-variant-numeric:tabular-nums;margin-top:1.6cqw}
+table.t th{text-align:left;color:var(--muted);font-weight:600;font-size:1.2cqw;padding:0 .8cqw .7cqw 0;border-bottom:1.5px solid var(--ink)}
+table.t td{padding:.85cqw .8cqw .85cqw 0;border-bottom:1px solid var(--track)}
+table.t .n{text-align:right}
+table.t tr.total td{border-bottom:0;border-top:1.5px solid var(--ink);font-weight:800}
+.pill{display:inline-block;font-size:1.05cqw;font-weight:700;padding:.2cqw .7cqw;border-radius:99px;background:var(--track);color:var(--muted)}
+
+/* notes */
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:3cqw;margin-top:2cqw}
+.notes-grid h3{font-family:var(--disp);font-size:1.9cqw;margin:0 0 1cqw}
+.edit{font-size:1.55cqw;line-height:1.5;min-height:12cqw;border-radius:.6cqw;padding:.8cqw 1cqw;margin:-.8cqw -1cqw;outline:none}
+.edit:hover{background:var(--stone)}
+.edit:focus{background:var(--teal-pale)}
+.edit ul{margin:0;padding-left:2.2cqw}
+.edit li{margin-bottom:.7cqw}
+.edit-tag{font-size:1.05cqw;color:var(--copper);font-weight:700;margin-left:.6cqw}
+
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;font-size:13px;line-height:1.35;padding:7px 10px;border-radius:6px;opacity:0;transition:opacity .1s;z-index:50;max-width:240px}
+.tip.show{opacity:1}
+.empty{max-width:1100px;margin:40px auto;padding:0 20px;color:var(--muted)}
+
+@media (max-width:700px){ .controls h1{width:100%} .deck{padding:0 10px;gap:14px} .slide{border-radius:6px} }
+
+/* ---------- print / save as PDF ---------- */
+@page{size:13.333in 7.5in;margin:0}
+@media print{
+  body{background:#fff}
+  .controls,.hint,.demo-bar,.tip,.edit-tag{display:none!important}
+  .deck{margin:0;padding:0;max-width:none;gap:0;display:block}
+  .slide{width:13.333in;height:7.5in;aspect-ratio:auto;border-radius:0;box-shadow:none;break-after:page;page-break-after:always;animation:none!important}
+  .edit:hover,.edit:focus{background:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+<style>
+.demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
+  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid #E0DAD0;font-family:Manrope,system-ui,sans-serif;font-size:12.5px;line-height:1.3}
+.demo-bar a{color:#5F6B67;text-decoration:none}
+.demo-bar a:hover{color:#1E2A28}
+.demo-bar a:focus-visible{outline:2px solid #B65A32;outline-offset:2px}
+.demo-bar .back{color:#B65A32;font-weight:600}
+.demo-bar .back:hover{color:#1E2A28}
+.demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
+.demo-bar nav a[aria-current="page"]{color:#1E2A28;font-weight:600}
+</style>
+</head>
+<body>
+<div class="demo-bar"><a class="back" href="../" target="_top">&larr; Back to Blake Herring's portfolio</a><nav aria-label="Other demos"><a href="../dashboard/" target="_top">Sales dashboard</a><a href="../cocktails/" target="_top">Cocktail app</a><a href="../inventory/" target="_top">Inventory planner</a><a href="../deck/" target="_top" aria-current="page">Owner deck</a></nav></div>
+<div class="controls">
+  <div class="in">
+    <h1>Monthly owner deck</h1>
+    <label for="month">Month <select id="month"></select></label>
+    <button class="btn btn-primary" id="build">Build the deck</button>
+    <button class="btn btn-ghost" id="pdf">Save as PDF</button>
+    <button class="btn btn-ghost" id="copy">Copy email summary</button>
+  </div>
+</div>
+<p class="hint">Pick a month and the deck builds itself from that month's sales. Click any note on the last slide to edit it before you send it. <span class="status" id="status" role="status"></span></p>
+<main class="deck" id="deck" aria-live="polite"></main>
+<div class="tip" id="tip"></div>
+
+<script>
+const VENUE = 'Copper Still Taproom';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const money = (v, d=0) => '$' + Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = v => (v>0?'+':'') + v.toFixed(1) + '%';
+const pts = v => (v>0?'+':'') + v.toFixed(1) + ' pts';
+const cls = v => v > 0.5 ? 'up' : v < -0.5 ? 'down' : 'flat';
+const chg = (a,b) => b ? (a-b)/b*100 : 0;
+
+function parseCSV(text) {
+  const lines = text.replace(/\r/g,'').split('\n').filter(l => l.trim());
+  const split = l => { const out=[]; let cur='', q=false; for (const ch of l) { if (ch==='"') { q=!q; continue; } if (ch===',' && !q) { out.push(cur); cur=''; } else cur+=ch; } out.push(cur); return out; };
+  const hdr = split(lines[0]);
+  return lines.slice(1).map(l => { const v = split(l), o = {}; hdr.forEach((h,i) => o[h] = v[i]); return o; });
+}
+
+let DAYS = [], ITEMS = [], PRICE = null;
+
+async function load() {
+  $('status').textContent = 'Loading sales…';
+  const [a,b,c] = await Promise.all([
+    fetch('../dashboard/data/' + encodeURIComponent('Sales by day.csv')).then(r => r.text()),
+    fetch('data/menu-items-by-month.csv').then(r => r.text()),
+    fetch('data/price-watch.json').then(r => r.json()),
+  ]);
+  DAYS = parseCSV(a).map(r => {
+    const d = r.yyyyMMdd;
+    return { date: new Date(+d.slice(0,4), +d.slice(4,6)-1, +d.slice(6,8)), net: +r['Net sales'], orders: +r['Total orders'], guests: +r['Total guests'] };
+  });
+  ITEMS = parseCSV(b).map(r => ({ month: r.month, cat: r.category, item: r.item, qty: +r.qty, net: +r.net_sales }));
+  PRICE = c;
+  // months with a full month AND the same month last year
+  const keys = [...new Set(DAYS.map(d => key(d.date)))].sort();
+  const usable = keys.filter(k => keys.includes(prevYear(k))).reverse();
+  $('month').innerHTML = usable.map(k => `<option value="${k}">${label(k)}</option>`).join('');
+  $('status').textContent = '';
+  build(usable[0], false);
+}
+const key = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+const prevYear = k => (+k.slice(0,4)-1) + k.slice(4);
+const label = k => MONTHS[+k.slice(5)-1] + ' ' + k.slice(0,4);
+const short = k => MONTHS[+k.slice(5)-1];
+
+function monthStats(k) {
+  const days = DAYS.filter(d => key(d.date) === k);
+  const net = days.reduce((s,d)=>s+d.net,0), orders = days.reduce((s,d)=>s+d.orders,0), guests = days.reduce((s,d)=>s+d.guests,0);
+  const weeks = [0,0,0,0,0]; days.forEach(d => weeks[Math.min(4, Math.floor((d.date.getDate()-1)/7))] += d.net);
+  const dow = Array.from({length:7},()=>({s:0,n:0})); days.forEach(d => { const i=(d.date.getDay()+6)%7; dow[i].s+=d.net; dow[i].n++; });
+  const best = days.reduce((a,b)=> b.net>a.net?b:a, days[0]);
+  const items = ITEMS.filter(i => i.month === k);
+  const cats = {}; items.forEach(i => cats[i.cat] = (cats[i.cat]||0) + i.net);
+  const itemTot = Object.values(cats).reduce((s,v)=>s+v,0) || 1;
+  const lastDay = new Date(+k.slice(0,4), +k.slice(5), 0).getDate();
+  return { k, days, net, orders, guests, check: orders? net/orders : 0, perGuest: guests? net/guests:0,
+    weeks: weeks.slice(0, Math.ceil(lastDay/7)), dow: dow.map(x => x.n ? x.s/x.n : 0), best, items, cats, itemTot };
+}
+
+/* ---------- small SVG bar chart: this year vs last year ---------- */
+function barsTYLY(labels, ty, ly, fmt) {
+  const W=1000, H=400, L=78, R=10, T=20, B=54;
+  const max = Math.max(...ty, ...ly) * 1.12 || 1;
+  const raw = max/4, p10 = Math.pow(10, Math.floor(Math.log10(raw))); const nice = [1,2,2.5,5,10].map(m=>m*p10).find(v => v >= raw);
+  const gw = (W-L-R)/labels.length, bw = Math.min(46, gw*0.32), gap = 2;
+  const y = v => T + (H-T-B) * (1 - v/max);
+  let g = '';
+  for (let v = 0; v <= max; v += nice) g += `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#ECE7DE" stroke-width="1"/><text x="${L-10}" y="${y(v)+5}" text-anchor="end" font-size="19" fill="#8E9692">${fmt(v)}</text>`;
+  labels.forEach((lab,i) => {
+    const cx = L + gw*i + gw/2;
+    const bar = (x, v, color, who) => { const h = Math.max(0, y(0)-y(v)); const r = Math.min(4, h);
+      return `<path data-tip="${esc(lab)} · ${who}: ${fmt(v,true)}" d="M${x},${y(0)} v${-(h-r)} q0,${-r} ${r},${-r} h${bw-2*r} q${r},0 ${r},${r} v${h-r} z" fill="${color}"/>`; };
+    g += bar(cx - bw - gap/2, ly[i], '#B9C0BC', 'last year') + bar(cx + gap/2, ty[i], '#138A75', 'this year');
+    g += `<text x="${cx}" y="${H-B+26}" text-anchor="middle" font-size="21" fill="#5F6B67">${esc(lab)}</text>`;
+  });
+  g += `<line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="#8E9692" stroke-width="1"/>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="This year compared with last year">${g}</svg>`;
+}
+const kfmt = (v, full) => full ? money(v) : (v >= 1000 ? '$' + Math.round(v/1000) + 'k' : '$' + Math.round(v));
+const legend = `<div class="legend"><span><i style="background:#138A75"></i>This year</span><span><i style="background:#B9C0BC"></i>Last year</span></div>`;
+
+/* ---------- slides ---------- */
+function slides(k) {
+  const a = monthStats(k), b = monthStats(prevYear(k));
+  const n = label(k), ln = label(prevYear(k));
+  const sc = chg(a.net,b.net), gc = chg(a.guests,b.guests), cc = chg(a.check,b.check), oc = chg(a.orders,b.orders);
+  const dir = sc >= 0 ? 'up' : 'down';
+  const foot = (p) => `<div class="foot"><span>${VENUE} · ${esc(n)} owner update</span><span>${p}</span></div>`;
+
+  // takeaways
+  const catNames = Object.keys(a.cats);
+  const shareChg = catNames.map(c => ({c, d: a.cats[c]/a.itemTot*100 - (b.cats[c]||0)/b.itemTot*100, g: chg(a.cats[c], b.cats[c]||0)}));
+  const big = shareChg.filter(x => a.cats[x.c]/a.itemTot >= 0.05);
+  const topCat = big.slice().sort((x,y)=>y.g-x.g)[0], lowCat = big.slice().sort((x,y)=>x.g-y.g)[0];
+  const dn = ['Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays','Sundays'];
+  const dowChg = a.dow.map((v,i)=>({i, d: chg(v, b.dow[i])})).sort((x,y)=>y.d-x.d);
+  const weekdayBest = dowChg[0];
+  const bestDay = a.best.date.toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'});
+  const take = [
+    `Net sales were ${money(a.net)}, ${dir} ${Math.abs(sc).toFixed(1)}% on ${short(k)} last year (${money(b.net)}).`,
+    `Guests were ${gc>=0?'up':'down'} ${Math.abs(gc).toFixed(1)}% and the average check ${cc>=0?'rose':'fell'} to ${money(a.check,2)}, so growth came from ${Math.abs(gc)>Math.abs(cc)?'more people through the door':'bigger checks'}.`,
+    `${dn[weekdayBest.i]} improved most, ${pct(weekdayBest.d)} per day versus last year. The best single day was ${bestDay} at ${money(a.best.net)}.`,
+    `${topCat.c} led category growth (${pct(topCat.g)}); ${lowCat.c} ${lowCat.g<0?'was the only major category down':'grew the least'} (${pct(lowCat.g)}).`,
+  ];
+
+  // top sellers
+  const lyByItem = {}; b.items.forEach(i => lyByItem[i.item] = i.net);
+  const top = a.items.slice().sort((x,y)=>y.net-x.net).slice(0,8);
+
+  // price watch
+  const pw = PRICE.items.slice(0,6);
+  const pwTotal = pw.reduce((s,i)=>s+i.gain,0);
+
+  const out = [];
+  out.push(`<section class="slide cover"><div class="mark" aria-hidden="true"></div>
+    <h2>${esc(n)} performance update</h2>
+    <div class="sub">${VENUE} · Prepared for ownership · ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+    </section>`);
+
+  const tile = (lab, val, c, lyv, fmtd) => `<div class="tile"><div class="lab">${lab}</div><div class="val">${val}</div>
+    <div class="chg ${cls(c)}">${pct(c)} vs last year</div><div class="ly">Last year ${lyv}</div></div>`;
+  out.push(`<section class="slide"><h2>Sales were ${dir} ${Math.abs(sc).toFixed(1)}% on last ${short(k)}</h2>
+    <div class="body"><div class="tiles">
+      ${tile('Net sales', money(a.net), sc, money(b.net))}
+      ${tile('Guests', a.guests.toLocaleString(), gc, b.guests.toLocaleString())}
+      ${tile('Average check', money(a.check,2), cc, money(b.check,2))}
+      ${tile('Orders', a.orders.toLocaleString(), oc, b.orders.toLocaleString())}
+    </div>
+    <ul class="takeaways">${take.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>${foot('2')}</section>`);
+
+  const wl = a.weeks.map((_,i)=> i<4 ? `Days ${i*7+1}–${i*7+7}` : `Days 29–${a.days.length?Math.max(...a.days.map(d=>d.date.getDate())):31}`);
+  const bw = b.weeks.slice(0, a.weeks.length);
+  const bestWk = a.weeks.slice(0,4).map((v,i)=>({i, d: chg(v, bw[i])})).sort((x,y)=>y.d-x.d)[0];
+  out.push(`<section class="slide"><h2>Week by week against last year</h2>
+    <div class="body split"><div>${legend}${barsTYLY(wl, a.weeks, bw, kfmt)}</div>
+      <div class="callout"><div class="big ${cls(bestWk.d)}">${pct(bestWk.d)}</div><p>${esc(wl[bestWk.i])} was the strongest stretch compared with last year.</p></div></div>${foot('3')}</section>`);
+
+  const dl = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  out.push(`<section class="slide"><h2>Average sales by day of the week</h2>
+    <div class="body split"><div>${legend}${barsTYLY(dl, a.dow, b.dow, kfmt)}</div>
+      <div class="callout"><div class="big ${cls(weekdayBest.d)}">${pct(weekdayBest.d)}</div><p>${dn[weekdayBest.i]} gained the most per day. ${dn[dowChg[6].i]} changed least (${pct(dowChg[6].d)}).</p></div></div>${foot('4')}</section>`);
+
+  const catRows = shareChg.sort((x,y)=> a.cats[y.c]-a.cats[x.c]).map(r => {
+    const share = a.cats[r.c]/a.itemTot*100;
+    return `<tr><td>${esc(r.c)}</td><td class="n">${money(a.cats[r.c])}</td><td class="n">${share.toFixed(1)}%</td>
+      <td class="n ${cls(r.d*4)}">${pts(r.d)}</td><td class="n ${cls(r.g)}">${pct(r.g)}</td></tr>`; }).join('');
+  out.push(`<section class="slide"><h2>Where the money came from</h2>
+    <div class="body"><table class="t"><thead><tr><th>Category</th><th class="n">Sales</th><th class="n">Share of sales</th><th class="n">Share vs last year</th><th class="n">Sales vs last year</th></tr></thead>
+    <tbody>${catRows}</tbody></table></div>${foot('5')}</section>`);
+
+  out.push(`<section class="slide"><h2>Top sellers this month</h2>
+    <div class="body"><table class="t"><thead><tr><th>Item</th><th>Category</th><th class="n">Sold</th><th class="n">Sales</th><th class="n">vs last year</th></tr></thead>
+    <tbody>${top.map(i => { const c = chg(i.net, lyByItem[i.item]||0);
+      return `<tr><td>${esc(i.item)}</td><td>${esc(i.cat)}</td><td class="n">${i.qty.toLocaleString()}</td><td class="n">${money(i.net)}</td><td class="n ${cls(c)}">${lyByItem[i.item]?pct(c):'new'}</td></tr>`; }).join('')}</tbody></table></div>${foot('6')}</section>`);
+
+  out.push(`<section class="slide"><h2>Price watch: ${pw.length} items over our ${PRICE.target}% cost target</h2>
+    <div class="sub">Suggested increases are capped at $1.50 so no single change jumps on guests.</div>
+    <div class="body"><table class="t"><thead><tr><th>Item</th><th class="n">Cost now</th><th class="n">Price now</th><th class="n">Suggested</th><th class="n">Cost after</th><th class="n">Extra per month</th></tr></thead>
+    <tbody>${pw.map(i => `<tr><td>${esc(i.item)}${i.reaches_target?'':' <span class="pill">still over</span>'}</td><td class="n down">${i.cost_pct.toFixed(1)}%</td><td class="n">${money(i.price,2)}</td><td class="n"><strong>${money(i.suggested,2)}</strong></td><td class="n">${i.new_cost_pct.toFixed(1)}%</td><td class="n up">${money(i.gain)}</td></tr>`).join('')}
+    <tr class="total"><td>If all six change</td><td></td><td></td><td></td><td></td><td class="n up">${money(pwTotal)} / mo</td></tr></tbody></table></div>${foot('7')}</section>`);
+
+  const nm = MONTHS[(+k.slice(5))%12];
+  const nextIdeas = { January:'Dry January zero-proof menu', February:'Valentine\'s and Super Bowl weekend', March:'St. Patrick\'s Day staffing and keg orders', April:'Patio opening', May:'Memorial Day weekend', June:'Summer menu launch', July:'Fourth of July weekend', August:'Back-to-school slowdown plan', September:'Football season Saturdays', October:'Fall menu and Halloween weekend', November:'Thanksgiving Eve, one of the biggest nights of the year', December:'Holiday parties and New Year\'s Eve' };
+  out.push(`<section class="slide"><h2>Notes from the GM</h2><div class="sub">Edit these before sending.</div>
+    <div class="body"><div class="notes-grid">
+      <div><h3>What happened<span class="edit-tag">click to edit</span></h3><div class="edit" contenteditable="true" spellcheck="true"><ul>
+        <li>${esc(topCat.c)} carried the month; worth keeping featured.</li>
+        <li>${esc(lowCat.c)} ${lowCat.g<0?'slipped':'lagged the rest'}. Checking whether it's price, placement, or selection.</li>
+        <li>Add anything the numbers don't show: staffing, events, weather.</li></ul></div></div>
+      <div><h3>Next month: ${nm}<span class="edit-tag">click to edit</span></h3><div class="edit" contenteditable="true" spellcheck="true"><ul>
+        <li>${esc(nextIdeas[nm])}.</li>
+        <li>Roll out the price changes owners approve from slide 7.</li>
+        <li>Goal: beat last ${nm}'s sales.</li></ul></div></div>
+    </div></div>${foot('8')}</section>`);
+
+  return { html: out.join(''), summary: [
+    `${VENUE}: ${n} update`, '', ...take.map(t => '- ' + t), '',
+    `Price watch: ${pw.length} items over the ${PRICE.target}% cost target; suggested changes add about ${money(pwTotal)} a month.`,
+    '', 'Full deck attached.' ].join('\n') };
+}
+
+let SUMMARY = '';
+function build(k, animate=true) {
+  const deck = $('deck');
+  const go = () => {
+    const r = slides(k); SUMMARY = r.summary;
+    deck.innerHTML = r.html; deck.classList.remove('building');
+    if (animate) [...deck.children].forEach((s,i) => { s.classList.add('reveal'); s.style.animationDelay = (i*70)+'ms'; });
+    $('status').textContent = animate ? `${label(k)} deck is ready.` : '';
+    document.title = `${VENUE} — ${label(k)} owner deck (Demo)`;
+  };
+  if (!animate) return go();
+  deck.classList.add('building'); $('status').textContent = `Building ${label(k)}…`;
+  setTimeout(go, 600);
+}
+
+$('build').onclick = () => build($('month').value);
+$('month').onchange = () => build($('month').value);
+$('pdf').onclick = () => window.print();
+$('copy').onclick = async () => {
+  try { await navigator.clipboard.writeText(SUMMARY); $('status').textContent = 'Summary copied. Paste it into your email.'; }
+  catch(e) { $('status').textContent = 'Copy is blocked here. Open the deck in its own tab to copy.'; }
+};
+
+// hover tooltips on chart bars
+const tip = $('tip');
+document.addEventListener('mousemove', e => {
+  const t = e.target.closest && e.target.closest('[data-tip]');
+  if (!t) { tip.classList.remove('show'); return; }
+  tip.textContent = t.dataset.tip; tip.classList.add('show');
+  tip.style.left = Math.min(window.innerWidth - 250, e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 14) + 'px';
+});
+
+load().catch(err => { console.error(err); $('deck').innerHTML = '<p class="empty">The deck couldn\'t load its sales data. Refresh the page to try again.</p>'; $('status').textContent=''; });
+</script>
+</body>
+</html>
