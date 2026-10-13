@@ -6,13 +6,13 @@
 <title>Copper Still Taproom — Owner Deck (Demo)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --stone:#F4F1EA; --card:#FFFFFF; --ink:#1E2A28; --muted:#5F6B67; --dim:#8E9692; --line:#E0DAD0; --track:#ECE7DE;
+  --stone:#F3F5F4; --card:#FFFFFF; --ink:#1E2A28; --muted:#5F6B67; --dim:#8E9692; --line:#E0DAD0; --track:#ECE7DE;
   --teal:#138A75; --teal-deep:#1F5A50; --teal-pale:#E1EFEB; --copper:#B65A32; --ly:#B9C0BC;
   --good:#2F8F5B; --bad:#C2453A;
-  --disp:'Bricolage Grotesque',system-ui,sans-serif; --body:Manrope,system-ui,sans-serif;
+  --disp:Archivo,'Helvetica Neue',Arial,sans-serif; --body:Archivo,'Helvetica Neue',Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -114,7 +114,7 @@ table.t tr.total td{border-bottom:0;border-top:1.5px solid var(--ink);font-weigh
 </style>
 <style>
 .demo-bar{position:relative;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
-  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid #E0DAD0;font-family:Manrope,system-ui,sans-serif;font-size:12.5px;line-height:1.3}
+  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid #E0DAD0;font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-size:12.5px;line-height:1.3}
 .demo-bar a{color:#5F6B67;text-decoration:none}
 .demo-bar a:hover{color:#1E2A28}
 .demo-bar a:focus-visible{outline:2px solid #B65A32;outline-offset:2px}
@@ -122,6 +122,12 @@ table.t tr.total td{border-bottom:0;border-top:1.5px solid var(--ink);font-weigh
 .demo-bar .back:hover{color:#1E2A28}
 .demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
 .demo-bar nav a[aria-current="page"]{color:#1E2A28;font-weight:600}
+</style>
+
+<style>
+/* house style: one family, condensed headings, sentence case */
+h1,h2,h3,.logo h1,.title,.feature h2,.card h3,.d-head h2,.modal h2,.beer-card h3,.loading-logo,.error-title{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-stretch:78%;font-variation-settings:"wdth" 78;letter-spacing:-.005em}
+.logo h1{font-weight:800}
 </style>
 </head>
 <body>
@@ -210,7 +216,7 @@ function barsTYLY(labels, ty, ly, fmt) {
   labels.forEach((lab,i) => {
     const cx = L + gw*i + gw/2;
     const bar = (x, v, color, who) => { const h = Math.max(0, y(0)-y(v)); const r = Math.min(4, h);
-      return `<path data-tip="${esc(lab)} · ${who}: ${fmt(v,true)}" d="M${x},${y(0)} v${-(h-r)} q0,${-r} ${r},${-r} h${bw-2*r} q${r},0 ${r},${r} v${h-r} z" fill="${color}"/>`; };
+      return `<path data-tip="${esc(lab)}, ${who}: ${fmt(v,true)}" d="M${x},${y(0)} v${-(h-r)} q0,${-r} ${r},${-r} h${bw-2*r} q${r},0 ${r},${r} v${h-r} z" fill="${color}"/>`; };
     g += bar(cx - bw - gap/2, ly[i], '#B9C0BC', 'last year') + bar(cx + gap/2, ty[i], '#138A75', 'this year');
     g += `<text x="${cx}" y="${H-B+26}" text-anchor="middle" font-size="21" fill="#5F6B67">${esc(lab)}</text>`;
   });
@@ -226,7 +232,7 @@ function slides(k) {
   const n = label(k), ln = label(prevYear(k));
   const sc = chg(a.net,b.net), gc = chg(a.guests,b.guests), cc = chg(a.check,b.check), oc = chg(a.orders,b.orders);
   const dir = sc >= 0 ? 'up' : 'down';
-  const foot = (p) => `<div class="foot"><span>${VENUE} · ${esc(n)} owner update</span><span>${p}</span></div>`;
+  const foot = (p) => `<div class="foot"><span>${VENUE}, ${esc(n)} owner update</span><span>${p}</span></div>`;
 
   // takeaways
   const catNames = Object.keys(a.cats);
@@ -255,7 +261,7 @@ function slides(k) {
   const out = [];
   out.push(`<section class="slide cover"><div class="mark" aria-hidden="true"></div>
     <h2>${esc(n)} performance update</h2>
-    <div class="sub">${VENUE} · Prepared for ownership · ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+    <div class="sub">${VENUE}. Prepared for ownership, ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
     </section>`);
 
   const tile = (lab, val, c, lyv, fmtd) => `<div class="tile"><div class="lab">${lab}</div><div class="val">${val}</div>

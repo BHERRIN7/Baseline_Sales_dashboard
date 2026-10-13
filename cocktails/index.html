@@ -13,10 +13,10 @@
 <title>Copper Still Taproom — Cocktail Book (Demo)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F4F1EA;--bg-2:#FFFFFF;--surface:#FFFFFF;--surface-2:#F7F4EE;
+    --bg:#F3F5F4;--bg-2:#FFFFFF;--surface:#FFFFFF;--surface-2:#F7F4EE;
     --line:rgba(30,42,40,.11);--line-strong:rgba(46,125,111,.42);
     --text:#1E2A28;--muted:#5F6B67;--faint:#8E9692;
     --brass:#2E7D6F;--brass-bright:#B65A32;
@@ -24,41 +24,41 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
-  body{font-family:Manrope,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:16.5px;}
+  body{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:16.5px;}
   body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 70% at 50% -15%,rgba(46,125,111,.12),transparent 55%),radial-gradient(90% 50% at 100% 0%,rgba(182,90,50,.08),transparent 60%);}
   body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
   .wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 18px 140px;}
 
   header{padding:32px 2px 14px;text-align:center;}
-  .kicker{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:11px;}
-  .title{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:clamp(36px,10vw,58px);line-height:.92;margin:0;letter-spacing:-.01em;}
+  .kicker{font-size:11px;color:var(--brass);font-weight:700;margin-bottom:11px;}
+  .title{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:800;font-size:clamp(36px,10vw,58px);line-height:.92;margin:0;letter-spacing:-.01em;}
   .title em{font-style:normal;font-weight:800;color:var(--brass-bright);}
-  .sub{color:var(--muted);font-size:13.5px;margin-top:12px;letter-spacing:.02em;}
-  .demo-pill{display:inline-block;margin-top:12px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--brass-bright);border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px;}
+  .sub{color:var(--muted);font-size:13.5px;margin-top:12px;}
+  .demo-pill{display:inline-block;margin-top:12px;font-size:10.5px;font-weight:700;color:var(--brass-bright);border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px;}
   .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line-strong),transparent);margin:18px 0 0;}
 
   .feature{margin:20px 0 4px;border:1px solid var(--line-strong);border-radius:20px;background:linear-gradient(135deg,#2E7D6F,#1F5A50);color:#fff;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;transition:transform .15s,border-color .2s;width:100%;text-align:left;font:inherit;color:inherit;}
   .feature:active{transform:scale(.99);}
   .feature .star{font-size:26px;flex:none;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;}
   .feature .f-body{flex:1;min-width:0;}
-  .feature .f-lab{font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:#F2C6A8;font-weight:700;margin-bottom:4px;}
-  .feature h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:25px;margin:0 0 3px;line-height:1.02;color:#fff;}
+  .feature .f-lab{font-size:10.5px;color:#F2C6A8;font-weight:700;margin-bottom:4px;}
+  .feature h2{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:25px;margin:0 0 3px;line-height:1.02;color:#fff;}
   .feature .f-meta{color:rgba(255,255,255,.78);font-size:13px;}
   .feature .arrow{color:#F2C6A8;font-size:24px;flex:none;}
 
   .ticker{display:flex;align-items:stretch;margin:16px -18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(46,125,111,.05);overflow:hidden;}
-  .ticker-label{flex:none;display:flex;align-items:center;gap:7px;padding:11px 15px 11px 18px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:700;border-right:1px solid var(--line);background:var(--bg);}
+  .ticker-label{flex:none;display:flex;align-items:center;gap:7px;padding:11px 15px 11px 18px;font-size:10.5px;color:var(--brass);font-weight:700;border-right:1px solid var(--line);background:var(--bg);}
   .ticker-view{flex:1;overflow:hidden;position:relative;}
   .ticker-track{display:flex;align-items:center;width:max-content;padding:10px 0;animation:tickerScroll 38s linear infinite;}
   .ticker:hover .ticker-track{animation-play-state:paused;}
   .ticker-item{display:inline-flex;align-items:center;gap:9px;white-space:nowrap;background:none;border:0;cursor:pointer;font:inherit;padding:0 19px;}
-  .ticker-item .rk{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:12.5px;color:var(--brass-bright);border:1px solid var(--line-strong);border-radius:6px;padding:2px 7px;min-width:26px;text-align:center;}
+  .ticker-item .rk{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:600;font-size:12.5px;color:var(--brass-bright);border:1px solid var(--line-strong);border-radius:6px;padding:2px 7px;min-width:26px;text-align:center;}
   .ticker-item .nm{font-size:14px;font-weight:600;color:#1E2A28;transition:color .2s;}
   .ticker-item:hover .nm{color:var(--brass-bright);}
   @keyframes tickerScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
   @media(prefers-reduced-motion:reduce){.ticker-track{animation:none;}.ticker-view{overflow-x:auto;}}
 
-  .searchbar{position:sticky;top:0;z-index:20;margin:14px -18px 0;padding:10px 18px 12px;background:linear-gradient(180deg,var(--bg) 74%,rgba(244,241,234,0));}
+  .searchbar{position:sticky;top:0;z-index:20;margin:14px -18px 0;padding:10px 18px 12px;background:linear-gradient(180deg,var(--bg) 74%,rgba(243,245,244,0));}
   .search-field{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 15px;transition:border-color .2s,box-shadow .2s;}
   .search-field:focus-within{border-color:var(--line-strong);box-shadow:0 0 0 3px rgba(46,125,111,.10);}
   .search-field svg{flex:none;opacity:.65;}
@@ -67,21 +67,21 @@
   .clear{background:none;border:0;color:var(--faint);font-size:21px;cursor:pointer;padding:0 2px;display:none;line-height:1;}
   .chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 2px;margin-top:10px;scrollbar-width:none;-ms-overflow-style:none;}
   .chips::-webkit-scrollbar{display:none;}
-  .chip{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:8px 15px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:.02em;transition:.18s;}
+  .chip{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:8px 15px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:.18s;}
   .chip[aria-pressed="true"]{background:var(--brass);color:#FFFFFF;border-color:var(--brass);}
 
-  .count{color:var(--faint);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:22px 2px 12px;}
+  .count{color:var(--faint);font-size:12px;margin:22px 2px 12px;}
   .grid{display:flex;flex-direction:column;gap:10px;}
   .card{position:relative;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .15s,border-color .2s,background .2s;animation:rise .45s both;font:inherit;color:inherit;}
   .card:hover,.card:focus-visible{border-color:var(--line-strong);background:var(--surface-2);outline:0;}
   .card:active{transform:scale(.985);}
   .card-body{flex:1;min-width:0;}
-  .card h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:22px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.08;color:#1E2A28;}
+  .card h3{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:600;font-size:22px;margin:0 0 4px;letter-spacing:-.01em;line-height:1.08;color:#1E2A28;}
   .card .glance{color:var(--muted);font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
-  .basebadge{flex:none;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);border:1px solid var(--line-strong);border-radius:8px;padding:6px 9px;align-self:flex-start;}
+  .basebadge{flex:none;font-size:10px;font-weight:700;color:var(--brass);border:1px solid var(--line-strong);border-radius:8px;padding:6px 9px;align-self:flex-start;}
   .card .arrow{flex:none;color:var(--faint);font-size:20px;}
   .empty,.loading{text-align:center;color:var(--faint);padding:60px 20px;font-size:15px;}
-  .empty span{display:block;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:24px;color:var(--muted);margin-bottom:6px;font-style:normal;}
+  .empty span{display:block;font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-size:24px;color:var(--muted);margin-bottom:6px;font-style:normal;}
   @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
   .scrim{position:fixed;inset:0;z-index:40;background:rgba(30,42,40,.42);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s;}
@@ -92,15 +92,15 @@
   .sheet-scroll{overflow-y:auto;padding:8px 22px 34px;-webkit-overflow-scrolling:touch;}
   .d-head{display:flex;align-items:flex-start;gap:12px;padding-top:6px;}
   .d-titles{flex:1;min-width:0;}
-  .d-occasion{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:7px;}
-  .d-head h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:clamp(28px,7.5vw,40px);margin:0;line-height:1;letter-spacing:-.015em;color:#1E2A28;}
+  .d-occasion{font-size:11px;color:var(--brass);font-weight:700;margin-bottom:7px;}
+  .d-head h2{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:600;font-size:clamp(28px,7.5vw,40px);margin:0;line-height:1;letter-spacing:-.015em;color:#1E2A28;}
   .d-base{color:var(--muted);font-size:14px;margin-top:8px;}
   .close{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:18px;cursor:pointer;margin-top:2px;}
   .specs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 4px;}
   .spec{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 11px;text-align:center;}
-  .spec .lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:5px;}
+  .spec .lab{font-size:10px;color:var(--faint);margin-bottom:5px;}
   .spec .val{font-size:14px;font-weight:600;color:var(--text);line-height:1.2;}
-  .block-title{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);font-weight:700;margin:26px 0 13px;display:flex;align-items:center;gap:10px;}
+  .block-title{font-size:11px;color:var(--brass);font-weight:700;margin:26px 0 13px;display:flex;align-items:center;gap:10px;}
   .block-title::after{content:"";flex:1;height:1px;background:var(--line);}
   .ing{display:flex;flex-direction:column;gap:1px;}
   .ing-row{display:flex;align-items:baseline;gap:11px;padding:11px 2px;border-bottom:1px dashed var(--line);}
@@ -110,7 +110,7 @@
   .steps{list-style:none;counter-reset:s;padding:0;margin:0;}
   .steps li{counter-increment:s;position:relative;padding:5px 0 16px 42px;color:var(--text);font-size:16px;line-height:1.5;}
   .steps li:last-child{padding-bottom:0;}
-  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line-strong);color:var(--brass-bright);font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line-strong);color:var(--brass-bright);font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;}
   .garnish{display:flex;align-items:flex-start;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px;font-size:15.5px;line-height:1.45;}
   .garnish .em{font-size:22px;flex:none;}
   .prose{color:var(--text);font-size:15.5px;line-height:1.62;}
@@ -121,17 +121,17 @@
   .price-off-week .lab{color:var(--faint);}
   .price-off-week .val{color:var(--muted);}
 
-  .fab{position:fixed;z-index:35;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;background:var(--brass);color:#FFFFFF;border:0;font-family:inherit;font-weight:700;font-size:14px;letter-spacing:.01em;padding:14px 19px;border-radius:999px;cursor:pointer;box-shadow:0 14px 30px -10px rgba(46,125,111,.6),0 4px 12px rgba(30,42,40,.18);transition:transform .15s,box-shadow .2s;}
+  .fab{position:fixed;z-index:35;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;background:var(--brass);color:#FFFFFF;border:0;font-family:inherit;font-weight:700;font-size:14px;padding:14px 19px;border-radius:999px;cursor:pointer;box-shadow:0 14px 30px -10px rgba(46,125,111,.6),0 4px 12px rgba(30,42,40,.18);transition:transform .15s,box-shadow .2s;}
   .fab:hover{transform:translateY(-2px);}
   .fab:active{transform:scale(.95);}
   .fab svg{flex:none;}
   .modal{position:fixed;z-index:50;left:50%;top:50%;transform:translate(-50%,-46%) scale(.96);width:min(480px,calc(100vw - 28px));max-height:90vh;overflow-y:auto;background:var(--bg-2);border:1px solid var(--line-strong);border-radius:22px;box-shadow:var(--shadow);padding:26px 22px 22px;opacity:0;pointer-events:none;transition:opacity .22s,transform .24s cubic-bezier(.22,.7,.25,1);}
   .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
-  .modal h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:28px;margin:0 0 4px;color:#1E2A28;line-height:1.02;}
+  .modal h2{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:600;font-size:28px;margin:0 0 4px;color:#1E2A28;line-height:1.02;}
   .modal .m-sub{color:var(--muted);font-size:13.5px;margin:0 0 20px;line-height:1.4;}
   .m-close{position:absolute;top:15px;right:16px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:17px;cursor:pointer;}
   .field{margin-bottom:14px;}
-  .field label{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:7px;}
+  .field label{display:block;font-size:10.5px;color:var(--brass);font-weight:700;margin-bottom:7px;}
   .field input,.field textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--text);font:inherit;font-size:15.5px;padding:12px 14px;outline:none;transition:border-color .2s,box-shadow .2s;}
   .field input:focus,.field textarea:focus{border-color:var(--line-strong);box-shadow:0 0 0 3px rgba(46,125,111,.1);}
   .field input.bad,.field textarea.bad{border-color:#C2453A;box-shadow:0 0 0 3px rgba(194,69,58,.14);}
@@ -143,18 +143,18 @@
   .btn-primary{background:var(--brass);color:#FFFFFF;border:1px solid var(--brass);}
   .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);z-index:60;background:var(--surface-2);border:1px solid var(--line-strong);color:var(--text);font-size:14px;font-weight:600;padding:13px 20px;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:calc(100vw - 32px);text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  footer{text-align:center;color:var(--faint);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:42px 0 0;}
+  footer{text-align:center;color:var(--faint);font-size:11px;padding:42px 0 0;}
   footer a{color:inherit;}
 
   .beer-card{position:relative;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:14px;animation:rise .45s both;}
   .beer-card-body{flex:1;min-width:0;}
-  .beer-card h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:20px;margin:0 0 3px;letter-spacing:-.01em;line-height:1.08;color:#1E2A28;}
+  .beer-card h3{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:600;font-size:20px;margin:0 0 3px;letter-spacing:-.01em;line-height:1.08;color:#1E2A28;}
   .beer-card .style{color:var(--muted);font-size:13.5px;}
   .beer-badges{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none;}
-  .beer-price{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:600;font-size:18px;color:var(--brass-bright);}
-  .beer-abv{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
+  .beer-price{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-weight:600;font-size:18px;color:var(--brass-bright);}
+  .beer-abv{font-size:11px;font-weight:700;color:var(--faint);}
   .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:30;max-width:780px;margin:0 auto;display:flex;background:var(--bg-2);border-top:1px solid var(--line-strong);padding-bottom:env(safe-area-inset-bottom);}
-  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 8px 10px;border:0;background:none;color:var(--faint);font:inherit;font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;transition:color .18s;}
+  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 8px 10px;border:0;background:none;color:var(--faint);font:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:color .18s;}
   .nav-btn svg{flex:none;transition:transform .18s;}
   .nav-btn.active{color:var(--brass);}
   .nav-btn.active svg{transform:translateY(-1px);}
@@ -192,7 +192,7 @@
 </style>
 <style>
 .demo-bar{position:relative;z-index:15;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;
-  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid rgba(46,125,111,.22);font-family:Manrope,system-ui,sans-serif;font-size:12.5px;line-height:1.3}
+  padding:9px 20px;background:#FFFFFF;border-bottom:1px solid rgba(46,125,111,.22);font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-size:12.5px;line-height:1.3}
 .demo-bar a{color:#5F6B67;text-decoration:none}
 .demo-bar a:hover{color:#1E2A28}
 .demo-bar a:focus-visible{outline:2px solid #B65A32;outline-offset:2px}
@@ -201,15 +201,23 @@
 .demo-bar nav{display:flex;gap:14px;flex-wrap:wrap}
 .demo-bar nav a[aria-current="page"]{color:#1E2A28;font-weight:600}
 </style>
+
+<style>
+/* house style: one family, condensed headings, sentence case */
+h1,h2,h3,.logo h1,.title,.feature h2,.card h3,.d-head h2,.modal h2,.beer-card h3,.loading-logo,.error-title{font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-stretch:78%;font-variation-settings:"wdth" 78;letter-spacing:-.005em}
+.logo h1{font-weight:800}
+.logo h1 span,.loading-logo span{color:inherit;font-weight:500}
+.title em{color:inherit;font-weight:inherit}
+</style>
 </head>
 <body>
 <div class="demo-bar"><a class="back" href="../" target="_top">&larr; Back to Blake Herring's portfolio</a><nav aria-label="Other demos"><a href="../dashboard/" target="_top">Sales dashboard</a><a href="../cocktails/" target="_top" aria-current="page">Cocktail app</a><a href="../inventory/" target="_top">Inventory planner</a><a href="../deck/" target="_top">Owner deck</a></nav></div>
   <div class="wrap" id="dowWrap">
     <header>
-      <div class="kicker">Copper Still · Service Manual</div>
+      <div class="kicker">Staff service manual</div>
       <h1 class="title">Copper <em>Still</em></h1>
-      <div class="sub">Tap any cocktail for the full build · garnish · talking points</div>
-      <div class="demo-pill">Demo · sample data</div>
+      <div class="sub">Tap any cocktail for the full build, garnish, and talking points</div>
+      <div class="demo-pill">Demo with sample data</div>
       <div class="rule"></div>
     </header>
     <div id="featureSlot"></div>
@@ -227,14 +235,14 @@
     </div>
     <div class="count" id="count"></div>
     <div class="grid" id="grid"></div>
-    <footer>Pour with intention · Copper Still Taproom<br><br>Demo built by <a href="../">Blake Herring</a></footer>
+    <footer>Copper Still Taproom<br><br>Demo built by <a href="../">Blake Herring</a></footer>
   </div>
 
   <div class="wrap" id="houseWrap" style="display:none;">
     <header>
-      <div class="kicker">Copper Still · House Menu</div>
+      <div class="kicker">House menu</div>
       <h1 class="title">House <em>Cocktails</em></h1>
-      <div class="sub">Full builds · batches · zero-proof · shots</div>
+      <div class="sub">Full builds, batches, zero-proof, and shots</div>
       <div class="rule"></div>
     </header>
     <div class="searchbar">
@@ -247,14 +255,14 @@
     </div>
     <div class="count" id="hcount"></div>
     <div class="grid" id="hgrid"></div>
-    <footer>Pour with intention · Copper Still Taproom</footer>
+    <footer>Copper Still Taproom</footer>
   </div>
 
   <div class="wrap" id="beersWrap" style="display:none;">
     <header>
-      <div class="kicker">Copper Still · Staff Pricing</div>
+      <div class="kicker">Staff pricing</div>
       <h1 class="title">Discount <em>Beers</em></h1>
-      <div class="sub">Staff discounted pricing · search by name or style</div>
+      <div class="sub">Staff discount prices. Search by name or style.</div>
       <div class="rule"></div>
     </header>
     <div class="searchbar">
@@ -267,7 +275,7 @@
     </div>
     <div class="count" id="bcount"></div>
     <div class="grid" id="bgrid"></div>
-    <footer>Pour with intention · Copper Still Taproom</footer>
+    <footer>Copper Still Taproom</footer>
   </div>
 
   <nav class="bottom-nav">
@@ -403,9 +411,9 @@ function renderFeature() {
   el.innerHTML = `
     <span class="star">${d.garnishEmoji||"★"}</span>
     <div class="f-body">
-      <div class="f-lab">This Week · ${esc(dateStr)}</div>
+      <div class="f-lab">This week, ${esc(dateStr)}</div>
       <h2>${esc(d.name)}</h2>
-      <div class="f-meta">${esc(d.base)} · ${esc(d.occasion)}</div>
+      <div class="f-meta">${esc(d.base)}, ${esc(d.occasion)}</div>
     </div>
     <span class="arrow">›</span>`;
   el.onclick = () => openDetail(d);
@@ -497,7 +505,7 @@ function render() {
     card.innerHTML = `
       <div class="card-body">
         <h3>${esc(d.name)}</h3>
-        <div class="glance">${esc(d.base)} · ${esc(d.family)}</div>
+        <div class="glance">${esc(d.base)}, ${esc(d.family)}</div>
       </div>
       <span class="basebadge">${esc(CAT_LABELS[d.cat]||d.cat)}</span>
       <span class="arrow">›</span>`;
@@ -689,7 +697,7 @@ function renderHouse() {
     card.className = "card";
     card.style.animationDelay = Math.min(i*22,400) + "ms";
     card.innerHTML = `
-      <div class="card-body"><h3>${esc(d.name)}</h3><div class="glance">${esc(d.base)} · ${esc(d.family)}</div></div>
+      <div class="card-body"><h3>${esc(d.name)}</h3><div class="glance">${esc(d.base)}, ${esc(d.family)}</div></div>
       <span class="basebadge">${esc(d.occasion)}</span>
       <span class="arrow">›</span>`;
     card.onclick = () => openDetail(d);
@@ -772,17 +780,17 @@ function drawPhoto(c, W, H, y0, h, dim) {
   c.restore();
 }
 function label(c, text, x, y, align) {
-  c.textAlign = align || "left"; c.fillStyle = "#F2C6A8"; c.font = "800 30px Manrope, sans-serif";
+  c.textAlign = align || "left"; c.fillStyle = "#F2C6A8"; c.font = "800 30px Archivo,Arial,sans-serif";
   c.fillText(text.split("").join(String.fromCharCode(8202)), x, y);
 }
 function pricePill(c, text, x, y, align) {
-  c.font = "800 50px Manrope, sans-serif";
+  c.font = "800 50px Archivo,Arial,sans-serif";
   const w = c.measureText(text).width + 90, h = 100, left = align === "center" ? x - w/2 : x;
   c.fillStyle = "#B65A32"; roundRect(c, left, y - h/2, w, h, 50); c.fill();
   c.fillStyle = "#FFFFFF"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(text, left + w/2, y + 2); c.textBaseline = "alphabetic";
 }
 function nameBlock(c, d, x, y, maxW, align, size) {
-  c.textAlign = align; c.fillStyle = "#FFFFFF"; c.font = `800 ${size}px 'Bricolage Grotesque', sans-serif`;
+  c.textAlign = align; c.fillStyle = "#FFFFFF"; c.font = `800 ${size}px Archivo,Arial,sans-serif`;
   const lines = wrapLines(c, d.name, maxW).slice(0,3);
   lines.forEach((ln,i) => c.fillText(ln, x, y + i*size*1.0));
   return y + (lines.length-1)*size;
@@ -797,7 +805,7 @@ function slideCover(c, d, W, H) {
     g.addColorStop(0,"rgba(16,40,36,0)"); g.addColorStop(1,"rgba(16,40,36,.92)");
     c.fillStyle = g; c.fillRect(0, 0, W, H);
     const size = d.name.length > 22 ? 92 : 110;
-    const lines = (c.font = `800 ${size}px 'Bricolage Grotesque', sans-serif`, wrapLines(c, d.name, W-160).slice(0,3)).length;
+    const lines = (c.font = `800 ${size}px Archivo,Arial,sans-serif`, wrapLines(c, d.name, W-160).slice(0,3)).length;
     const top = H - 150 - 70 - (lines-1)*size - 40;
     label(c, "DRINK OF THE WEEK", 80, top - size - 10);
     nameBlock(c, d, 80, top, W-160, "left", size);
@@ -810,7 +818,7 @@ function slideCover(c, d, W, H) {
   label(c, "DRINK OF THE WEEK", cx, y, "center");
   c.textAlign = "center"; c.font = "190px serif"; c.fillText(d.garnishEmoji || "🍸", cx, y + 250);
   const end = nameBlock(c, d, cx, y + 420, W-200, "center", d.name.length > 22 ? 92 : 108);
-  c.fillStyle = "rgba(255,255,255,.82)"; c.font = "600 38px Manrope, sans-serif"; c.textAlign = "center";
+  c.fillStyle = "rgba(255,255,255,.82)"; c.font = "600 38px Archivo,Arial,sans-serif"; c.textAlign = "center";
   c.fillText(`${d.base}, made for ${d.occasion}`, cx, end + 85);
   pricePill(c, badge, cx, H - 230, "center");
 }
@@ -818,18 +826,18 @@ function slideCover(c, d, W, H) {
 function slideInside(c, d, W, H) {
   tealBg(c, W, H);
   label(c, "WHAT'S IN IT", 90, 170);
-  c.fillStyle = "#FFFFFF"; c.textAlign = "left"; c.font = "800 84px 'Bricolage Grotesque', sans-serif";
+  c.fillStyle = "#FFFFFF"; c.textAlign = "left"; c.font = "800 84px Archivo,Arial,sans-serif";
   wrapLines(c, d.name, W-180).slice(0,2).forEach((ln,i)=> c.fillText(ln, 90, 270 + i*84));
   const items = ingredientList(d).slice(0,6);
   let y = H > 1200 ? 520 : 480;
   const gap = H > 1200 ? 104 : 86;
   items.forEach(t => {
     c.fillStyle = "#F2C6A8"; c.beginPath(); c.arc(108, y - 16, 10, 0, Math.PI*2); c.fill();
-    c.fillStyle = "#FFFFFF"; c.font = "600 50px Manrope, sans-serif"; c.fillText(wrapLines(c, t, W-260)[0], 145, y);
+    c.fillStyle = "#FFFFFF"; c.font = "600 50px Archivo,Arial,sans-serif"; c.fillText(wrapLines(c, t, W-260)[0], 145, y);
     y += gap;
   });
   if (d.garnish) {
-    c.fillStyle = "rgba(255,255,255,.75)"; c.font = "500 40px Manrope, sans-serif";
+    c.fillStyle = "rgba(255,255,255,.75)"; c.font = "500 40px Archivo,Arial,sans-serif";
     c.fillText("Finished with " + publicSafe(d.garnish.replace(/\s*\([^)]*\)/g,"")).toLowerCase(), 90, Math.min(H - 120, y + 50));
   }
 }
@@ -837,7 +845,7 @@ function slideInside(c, d, W, H) {
 function slideWhy(c, d, W, H) {
   if (postPhoto) { drawPhoto(c, W, H, 0, H, 0.78); } else tealBg(c, W, H);
   label(c, "WHY IT WORKS", 90, H*0.3);
-  c.fillStyle = "#FFFFFF"; c.textAlign = "left"; c.font = "700 66px 'Bricolage Grotesque', sans-serif";
+  c.fillStyle = "#FFFFFF"; c.textAlign = "left"; c.font = "700 66px Archivo,Arial,sans-serif";
   const lines = wrapLines(c, publicSafe(hookFor(d)), W-180).slice(0,6);
   lines.forEach((ln,i)=> c.fillText(ln, 90, H*0.3 + 110 + i*78));
 }
@@ -846,10 +854,10 @@ function slideVisit(c, d, W, H) {
   tealBg(c, W, H);
   const cx = W/2;
   label(c, isCurrentWeek(d) ? "THIS WEEK ONLY" : "COMING UP", cx, H*0.28, "center");
-  c.fillStyle = "#FFFFFF"; c.textAlign = "center"; c.font = "800 96px 'Bricolage Grotesque', sans-serif";
+  c.fillStyle = "#FFFFFF"; c.textAlign = "center"; c.font = "800 96px Archivo,Arial,sans-serif";
   ["Ask your bartender","for the Drink","of the Week"].forEach((t,i)=> c.fillText(t, cx, H*0.28 + 130 + i*100));
   pricePill(c, DOW_PRICE, cx, H*0.28 + 500, "center");
-  c.fillStyle = "rgba(255,255,255,.75)"; c.font = "800 30px Manrope, sans-serif";
+  c.fillStyle = "rgba(255,255,255,.75)"; c.font = "800 30px Archivo,Arial,sans-serif";
   c.fillText("COPPER STILL TAPROOM".split("").join(String.fromCharCode(8202)), cx, H - 110);
 }
 /* Story: one tall slide */
