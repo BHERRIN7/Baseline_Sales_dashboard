@@ -95,6 +95,12 @@
   .steps li::before { content: "Step " counter(s); display: block; font-size: 0.9rem; font-weight: 600; color: var(--green); margin-bottom: 0.35rem; }
   .steps p { color: var(--slate); margin-top: 0.45rem; }
 
+  /* Founding offer */
+  .founding { margin-top: 2.75rem; display: grid; grid-template-columns: 1fr auto; gap: 1.25rem 2.5rem; align-items: center; background: var(--wash); border-left: 3px solid var(--green); border-radius: 0 10px 10px 0; padding: 1.6rem 1.75rem; }
+  .founding p { color: var(--slate); margin-top: 0.4rem; max-width: 64ch; }
+  .founding .spots { font-size: 0.95rem; font-weight: 600; color: var(--green); margin-top: 0.75rem; }
+  @media (max-width: 640px) { .founding { grid-template-columns: 1fr; padding: 1.4rem 1.25rem; } .founding .btn { justify-self: start; } }
+
   /* Questions */
   .faq { margin-top: 2rem; max-width: 780px; }
   .faq details { border-bottom: 1px solid var(--rule); }
@@ -233,6 +239,14 @@
         <li><h3>Two to three weeks of setup</h3><p>I build everything in your own Google account around the layouts your team already knows. You approve each piece.</p></li>
         <li><h3>It runs on its own</h3><p>Reports refresh from your POS and your weekly post is ready to approve. I keep it running and make small changes as you need them.</p></li>
       </ol>
+      <div class="founding">
+        <div>
+          <h3>Founding clients get 40% off setup</h3>
+          <p>I'm taking on my first five bars at a reduced setup price, with your monthly rate locked for a year. In return I ask for a short testimonial, permission to share your before-and-after results, and honest feedback while we get it right.</p>
+          <p class="spots">5 of 5 spots open</p>
+        </div>
+        <a class="btn btn-primary" href="#contact">Ask about a spot</a>
+      </div>
     </div>
   </section>
 
