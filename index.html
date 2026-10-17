@@ -122,6 +122,12 @@
   .contact dt { color: var(--slate); }
   .contact dd { margin: 0; font-weight: 500; }
 
+  .email-options { margin-top: 1rem; padding: 1rem 1.1rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--wash); }
+  .email-options[hidden] { display: none; }
+  .email-options p { margin: 0 0 0.75rem; color: var(--ink); font-size: 0.97rem; }
+  .email-options .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .email-options .status { margin: 0.6rem 0 0; font-size: 0.92rem; color: var(--green); min-height: 1.2em; }
+
   .site-footer { border-top: 1px solid var(--rule); padding: 1.75rem 0 2.25rem; color: var(--slate); font-size: 0.92rem; }
   .site-footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .site-footer a { color: var(--slate); }
@@ -290,8 +296,18 @@
         <h3>Book a 20-minute call</h3>
         <p>Tell me what's eating your week. If I can't save you real time, I'll say so on the call.</p>
         <div class="actions" style="margin-top:1.25rem">
-          <a class="btn btn-primary" href="mailto:sobie275@gmail.com?subject=20-minute%20call">Email me</a>
+          <a class="btn btn-primary" id="email-btn" href="mailto:sobie275@gmail.com?subject=20-minute%20call" aria-controls="email-options" aria-expanded="false">Email me</a>
           <a class="btn btn-secondary" href="tel:+14043371143">Call (404) 337-1143</a>
+        </div>
+        <div class="email-options" id="email-options" hidden>
+          <p>Send your note to <strong>sobie275@gmail.com</strong> from whichever email you use:</p>
+          <div class="row">
+            <a class="btn btn-secondary btn-small" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=sobie275@gmail.com&amp;su=20-minute%20call">Open in Gmail</a>
+            <a class="btn btn-secondary btn-small" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to=sobie275@gmail.com&amp;subject=20-minute%20call">Open in Outlook</a>
+            <a class="btn btn-secondary btn-small" href="mailto:sobie275@gmail.com?subject=20-minute%20call">Open my mail app</a>
+            <button class="btn btn-secondary btn-small" type="button" id="copy-email">Copy address</button>
+          </div>
+          <p class="status" id="copy-status" role="status"></p>
         </div>
         <dl>
           <dt>Email</dt><dd><a href="mailto:sobie275@gmail.com">sobie275@gmail.com</a></dd>
@@ -308,6 +324,32 @@
     <span><a href="#demos">Demos</a> &nbsp; <a href="#questions">Questions</a> &nbsp; <a href="#contact">Contact</a></span>
   </div>
 </footer>
-<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+(function () {
+  var btn = document.getElementById("email-btn"), panel = document.getElementById("email-options");
+  var copy = document.getElementById("copy-email"), status = document.getElementById("copy-status");
+  var addr = "sobie275@gmail.com";
+  // Phones handle mailto links well; on computers without a mail app the link does nothing, so offer choices.
+  btn.addEventListener("click", function (e) {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    e.preventDefault();
+    panel.hidden = !panel.hidden;
+    btn.setAttribute("aria-expanded", String(!panel.hidden));
+  });
+  copy.addEventListener("click", function () {
+    function done() { status.textContent = "Copied. Paste it into a new email."; }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(addr).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      var t = document.createElement("textarea"); t.value = addr; t.setAttribute("readonly", "");
+      t.style.position = "absolute"; t.style.left = "-9999px"; document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); done(); } catch (err) { status.textContent = "Copy failed. The address is " + addr + "."; }
+      document.body.removeChild(t);
+    }
+  });
+})();
+</script>
 </body>
 </html>
