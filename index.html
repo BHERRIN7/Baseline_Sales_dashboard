@@ -3,141 +3,141 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blake Herring | Bar reporting and weekly posts, done for you</title>
-<meta name="description" content="Marietta bar manager Blake Herring sets up owner decks, year-over-year sales dashboards, and weekly drink posts that build themselves from your POS.">
+<title>Blake Herring | Reporting and weekly posts for bars, done for you</title>
+<meta name="description" content="Marietta bar manager Blake Herring sets up owner decks, year-over-year sales reports, and weekly drink posts that build themselves from your POS.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #FFFFFF;
-    --wash: #F1F3F2;
-    --ink: #1A1F24;
-    --slate: #59636D;
-    --rule: #DCE0E3;
+    --bg: #FFFFFF;
+    --wash: #F5F7F6;
+    --ink: #1B2226;
+    --slate: #56616A;
+    --rule: #E2E6E4;
     --green: #1F5C4A;
-    --green-deep: #164536;
-    --marker: #F5D547;
+    --green-dark: #17473A;
     --font: "Archivo", "Helvetica Neue", Arial, sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  body {
-    margin: 0; background: var(--paper); color: var(--ink);
-    font-family: var(--font); font-size: 1.0625rem; line-height: 1.6;
-    font-variation-settings: "wdth" 100;
-    -webkit-font-smoothing: antialiased;
-  }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; height: auto; display: block; }
   a { color: var(--green); }
-  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
-  .wrap { width: min(1080px, 100% - 2.5rem); margin-inline: auto; }
-
-  /* Headline type: condensed and heavy, like a menu board */
-  h1, h2, h3 { font-stretch: 75%; font-variation-settings: "wdth" 75; letter-spacing: -0.01em; line-height: 1.02; margin: 0; }
-  h1 { font-size: clamp(2.6rem, 6.4vw, 4.6rem); font-weight: 800; }
-  h2 { font-size: clamp(2rem, 4.2vw, 3rem); font-weight: 800; }
-  h3 { font-size: 1.45rem; font-weight: 700; line-height: 1.15; }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+  h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2.2rem, 4.4vw, 3.25rem); font-weight: 700; }
+  h2 { font-size: clamp(1.7rem, 3vw, 2.15rem); font-weight: 700; }
+  h3 { font-size: 1.2rem; font-weight: 600; }
   p { margin: 0; }
-  .lede { font-size: 1.2rem; color: var(--slate); max-width: 44ch; margin-top: 1.25rem; }
-  .section-intro { color: var(--slate); max-width: 60ch; margin-top: 0.9rem; }
+  .intro { color: var(--slate); max-width: 62ch; margin-top: 0.75rem; }
 
   /* Header */
-  .site-header { border-bottom: 1px solid var(--rule); }
-  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 0; }
-  .brand { font-weight: 800; font-size: 1.2rem; font-variation-settings: "wdth" 75; color: var(--ink); text-decoration: none; }
-  .nav { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .site-header { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--rule); backdrop-filter: saturate(1.2) blur(6px); }
+  .site-header .wrap { display: flex; align-items: center; gap: 2rem; height: 68px; }
+  .brand { font-weight: 700; font-size: 1.1rem; color: var(--ink); text-decoration: none; margin-right: auto; }
+  .brand span { font-weight: 400; color: var(--slate); }
+  .nav { display: flex; gap: 1.75rem; }
   .nav a { color: var(--slate); text-decoration: none; font-weight: 500; font-size: 0.97rem; }
   .nav a:hover { color: var(--ink); }
 
-  .btn { display: inline-block; padding: 0.85rem 1.4rem; border-radius: 4px; font-weight: 700; text-decoration: none; border: 2px solid var(--green); font-size: 1rem; }
+  .btn { display: inline-block; padding: 0.75rem 1.25rem; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--green); font-size: 1rem; line-height: 1.2; }
   .btn-primary { background: var(--green); color: #fff; }
-  .btn-primary:hover { background: var(--green-deep); border-color: var(--green-deep); }
-  .btn-plain { color: var(--green); background: transparent; }
-  .btn-plain:hover { background: var(--wash); }
+  .btn-primary:hover { background: var(--green-dark); border-color: var(--green-dark); }
+  .btn-secondary { background: #fff; color: var(--green); }
+  .btn-secondary:hover { background: var(--wash); }
+  .btn-small { padding: 0.55rem 1rem; font-size: 0.95rem; }
   .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 2rem; }
 
   /* Hero */
-  .hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(3rem, 6vw, 5rem); }
-  .hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
-  .hero h1 { max-width: 13ch; }
-
-  /* The month ledger: the one bold element */
-  .ledger { border: 2px solid var(--ink); border-radius: 4px; padding: 1.4rem 1.5rem 1.2rem; background: var(--paper); }
-  .ledger h2 { font-size: 1.5rem; font-weight: 800; }
-  .ledger .ledger-sub { color: var(--slate); font-size: 0.92rem; margin-top: 0.25rem; }
-  .ledger table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-variant-numeric: tabular-nums; }
-  .ledger th { text-align: right; font-size: 0.85rem; font-weight: 600; color: var(--slate); padding: 0 0 0.45rem; }
-  .ledger th:first-child { text-align: left; }
-  .ledger td { padding: 0.65rem 0; border-top: 1px solid var(--rule); vertical-align: top; }
-  .ledger td.task { padding-right: 0.75rem; }
-  .ledger td.task small { display: block; color: var(--slate); font-size: 0.85rem; }
-  .ledger td.num { text-align: right; white-space: nowrap; padding-left: 0.75rem; }
-  .ledger td.before { color: var(--slate); text-decoration: line-through; text-decoration-thickness: 2px; }
-  .ledger td.after { font-weight: 700; }
-  .ledger tr.total td { border-top: 2px solid var(--ink); font-weight: 800; font-size: 1.15rem; padding-top: 0.8rem; }
-  .ledger tr.total td.before { text-decoration: none; color: var(--ink); }
-  .mark { background: linear-gradient(transparent 12%, var(--marker) 12%, var(--marker) 88%, transparent 88%); padding: 0 0.2em; }
-  .ledger .fine { color: var(--slate); font-size: 0.8rem; margin-top: 0.8rem; }
+  .hero { padding: clamp(3rem, 6vw, 5rem) 0 clamp(3rem, 6vw, 4.5rem); }
+  .hero .wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .hero h1 { max-width: 15ch; }
+  .hero .lede { font-size: 1.15rem; color: var(--slate); max-width: 46ch; margin-top: 1.25rem; }
+  .hero .meta { margin-top: 1.5rem; font-size: 0.95rem; color: var(--slate); }
+  .frame { border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(27,34,38,.04), 0 18px 40px -24px rgba(27,34,38,.28); background: #fff; }
+  .hero figure { margin: 0; }
+  .hero figcaption { margin-top: 0.8rem; font-size: 0.92rem; color: var(--slate); }
 
   /* Sections */
-  section.block { padding: clamp(3.5rem, 7vw, 5.5rem) 0; }
-  section.alt { background: var(--wash); }
+  section.block { padding: clamp(3.5rem, 7vw, 5rem) 0; border-top: 1px solid var(--rule); }
+  section.wash { background: var(--wash); border-top: 0; }
 
-  /* What comes off your plate */
-  .plate { margin-top: 2.5rem; display: grid; gap: 0; }
-  .plate-row { display: grid; grid-template-columns: 1fr 1.5fr 0.9fr; gap: 1.5rem 2.5rem; padding: 1.75rem 0; border-top: 1px solid var(--rule); align-items: start; }
-  .plate-row:last-child { border-bottom: 1px solid var(--rule); }
-  .plate-row p { color: var(--slate); max-width: 58ch; }
-  .plate-row .saves { font-weight: 700; font-size: 1.05rem; }
-  .plate-row .saves span { display: block; font-weight: 400; color: var(--slate); font-size: 0.92rem; }
+  /* Time saved */
+  .savings { margin-top: 2.25rem; width: 100%; border-collapse: collapse; }
+  .savings th { text-align: left; font-size: 0.9rem; font-weight: 500; color: var(--slate); padding: 0 1.5rem 0.75rem 0; border-bottom: 1px solid var(--ink); }
+  .savings td { padding: 1.4rem 1.5rem 1.4rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .savings td:first-child { width: 26%; }
+  .savings td.desc { color: var(--slate); max-width: 52ch; }
+  .savings .num { text-align: right; white-space: nowrap; padding-right: 0; width: 1%; font-variant-numeric: tabular-nums; }
+  .savings th.num { padding-right: 0; }
+  .savings .before { color: var(--slate); }
+  .savings .after { font-weight: 700; padding-left: 1.5rem; }
+  .savings tr.total td { border-bottom: 0; border-top: 1px solid var(--ink); font-weight: 700; font-size: 1.1rem; }
+  .savings tr.total td.before { color: var(--ink); }
+  .fine { margin-top: 1rem; font-size: 0.9rem; color: var(--slate); }
 
   /* Demos */
-  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem 2.5rem; margin-top: 2.5rem; }
-  .demo-grid figure { margin: 0; }
-  .demo-grid figure.wide { grid-column: 1 / -1; }
-  .shot { display: block; position: relative; aspect-ratio: 4 / 3; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--paper); text-decoration: none; color: inherit; }
-  .demo-grid figure.wide .shot { aspect-ratio: 16 / 7; }
-  .shot iframe { position: absolute; top: 0; left: 0; width: 200%; height: 200%; border: 0; transform: scale(0.5); transform-origin: 0 0; pointer-events: none; }
-  .shot .open { position: absolute; left: 0.9rem; bottom: 0.9rem; background: var(--ink); color: #fff; font-weight: 700; font-size: 0.9rem; padding: 0.5rem 0.85rem; border-radius: 3px; }
-  .shot:hover .open { background: var(--green); }
-  figcaption { margin-top: 1rem; }
-  figcaption p { color: var(--slate); margin-top: 0.4rem; max-width: 56ch; }
-  .note { color: var(--slate); font-size: 0.88rem; margin-top: 1.5rem; }
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem 2rem; margin-top: 2.5rem; }
+  .demo { display: flex; flex-direction: column; }
+  .demo a.pic { display: block; border-radius: 10px; }
+  .demo .frame { aspect-ratio: 16 / 9.5; }
+  .demo .frame img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  .demo h3 { margin-top: 1.1rem; }
+  .demo p { color: var(--slate); margin-top: 0.4rem; max-width: 54ch; }
+  .demo .go { margin-top: 0.75rem; font-weight: 600; }
+
+  /* Steps: a real sequence */
+  .steps { list-style: none; margin: 2.25rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; counter-reset: s; }
+  .steps li { counter-increment: s; border-top: 2px solid var(--green); padding-top: 1.1rem; }
+  .steps li::before { content: "Step " counter(s); display: block; font-size: 0.9rem; font-weight: 600; color: var(--green); margin-bottom: 0.35rem; }
+  .steps p { color: var(--slate); margin-top: 0.45rem; }
 
   /* Questions */
-  .faq { margin-top: 2rem; max-width: 760px; }
-  .faq details { border-top: 1px solid var(--rule); }
-  .faq details:last-child { border-bottom: 1px solid var(--rule); }
-  .faq summary { cursor: pointer; list-style: none; padding: 1.15rem 2.5rem 1.15rem 0; font-weight: 700; font-size: 1.12rem; position: relative; }
+  .faq { margin-top: 2rem; max-width: 780px; }
+  .faq details { border-bottom: 1px solid var(--rule); }
+  .faq details:first-child { border-top: 1px solid var(--rule); }
+  .faq summary { cursor: pointer; list-style: none; padding: 1.1rem 2.5rem 1.1rem 0; font-weight: 600; font-size: 1.07rem; position: relative; }
   .faq summary::-webkit-details-marker { display: none; }
-  .faq summary::after { content: "+"; position: absolute; right: 0.25rem; top: 0.95rem; font-size: 1.5rem; font-weight: 400; color: var(--slate); }
+  .faq summary::after { content: "+"; position: absolute; right: 0.25rem; top: 0.85rem; font-size: 1.4rem; font-weight: 400; color: var(--slate); }
   .faq details[open] summary::after { content: "\2212"; }
-  .faq details p { color: var(--slate); padding: 0 0 1.25rem; max-width: 64ch; }
+  .faq details p { color: var(--slate); padding: 0 0 1.2rem; max-width: 66ch; }
 
   /* About + contact */
-  .about .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .about .wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .about p { color: var(--slate); max-width: 54ch; }
   .about p + p { margin-top: 1rem; }
-  .about p { color: var(--slate); max-width: 52ch; }
-  .contact-card { border: 2px solid var(--ink); border-radius: 4px; padding: 1.75rem; }
-  .contact-card p { color: var(--slate); margin-top: 0.6rem; }
-  .contact-card dl { margin: 1.5rem 0 0; display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1.25rem; }
-  .contact-card dt { color: var(--slate); font-size: 0.92rem; }
-  .contact-card dd { margin: 0; font-weight: 600; }
+  .about h2 + p { margin-top: 1rem; }
+  .contact { background: #fff; border: 1px solid var(--rule); border-radius: 10px; padding: 1.75rem; }
+  .contact p { color: var(--slate); margin-top: 0.5rem; }
+  .contact dl { margin: 1.5rem 0 0; display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1.25rem; font-size: 0.97rem; }
+  .contact dt { color: var(--slate); }
+  .contact dd { margin: 0; font-weight: 500; }
 
-  .site-footer { border-top: 1px solid var(--rule); padding: 1.75rem 0; color: var(--slate); font-size: 0.9rem; }
+  .site-footer { border-top: 1px solid var(--rule); padding: 1.75rem 0 2.25rem; color: var(--slate); font-size: 0.92rem; }
+  .site-footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .site-footer a { color: var(--slate); }
 
-  @media (max-width: 900px) {
+  @media (max-width: 940px) {
+    .nav { display: none; }
     .hero .wrap, .about .wrap { grid-template-columns: 1fr; }
-    .plate-row { grid-template-columns: 1fr; gap: 0.6rem; }
     .demo-grid { grid-template-columns: 1fr; }
-    .demo-grid figure.wide .shot { aspect-ratio: 4 / 3; }
+    .steps { grid-template-columns: 1fr; gap: 1.5rem; }
   }
-  @media (max-width: 520px) {
-    .nav { gap: 1rem; }
-    .ledger { padding: 1.1rem 1rem 1rem; }
-    .contact-card dl { grid-template-columns: 1fr; gap: 0.15rem; }
-    .contact-card dd { margin-bottom: 0.6rem; }
+  @media (max-width: 640px) {
+    .savings thead { display: none; }
+    .savings tr { display: grid; grid-template-columns: 1fr auto auto; border-bottom: 1px solid var(--rule); padding: 1.1rem 0; column-gap: 1rem; }
+    .savings td { border: 0; padding: 0; }
+    .savings td:first-child { width: auto; grid-column: 1; }
+    .savings td.desc { grid-column: 1 / -1; grid-row: 2; margin-top: 0.35rem; font-size: 0.97rem; }
+    .savings .after { padding-left: 0; }
+    .savings tr.total { border-top: 1px solid var(--ink); border-bottom: 0; }
+    .savings tr.total td { border: 0; }
+    .savings tr.total td:nth-child(2) { display: none; }
+    .contact dl { grid-template-columns: 1fr; gap: 0.1rem; }
+    .contact dd { margin-bottom: 0.6rem; }
   }
 </style>
 </head>
@@ -145,13 +145,14 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="#">Blake Herring</a>
+    <a class="brand" href="#">Blake Herring <span>Bar tools</span></a>
     <nav class="nav" aria-label="Main">
       <a href="#what">What I do</a>
       <a href="#demos">Demos</a>
+      <a href="#how">How it works</a>
       <a href="#questions">Questions</a>
-      <a href="#contact">Contact</a>
     </nav>
+    <a class="btn btn-primary btn-small" href="#contact">Book a call</a>
   </div>
 </header>
 
@@ -159,149 +160,123 @@
   <section class="hero">
     <div class="wrap">
       <div>
-        <h1>Get month&#8209;end reporting off your plate.</h1>
-        <p class="lede">I'm Blake, a bar manager in Marietta. I set up your owner deck, sales comparisons, and weekly drink posts so they build themselves from your POS. You review them instead of making them.</p>
+        <h1>Ten years behind the bar. Now I build the tools I wished I had.</h1>
+        <p class="lede">I set up the monthly reporting and weekly drink posts your managers make by hand, so they build themselves from your POS. Your team reviews them instead of making them.</p>
         <div class="actions">
           <a class="btn btn-primary" href="#contact">Book a 20-minute call</a>
-          <a class="btn btn-plain" href="#demos">Try the demos</a>
+          <a class="btn btn-secondary" href="#demos">See the demos</a>
         </div>
+        <p class="meta">Working bar manager in Marietta, Georgia. Free first call, no software to buy.</p>
       </div>
-
-      <div class="ledger">
-        <h2>A GM's month, before and after</h2>
-        <p class="ledger-sub">Hours spent on reporting and posts</p>
-        <table>
-          <thead><tr><th scope="col">Task</th><th scope="col">Before</th><th scope="col">After</th></tr></thead>
-          <tbody>
-            <tr><td class="task">Owner or corporate deck<small>Copying numbers into slides</small></td><td class="num before">3 hrs</td><td class="num after">10 min</td></tr>
-            <tr><td class="task">Weekly drink posts<small>Photos, captions, four a month</small></td><td class="num before">3 hrs</td><td class="num after">20 min</td></tr>
-            <tr><td class="task">This year vs. last year<small>Pivot tables and exports</small></td><td class="num before">2 hrs</td><td class="num after">0</td></tr>
-            <tr class="total"><td class="task">Total</td><td class="num before">8 hrs</td><td class="num after"><span class="mark">30 min</span></td></tr>
-          </tbody>
-        </table>
-        <p class="fine">Based on my own bar. Yours will vary; we'll work out your real numbers on the first call.</p>
-      </div>
+      <figure>
+        <div class="frame"><img src="images/owner-deck.jpg" width="1600" height="724" alt="A slide from the monthly owner deck showing net sales, guests, average check, and orders against last year, with four written takeaways"></div>
+        <figcaption>A page from the monthly owner deck, built from a month of POS sales in one click.</figcaption>
+      </figure>
     </div>
   </section>
 
-  <section class="block alt" id="what">
+  <section class="block" id="what">
     <div class="wrap">
       <h2>What comes off your plate</h2>
-      <p class="section-intro">Three jobs that eat a manager's week. Each one is set up once around how you already report, then runs on its own.</p>
-      <div class="plate">
-        <div class="plate-row">
-          <h3>The monthly owner deck</h3>
-          <p>Sales against last year, top sellers, and the items running over cost, laid out the way your owners or corporate want to see them. New month, new numbers, same deck, one click.</p>
-          <div class="saves">About 3 hours a month<span>You check it, add a note, send it</span></div>
-        </div>
-        <div class="plate-row">
-          <h3>Weekly drink posts</h3>
-          <p>Snap a photo of the drink at your bar. You get a ready-to-post carousel: the photo, what's in it, the price, and a caption written from your own recipe and talking points.</p>
-          <div class="saves">About 3 hours a month<span>Approve, then post or schedule</span></div>
-        </div>
-        <div class="plate-row">
-          <h3>Sales against last year</h3>
-          <p>Every day, week, and month compared to the same period last year, with the items running over your cost target flagged. No pivot tables, and it reads fine on a phone.</p>
-          <div class="saves">About 2 hours a month<span>Plus a clear answer when the owner asks "how are we doing?"</span></div>
-        </div>
-      </div>
+      <p class="intro">Three jobs that eat a manager's month. Each is set up once around how you already report, then runs on its own.</p>
+      <table class="savings">
+        <thead><tr><th scope="col">Task</th><th scope="col">What you get</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th></tr></thead>
+        <tbody>
+          <tr><td><h3>Monthly owner deck</h3></td><td class="desc">Sales against last year, top sellers, and the items running over your cost target, laid out the way your owners or corporate want it. Add a note and send.</td><td class="num before">3 hrs</td><td class="num after">10 min</td></tr>
+          <tr><td><h3>Weekly drink posts</h3></td><td class="desc">Snap a photo of the drink at your bar and get a ready-to-post carousel and caption, written from your own recipe and checked against Georgia's alcohol ad rules.</td><td class="num before">3 hrs</td><td class="num after">20 min</td></tr>
+          <tr><td><h3>Sales against last year</h3></td><td class="desc">Every day, week, and month compared to the same period last year, readable on a phone. No pivot tables.</td><td class="num before">2 hrs</td><td class="num after">0</td></tr>
+          <tr class="total"><td>Each month</td><td></td><td class="num before">8 hrs</td><td class="num after">30 min</td></tr>
+        </tbody>
+      </table>
+      <p class="fine">Times are from my own bar. We'll work out yours on the first call.</p>
     </div>
   </section>
 
-  <section class="block" id="demos">
+  <section class="block wash" id="demos">
     <div class="wrap">
-      <h2>Try it on a sample bar</h2>
-      <p class="section-intro">These run on made-up numbers for a fictional taproom, so you can click around without seeing anyone's real sales.</p>
+      <h2>See it on a sample bar</h2>
+      <p class="intro">Each demo runs on made-up numbers for a fictional taproom, so you can click around freely.</p>
       <div class="demo-grid">
-        <figure class="wide">
-          <a class="shot" href="deck/" aria-label="Open the owner deck demo">
-            <iframe src="deck/" title="Owner deck preview" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-            <span class="open">Build a deck</span>
-          </a>
-          <figcaption>
-            <h3>Monthly owner deck</h3>
-            <p>Pick a month and an eight-slide deck builds itself: sales against last year, week by week, day of the week, category mix, top sellers, and a price watch. Add your notes, save it as a PDF, and copy a ready-made email summary.</p>
-          </figcaption>
-        </figure>
-        <figure class="wide">
-          <a class="shot" href="dashboard/" aria-label="Open the sales dashboard demo">
-            <iframe src="dashboard/" title="Sales dashboard preview" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-            <span class="open">Open the dashboard</span>
-          </a>
-          <figcaption>
-            <h3>Sales dashboard</h3>
-            <p>This year against last year, the sales mix, guest traffic, and a pricing tab that shows which items sit over your cost target and what price would fix them.</p>
-          </figcaption>
-        </figure>
-        <figure>
-          <a class="shot" href="cocktails/" aria-label="Open the Drink of the Week app demo">
-            <iframe src="cocktails/" title="Drink app and post builder preview" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-            <span class="open">Open the app</span>
-          </a>
-          <figcaption>
-            <h3>Drink of the Week and post builder</h3>
-            <p>Staff see this week's feature, full specs, and talking points on their phones. Add a photo of the drink and one tap turns it into a four-slide Instagram or Facebook carousel, or a Story, with the caption written and checked against Georgia's alcohol advertising rules.</p>
-          </figcaption>
-        </figure>
-        <figure>
-          <a class="shot" href="inventory/" aria-label="Open the inventory planner demo">
-            <iframe src="inventory/" title="Inventory planner preview" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-            <span class="open">Open the planner</span>
-          </a>
-          <figcaption>
-            <h3>Reorder and keep-or-cut planner</h3>
-            <p>What to order this week, sorted by what runs out first, and which beers, spirits, and wines have earned their spot.</p>
-          </figcaption>
-        </figure>
+        <div class="demo">
+          <a class="pic" href="deck/"><div class="frame"><img src="images/owner-deck-price.jpg" width="1600" height="901" loading="lazy" alt="Owner deck slide listing six items over the cost target with suggested prices"></div></a>
+          <h3>Monthly owner deck</h3>
+          <p>Pick a month and eight slides build themselves, from sales against last year to a list of prices worth raising. Save it as a PDF or copy an email summary.</p>
+          <a class="go" href="deck/">Open the deck demo</a>
+        </div>
+        <div class="demo">
+          <a class="pic" href="cocktails/"><div class="frame"><img src="images/drink-app.jpg" width="1600" height="950" loading="lazy" alt="The Drink of the Week app on a phone next to a generated Instagram post"></div></a>
+          <h3>Drink of the Week app and posts</h3>
+          <p>Staff see the weekly feature, full specs, and talking points on their phones. One tap turns the feature into a post for Instagram, Facebook, or Stories.</p>
+          <a class="go" href="cocktails/">Open the app demo</a>
+        </div>
+        <div class="demo">
+          <a class="pic" href="dashboard/"><div class="frame"><img src="images/sales-dashboard.jpg" width="1600" height="950" loading="lazy" alt="Sales dashboard showing three years of sales and key numbers compared with last year"></div></a>
+          <h3>Sales dashboard</h3>
+          <p>This year against last year, the sales mix, guest traffic, and which items cost you margin. Updated by dropping in the month's POS reports.</p>
+          <a class="go" href="dashboard/">Open the dashboard demo</a>
+        </div>
+        <div class="demo">
+          <a class="pic" href="inventory/"><div class="frame"><img src="images/planner.jpg" width="1600" height="950" loading="lazy" alt="Inventory planner listing items to order now, sorted by what runs out first"></div></a>
+          <h3>Reorder and keep-or-cut planner</h3>
+          <p>What to order this week, sorted by what runs out first, and which beers, spirits, and wines have earned their spot.</p>
+          <a class="go" href="inventory/">Open the planner demo</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="block alt" id="questions">
+  <section class="block" id="how">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><h3>A free 20-minute call</h3><p>We look at how you report today, what your owners ask for, and which POS reports you can already pull.</p></li>
+        <li><h3>Two to three weeks of setup</h3><p>I build everything in your own Google account around the layouts your team already knows. You approve each piece.</p></li>
+        <li><h3>It runs on its own</h3><p>Reports refresh from your POS and your weekly post is ready to approve. I keep it running and make small changes as you need them.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="questions">
     <div class="wrap">
       <h2>Questions GMs ask</h2>
       <div class="faq">
         <details>
           <summary>Is it automated, or am I still exporting reports?</summary>
-          <p>The goal is set it and forget it. Where your POS can send data on a schedule, everything updates overnight on its own. Where it can't, it's one drag and drop at the start of the month, which takes about two minutes. We'll check what your setup supports on the first call, before you pay for anything.</p>
+          <p>Where your POS can send data on a schedule, everything updates overnight on its own. Where it can't, it's one drag and drop at the start of the month, about two minutes. We'll check what your setup supports on the first call, before you pay for anything.</p>
         </details>
         <details>
           <summary>How is this different from the reports my POS already gives me?</summary>
-          <p>Your POS tells you what happened. This tells you how it compares to last year, which items are costing you margin, and puts it in the deck your owners actually read. It's the step you're doing by hand in a spreadsheet today.</p>
-        </details>
-        <details>
-          <summary>Do I have to change how my team works?</summary>
-          <p>No. I build around the reports you already pull and the way your owners already like to see them. If your current deck has a layout people are used to, we keep it.</p>
+          <p>Your POS tells you what happened. This compares it to last year, points out which items are costing you margin, and puts it in the deck your owners actually read. It's the part you're doing by hand in a spreadsheet today.</p>
         </details>
         <details>
           <summary>We already pay for inventory software. Is this a replacement?</summary>
-          <p>No, and you should keep it. Your inventory app is great at counting and invoices. I take what it and your POS produce and turn it into decisions, decks, and posts.</p>
+          <p>No, keep it. Inventory apps are great at counting and invoices. I take what it and your POS produce and turn it into decisions, decks, and posts.</p>
         </details>
         <details>
-          <summary>What happens if you get busy or disappear?</summary>
-          <p>Everything lives in your own accounts, and you own all of it. You get written instructions for every piece, so nothing stops working if I'm not around.</p>
+          <summary>What if you get busy or disappear?</summary>
+          <p>Everything lives in your own accounts and you own all of it. Every piece comes with written instructions, so nothing stops working if I'm not around.</p>
         </details>
         <details>
-          <summary>How long does setup take?</summary>
-          <p>Most bars are up and running in two to three weeks. It starts with a free 20-minute call where we look at how you report today.</p>
+          <summary>Are the drink posts legal to run in Georgia?</summary>
+          <p>Captions and slides leave out pour sizes and alcohol content, and every post is checked for coupons and timed specials before you approve it. Local rules vary, so we confirm what your city or county allows during setup.</p>
         </details>
       </div>
     </div>
   </section>
 
-  <section class="block about" id="contact">
+  <section class="block wash about" id="contact">
     <div class="wrap">
       <div>
-        <h2>Who's building this</h2>
-        <p style="margin-top:1rem">I've managed bars for ten years and run the back office at a craft beer and cocktail bar in Marietta: inventory, pricing, the cocktail program, and the monthly reports to ownership.</p>
-        <p>I built these tools for my own bar because I was tired of losing my Mondays to spreadsheets. If yours look the same, I can probably help.</p>
+        <h2>About me</h2>
+        <p>I've managed bars for ten years and run the back office at a craft beer and cocktail bar in Marietta: inventory, pricing, the cocktail program, and the monthly reports to ownership.</p>
+        <p>I built these tools for my own bar because I was tired of losing Mondays to spreadsheets. If your week looks the same, I can probably help.</p>
       </div>
-      <div class="contact-card">
+      <div class="contact">
         <h3>Book a 20-minute call</h3>
         <p>Tell me what's eating your week. If I can't save you real time, I'll say so on the call.</p>
         <div class="actions" style="margin-top:1.25rem">
           <a class="btn btn-primary" href="mailto:sobie275@gmail.com?subject=20-minute%20call">Email me</a>
-          <a class="btn btn-plain" href="tel:+14043371143">Call (404) 337-1143</a>
+          <a class="btn btn-secondary" href="tel:+14043371143">Call (404) 337-1143</a>
         </div>
         <dl>
           <dt>Email</dt><dd><a href="mailto:sobie275@gmail.com">sobie275@gmail.com</a></dd>
@@ -314,7 +289,10 @@
 </main>
 
 <footer class="site-footer">
-  <div class="wrap">&copy; <span id="year">2026</span> Blake Herring</div>
+  <div class="wrap">
+    <span>&copy; <span id="year">2026</span> Blake Herring</span>
+    <span><a href="#demos">Demos</a> &nbsp; <a href="#questions">Questions</a> &nbsp; <a href="#contact">Contact</a></span>
+  </div>
 </footer>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
