@@ -3,20 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blake Herring | Reporting and weekly posts for bars, done for you</title>
-<meta name="description" content="Supply chain analyst and Marietta bar manager Blake Herring sets up owner decks, year-over-year sales reports, and weekly drink posts that build themselves from your POS.">
+<title>SpeedRail | Bar reporting, pricing, and weekly posts, done for you</title>
+<meta name="description" content="SpeedRail sets up owner decks, year-over-year sales reports, menu pricing, and weekly drink posts that build themselves from your POS. Built by Marietta bar manager and supply chain analyst Blake Herring.">
+<meta property="og:title" content="SpeedRail: everything your bar runs on, within reach">
+<meta property="og:description" content="Owner decks, sales reports, pricing, and drink posts that build themselves from your POS.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%231D3B53%22/%3E%3Cpath d=%22M6.9 20V14.2L8.5 12.4V8H10.5V12.4L12.1 14.2V20ZM19.9 20V14.2L21.5 12.4V8H23.5V12.4L25.1 14.2V20Z%22 fill=%22%23fff%22/%3E%3Cpath d=%22M13.4 20V14.2L15 12.4V6H17V12.4L18.6 14.2V20Z%22 fill=%22%23D9932B%22/%3E%3Crect x=%224.5%22 y=%2219%22 width=%2223%22 height=%224%22 rx=%222%22 fill=%22%23fff%22/%3E%3Crect x=%224.5%22 y=%2224.8%22 width=%229%22 height=%221.4%22 rx=%22.7%22 fill=%22%23D9932B%22 opacity=%22.9%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #FFFFFF;
-    --wash: #F5F7F6;
-    --ink: #1B2226;
-    --slate: #56616A;
-    --rule: #E2E6E4;
-    --green: #1F5C4A;
-    --green-dark: #17473A;
+    --wash: #F3F5F7;
+    --ink: #17212A;
+    --slate: #55626D;
+    --rule: #E0E5E9;
+    --brand: #1D3B53;
+    --brand-dark: #132A3C;
+    --accent: #D9932B;
     --font: "Archivo", "Helvetica Neue", Arial, sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; }
@@ -24,7 +28,7 @@
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
   img { max-width: 100%; height: auto; display: block; }
-  a { color: var(--green); }
+  a { color: var(--brand); }
   a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
   .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
   h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -0.01em; }
@@ -38,15 +42,19 @@
   .site-header { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--rule); backdrop-filter: saturate(1.2) blur(6px); }
   .site-header .wrap { display: flex; align-items: center; gap: 2rem; height: 68px; }
   .brand { font-weight: 700; font-size: 1.1rem; color: var(--ink); text-decoration: none; margin-right: auto; }
-  .brand span { font-weight: 400; color: var(--slate); }
+  .brand { display: inline-flex; align-items: center; gap: 0.55rem; letter-spacing: -0.02em; }
+  .brand svg { width: 30px; height: 30px; flex: none; }
+  .brand b { font-weight: 700; }
+  .brand span { font-weight: 400; color: var(--slate); font-size: 0.92rem; letter-spacing: 0; padding-left: 0.6rem; border-left: 1px solid var(--rule); }
+  @media (max-width: 520px) { .brand span { display: none; } }
   .nav { display: flex; gap: 1.75rem; }
   .nav a { color: var(--slate); text-decoration: none; font-weight: 500; font-size: 0.97rem; }
   .nav a:hover { color: var(--ink); }
 
-  .btn { display: inline-block; padding: 0.75rem 1.25rem; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--green); font-size: 1rem; line-height: 1.2; }
-  .btn-primary { background: var(--green); color: #fff; }
-  .btn-primary:hover { background: var(--green-dark); border-color: var(--green-dark); }
-  .btn-secondary { background: #fff; color: var(--green); }
+  .btn { display: inline-block; padding: 0.75rem 1.25rem; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--brand); font-size: 1rem; line-height: 1.2; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
+  .btn-secondary { background: #fff; color: var(--brand); }
   .btn-secondary:hover { background: var(--wash); }
   .btn-small { padding: 0.55rem 1rem; font-size: 0.95rem; }
   .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 2rem; }
@@ -91,14 +99,14 @@
 
   /* Steps: a real sequence */
   .steps { list-style: none; margin: 2.25rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; counter-reset: s; }
-  .steps li { counter-increment: s; border-top: 2px solid var(--green); padding-top: 1.1rem; }
-  .steps li::before { content: "Step " counter(s); display: block; font-size: 0.9rem; font-weight: 600; color: var(--green); margin-bottom: 0.35rem; }
+  .steps li { counter-increment: s; border-top: 2px solid var(--brand); padding-top: 1.1rem; }
+  .steps li::before { content: "Step " counter(s); display: block; font-size: 0.9rem; font-weight: 600; color: var(--brand); margin-bottom: 0.35rem; }
   .steps p { color: var(--slate); margin-top: 0.45rem; }
 
   /* Founding offer */
-  .founding { margin-top: 2.75rem; display: grid; grid-template-columns: 1fr auto; gap: 1.25rem 2.5rem; align-items: center; background: var(--wash); border-left: 3px solid var(--green); border-radius: 0 10px 10px 0; padding: 1.6rem 1.75rem; }
+  .founding { margin-top: 2.75rem; display: grid; grid-template-columns: 1fr auto; gap: 1.25rem 2.5rem; align-items: center; background: var(--wash); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 1.6rem 1.75rem; }
   .founding p { color: var(--slate); margin-top: 0.4rem; max-width: 64ch; }
-  .founding .spots { font-size: 0.95rem; font-weight: 600; color: var(--green); margin-top: 0.75rem; }
+  .founding .spots { font-size: 0.95rem; font-weight: 600; color: var(--brand); margin-top: 0.75rem; }
   @media (max-width: 640px) { .founding { grid-template-columns: 1fr; padding: 1.4rem 1.25rem; } .founding .btn { justify-self: start; } }
 
   /* Questions */
@@ -126,7 +134,7 @@
   .email-options[hidden] { display: none; }
   .email-options p { margin: 0 0 0.75rem; color: var(--ink); font-size: 0.97rem; }
   .email-options .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .email-options .status { margin: 0.6rem 0 0; font-size: 0.92rem; color: var(--green); min-height: 1.2em; }
+  .email-options .status { margin: 0.6rem 0 0; font-size: 0.92rem; color: var(--brand); min-height: 1.2em; }
 
   .site-footer { border-top: 1px solid var(--rule); padding: 1.75rem 0 2.25rem; color: var(--slate); font-size: 0.92rem; }
   .site-footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
@@ -157,7 +165,7 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="#">Blake Herring <span>Bar tools</span></a>
+    <a class="brand" href="#" aria-label="SpeedRail home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1D3B53"/><path d="M6.9 20V14.2L8.5 12.4V8H10.5V12.4L12.1 14.2V20ZM19.9 20V14.2L21.5 12.4V8H23.5V12.4L25.1 14.2V20Z" fill="#fff"/><path d="M13.4 20V14.2L15 12.4V6H17V12.4L18.6 14.2V20Z" fill="#D9932B"/><rect x="4.5" y="19" width="23" height="4" rx="2" fill="#fff"/><rect x="4.5" y="24.8" width="9" height="1.4" rx=".7" fill="#D9932B" opacity=".9"/></svg><b>SpeedRail</b><span>Bar tools</span></a>
     <nav class="nav" aria-label="Main">
       <a href="#what">What I do</a>
       <a href="#demos">Demos</a>
@@ -178,7 +186,7 @@
           <a class="btn btn-primary" href="#contact">Book a 20-minute call</a>
           <a class="btn btn-secondary" href="#demos">See the demos</a>
         </div>
-        <p class="meta">Supply chain analyst and bar manager in Marietta, Georgia. Free first call, no software to buy.</p>
+        <p class="meta">Built by Blake Herring, a bar manager and supply chain analyst in Marietta, Georgia. Free first call, no software to buy.</p>
       </div>
       <figure>
         <div class="frame"><img src="images/owner-deck.jpg" width="1600" height="724" alt="A slide from the monthly owner deck showing net sales, guests, average check, and orders against last year, with four written takeaways"></div>
@@ -287,10 +295,11 @@
   <section class="block wash about" id="contact">
     <div class="wrap">
       <div>
-        <h2>About me</h2>
+        <h2>Who's behind SpeedRail</h2>
         <p>By day I work in supply chain analytics for a Fortune 500 company, managing field inventory for the construction crews that build cell towers. Keeping the right materials in the right place, and reporting on it so leadership can act, is the whole job.</p>
         <p>I've also managed bars for ten years and still run the back office at a craft beer and cocktail bar in Marietta: inventory, pricing, the cocktail program, and the monthly reports to ownership.</p>
         <p>That mix is the point. A bar is a small supply chain: product comes in, gets poured, and every keg and bottle has to earn its spot. I bring the same inventory and reporting discipline a Fortune 500 company runs on, sized for a single bar.</p>
+        <p>The name comes from the speed rail, the rack in front of every bartender that keeps the most-used bottles within reach. That's the idea: the numbers and tools your bar runs on, right where you need them.</p>
       </div>
       <div class="contact">
         <h3>Book a 20-minute call</h3>
@@ -320,7 +329,7 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <span>&copy; <span id="year">2026</span> Blake Herring</span>
+    <span>&copy; <span id="year">2026</span> SpeedRail. Everything your bar runs on, within reach.</span>
     <span><a href="#demos">Demos</a> &nbsp; <a href="#questions">Questions</a> &nbsp; <a href="#contact">Contact</a></span>
   </div>
 </footer>
