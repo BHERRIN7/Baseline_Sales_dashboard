@@ -10,270 +10,297 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%231D3B53%22/%3E%3Cpath d=%22M6.9 20V14.2L8.5 12.4V8H10.5V12.4L12.1 14.2V20ZM19.9 20V14.2L21.5 12.4V8H23.5V12.4L25.1 14.2V20Z%22 fill=%22%23fff%22/%3E%3Cpath d=%22M13.4 20V14.2L15 12.4V6H17V12.4L18.6 14.2V20Z%22 fill=%22%23D9932B%22/%3E%3Crect x=%224.5%22 y=%2219%22 width=%2223%22 height=%224%22 rx=%222%22 fill=%22%23fff%22/%3E%3Crect x=%224.5%22 y=%2224.8%22 width=%229%22 height=%221.4%22 rx=%22.7%22 fill=%22%23D9932B%22 opacity=%22.9%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FFFFFF;
-    --wash: #F3F5F7;
+    --navy: #1D3B53;
+    --backbar: #132A3C;
+    --amber: #D9932B;
+    --steel: #9AABB8;
     --ink: #17212A;
     --slate: #55626D;
     --rule: #E0E5E9;
-    --brand: #1D3B53;
-    --brand-dark: #132A3C;
-    --accent: #D9932B;
-    --font: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --paper: #FFFFFF;
+    --body: Archivo, "Helvetica Neue", Arial, sans-serif;
   }
-  *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.6 var(--body); }
   img { max-width: 100%; height: auto; display: block; }
-  a { color: var(--brand); }
-  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
-  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
-  h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -0.01em; }
-  h1 { font-size: clamp(2.2rem, 4.4vw, 3.25rem); font-weight: 700; }
-  h2 { font-size: clamp(1.7rem, 3vw, 2.15rem); font-weight: 700; }
-  h3 { font-size: 1.2rem; font-weight: 600; }
-  p { margin: 0; }
-  .intro { color: var(--slate); max-width: 62ch; margin-top: 0.75rem; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+  /* Display type: Archivo condensed, like bar signage */
+  .display { font-family: var(--body); font-stretch: 68%; font-weight: 800; letter-spacing: -0.01em; line-height: 0.95; margin: 0; }
+  h2.display { font-size: clamp(2.4rem, 5vw, 3.6rem); margin-bottom: 16px; }
+  .lede { color: var(--slate); font-size: 1.1rem; max-width: 58ch; }
 
   /* Header */
-  .site-header { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--rule); backdrop-filter: saturate(1.2) blur(6px); }
-  .site-header .wrap { display: flex; align-items: center; gap: 2rem; height: 68px; }
-  .brand { font-weight: 700; font-size: 1.1rem; color: var(--ink); text-decoration: none; margin-right: auto; }
-  .brand { display: inline-flex; align-items: center; gap: 0.55rem; letter-spacing: -0.02em; }
-  .brand svg { width: 30px; height: 30px; flex: none; }
-  .brand b { font-weight: 700; }
-  .brand span { font-weight: 400; color: var(--slate); font-size: 0.92rem; letter-spacing: 0; padding-left: 0.6rem; border-left: 1px solid var(--rule); }
-  @media (max-width: 520px) { .brand span { display: none; } }
-  .nav { display: flex; gap: 1.75rem; }
-  .nav a { color: var(--slate); text-decoration: none; font-weight: 500; font-size: 0.97rem; }
-  .nav a:hover { color: var(--ink); }
+  header { border-bottom: 1px solid var(--rule); }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; font-size: 1.1rem; }
+  .brand svg { width: 30px; height: 30px; }
+  nav { display: flex; gap: 24px; align-items: center; font-size: 0.95rem; }
+  nav a { text-decoration: none; color: var(--slate); }
+  nav a:hover { color: var(--ink); }
+  .btn { display: inline-block; text-decoration: none; font-weight: 600; padding: 12px 20px; border-radius: 6px; border: 2px solid var(--navy); font-size: 1rem; cursor: pointer; font-family: var(--body); }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: var(--backbar); border-color: var(--backbar); }
+  .btn-ghost { background: transparent; color: var(--navy); }
+  @media (max-width: 760px) { nav a:not(.btn) { display: none; } }
 
-  .btn { display: inline-block; padding: 0.75rem 1.25rem; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--brand); font-size: 1rem; line-height: 1.2; }
-  .btn-primary { background: var(--brand); color: #fff; }
-  .btn-primary:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
-  .btn-secondary { background: #fff; color: var(--brand); }
-  .btn-secondary:hover { background: var(--wash); }
-  .btn-small { padding: 0.55rem 1rem; font-size: 0.95rem; }
-  .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 2rem; }
+  /* Hero: headline, then the owner deck page, full width */
+  .hero { padding: 72px 0 0; }
+  .hero h1 { font-size: clamp(3rem, 8.5vw, 6.6rem); max-width: 14ch; }
+  .hero-row { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: end; margin-top: 28px; }
+  .hero-row .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-self: end; }
+  .founding-line { font-size: 0.95rem; color: var(--slate); margin: 14px 0 0; }
+  .founding-line b { color: var(--ink); }
+  .hero-shot { margin-top: 48px; border-top: 6px solid var(--navy); background: #F3F5F7; padding: 32px 32px 0; overflow: hidden; }
+  .hero-shot img { margin: 0 auto; max-width: 980px; width: 100%; box-shadow: 0 -1px 0 var(--rule); }
+  .caption { font-size: 0.9rem; color: var(--slate); margin: 12px 0 0; }
+  @media (max-width: 760px) {
+    .hero-row { grid-template-columns: 1fr; }
+    .hero-row .actions { justify-self: start; }
+    .hero-shot { padding: 16px 16px 0; margin-left: -24px; margin-right: -24px; }
+  }
 
-  /* Hero */
-  .hero { padding: clamp(3rem, 6vw, 5rem) 0 clamp(3rem, 6vw, 4.5rem); }
-  .hero .wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
-  .hero h1 { max-width: 15ch; }
-  .hero .lede { font-size: 1.15rem; color: var(--slate); max-width: 46ch; margin-top: 1.25rem; }
-  .hero .meta { margin-top: 1.5rem; font-size: 0.95rem; color: var(--slate); }
-  .frame { border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(27,34,38,.04), 0 18px 40px -24px rgba(27,34,38,.28); background: #fff; }
-  .hero figure { margin: 0; }
-  .hero figcaption { margin-top: 0.8rem; font-size: 0.92rem; color: var(--slate); }
+  /* Savings */
+  .savings { padding: 96px 0; }
+  .savings-head { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: 36px; }
+  .big-number { font-stretch: 68%; font-weight: 800; white-space: nowrap; font-size: clamp(2.6rem, 7vw, 5.2rem); line-height: 0.9; color: var(--navy); }
+  .big-number span { color: var(--amber); }
+  table { width: 100%; border-collapse: collapse; font-size: 1rem; }
+  th { text-align: left; font-weight: 500; color: var(--slate); font-size: 0.9rem; padding: 0 12px 10px 0; border-bottom: 2px solid var(--ink); }
+  td { padding: 18px 12px 18px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td.task { font-weight: 700; width: 24%; }
+  td.desc { color: var(--slate); }
+  .num { text-align: right; white-space: nowrap; }
+  td.after { font-weight: 700; }
+  tr.total td { border-bottom: 0; font-weight: 700; }
+  .fine { font-size: 0.9rem; color: var(--slate); margin-top: 16px; }
+  @media (max-width: 760px) {
+    .savings-head { grid-template-columns: 1fr; }
+    td.desc, th.desc { display: none; }
+    td.task { width: auto; }
+  }
 
-  /* Sections */
-  section.block { padding: clamp(3.5rem, 7vw, 5rem) 0; border-top: 1px solid var(--rule); }
-  section.wash { background: var(--wash); border-top: 0; }
+  /* Demos: the speed rail */
+  .backbar { background: var(--backbar); color: #fff; padding: 96px 0 104px; }
+  .backbar .lede { color: #C6D2DC; }
+  .rail { margin-top: 56px; position: relative; max-width: 940px; }
+  .rail-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; position: relative; z-index: 1; }
+  .rail::after { content: ""; position: absolute; left: 0; right: 0; top: 128px; height: 16px; border-radius: 7px;
+    background: linear-gradient(#C9D4DC, #8395A3); box-shadow: 0 2px 0 rgba(0,0,0,.35); z-index: 2; }
+  .tab { appearance: none; border: 0; background: none; color: #C6D2DC; cursor: pointer; font: inherit; padding: 0; display: flex; flex-direction: column; align-items: center; }
+  .bottle { width: 64px; height: 144px; display: block; transition: transform .2s ease; }
+  .bottle path { fill: #3A5670; transition: fill .2s ease; }
+  .tab:hover .bottle { transform: translateY(-4px); }
+  .tab[aria-selected="true"] .bottle path { fill: var(--amber); }
+  .tab[aria-selected="true"] .bottle { transform: translateY(-10px); }
+  .tab-label { margin-top: 30px; font-weight: 600; font-size: 0.98rem; text-align: center; line-height: 1.25; }
+  .tab[aria-selected="true"] .tab-label { color: #fff; }
+  .panel { margin-top: 40px; display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; align-items: start; }
+  .panel[hidden] { display: none; }
+  .panel img { border-radius: 4px; }
+  .panel h3 { font-stretch: 68%; font-weight: 800; font-size: 2.2rem; line-height: 1; margin: 0 0 14px; }
+  .panel p { color: #C6D2DC; margin: 0 0 22px; }
+  .panel .btn-primary { background: var(--amber); border-color: var(--amber); color: var(--backbar); }
+  .panel .btn-primary:hover { background: #E7A845; border-color: #E7A845; }
+  .sample { font-size: 0.85rem; color: #93A5B4; margin-top: 14px; }
+  @media (max-width: 760px) {
+    .bottle { width: 44px; height: 99px; }
+    .rail::after { top: 88px; height: 12px; }
+    .tab-label { font-size: 0.78rem; margin-top: 20px; }
+    .panel { grid-template-columns: 1fr; gap: 20px; }
+  }
 
-  /* Time saved */
-  .savings { margin-top: 2.25rem; width: 100%; border-collapse: collapse; }
-  .savings th { text-align: left; font-size: 0.9rem; font-weight: 500; color: var(--slate); padding: 0 1.5rem 0.75rem 0; border-bottom: 1px solid var(--ink); }
-  .savings td { padding: 1.4rem 1.5rem 1.4rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  .savings td:first-child { width: 26%; }
-  .savings td.desc { color: var(--slate); max-width: 52ch; }
-  .savings .num { text-align: right; white-space: nowrap; padding-right: 0; width: 1%; font-variant-numeric: tabular-nums; }
-  .savings th.num { padding-right: 0; }
-  .savings .before { color: var(--slate); }
-  .savings .after { font-weight: 700; padding-left: 1.5rem; }
-  .savings tr.total td { border-bottom: 0; border-top: 1px solid var(--ink); font-weight: 700; font-size: 1.1rem; }
-  .savings tr.total td.before { color: var(--ink); }
-  .fine { margin-top: 1rem; font-size: 0.9rem; color: var(--slate); }
+  /* Timeline */
+  .how { padding: 96px 0; }
+  .timeline { list-style: none; padding: 0; margin: 48px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; position: relative; }
+  .timeline::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: var(--rule); }
+  .timeline li { position: relative; padding-top: 36px; }
+  .timeline li::before { content: ""; position: absolute; left: 0; top: 0; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 4px solid var(--navy); }
+  .timeline li:last-child::before { background: var(--amber); border-color: var(--amber); }
+  .when { font-stretch: 68%; font-weight: 800; font-size: 1.7rem; line-height: 1; color: var(--navy); }
+  .timeline h3 { font-size: 1.1rem; margin: 10px 0 6px; }
+  .timeline p { color: var(--slate); margin: 0; }
+  @media (max-width: 760px) {
+    .timeline { grid-template-columns: 1fr; }
+    .timeline::before { left: 9px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
+    .timeline li { padding: 0 0 0 40px; }
+  }
 
-  /* Demos */
-  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem 2rem; margin-top: 2.5rem; }
-  .demo { display: flex; flex-direction: column; }
-  .demo a.pic { display: block; border-radius: 10px; }
-  .demo .frame { aspect-ratio: 16 / 9.5; }
-  .demo .frame img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
-  .demo h3 { margin-top: 1.1rem; }
-  .demo p { color: var(--slate); margin-top: 0.4rem; max-width: 54ch; }
-  .demo .go { margin-top: 0.75rem; font-weight: 600; }
-
-  /* Steps: a real sequence */
-  .steps { list-style: none; margin: 2.25rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; counter-reset: s; }
-  .steps li { counter-increment: s; border-top: 2px solid var(--brand); padding-top: 1.1rem; }
-  .steps li::before { content: "Step " counter(s); display: block; font-size: 0.9rem; font-weight: 600; color: var(--brand); margin-bottom: 0.35rem; }
-  .steps p { color: var(--slate); margin-top: 0.45rem; }
-
-  /* Founding offer */
-  .founding { margin-top: 2.75rem; display: grid; grid-template-columns: 1fr auto; gap: 1.25rem 2.5rem; align-items: center; background: var(--wash); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 1.6rem 1.75rem; }
-  .founding p { color: var(--slate); margin-top: 0.4rem; max-width: 64ch; }
-  .founding .spots { font-size: 0.95rem; font-weight: 600; color: var(--brand); margin-top: 0.75rem; }
-  @media (max-width: 640px) { .founding { grid-template-columns: 1fr; padding: 1.4rem 1.25rem; } .founding .btn { justify-self: start; } }
-
-  /* Questions */
-  .faq { margin-top: 2rem; max-width: 780px; }
-  .faq details { border-bottom: 1px solid var(--rule); }
-  .faq details:first-child { border-top: 1px solid var(--rule); }
-  .faq summary { cursor: pointer; list-style: none; padding: 1.1rem 2.5rem 1.1rem 0; font-weight: 600; font-size: 1.07rem; position: relative; }
-  .faq summary::-webkit-details-marker { display: none; }
-  .faq summary::after { content: "+"; position: absolute; right: 0.25rem; top: 0.85rem; font-size: 1.4rem; font-weight: 400; color: var(--slate); }
-  .faq details[open] summary::after { content: "\2212"; }
-  .faq details p { color: var(--slate); padding: 0 0 1.2rem; max-width: 66ch; }
+  /* FAQ */
+  .faq { padding: 0 0 96px; }
+  .faq-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 48px; }
+  details { border-bottom: 1px solid var(--rule); }
+  summary { cursor: pointer; list-style: none; padding: 18px 32px 18px 0; font-weight: 600; position: relative; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; position: absolute; right: 4px; top: 16px; font-size: 1.3rem; color: var(--slate); }
+  details[open] summary::after { content: "\2212"; }
+  details p { color: var(--slate); margin: 0 0 20px; max-width: 64ch; }
+  @media (max-width: 760px) { .faq-grid { grid-template-columns: 1fr; gap: 16px; } }
 
   /* About + contact */
-  .about .wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
-  .about p { color: var(--slate); max-width: 54ch; }
-  .about p + p { margin-top: 1rem; }
-  .about h2 + p { margin-top: 1rem; }
-  .contact { background: #fff; border: 1px solid var(--rule); border-radius: 10px; padding: 1.75rem; }
-  .contact p { color: var(--slate); margin-top: 0.5rem; }
-  .contact dl { margin: 1.5rem 0 0; display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1.25rem; font-size: 0.97rem; }
-  .contact dt { color: var(--slate); }
-  .contact dd { margin: 0; font-weight: 500; }
+  .about { background: #F3F5F7; padding: 96px 0; }
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; }
+  .about p { color: var(--slate); max-width: 62ch; }
+  .contact { background: var(--navy); color: #fff; border-radius: 6px; padding: 32px; align-self: start; }
+  .contact h3 { font-stretch: 68%; font-weight: 800; font-size: 2rem; line-height: 1; margin: 0 0 12px; }
+  .contact p { color: #C6D2DC; margin: 0 0 22px; }
+  .contact .btn-primary { background: var(--amber); border-color: var(--amber); color: var(--backbar); }
+  .contact .btn-ghost { color: #fff; border-color: #fff; }
+  .contact dl { margin: 24px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 0.95rem; }
+  .contact dt { color: #C6D2DC; }
+  .contact dd { margin: 0; }
+  .contact .founding { margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.2); font-size: 0.95rem; color: #fff; }
+  .contact .founding b { color: var(--amber); }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 32px; } }
 
-  .email-options { margin-top: 1rem; padding: 1rem 1.1rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--wash); }
+  .contact-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .email-options { margin-top: 16px; padding: 16px; border: 1px solid rgba(255,255,255,.25); border-radius: 6px; }
   .email-options[hidden] { display: none; }
-  .email-options p { margin: 0 0 0.75rem; color: var(--ink); font-size: 0.97rem; }
-  .email-options .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .email-options .status { margin: 0.6rem 0 0; font-size: 0.92rem; color: var(--brand); min-height: 1.2em; }
+  .email-options p { margin: 0 0 12px; color: #fff; font-size: 0.95rem; }
+  .email-options .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn-small { padding: 8px 12px; font-size: 0.9rem; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.6); }
+  .btn-small:hover { border-color: #fff; }
+  .email-options .status { margin: 10px 0 0; color: var(--amber); min-height: 1.2em; }
 
-  .site-footer { border-top: 1px solid var(--rule); padding: 1.75rem 0 2.25rem; color: var(--slate); font-size: 0.92rem; }
-  .site-footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .site-footer a { color: var(--slate); }
+  /* Tablet */
+  @media (max-width: 1024px) {
+    .hero { padding-top: 56px; }
+    .hero h1 { font-size: clamp(2.8rem, 9vw, 5.2rem); }
+    .hero-row { grid-template-columns: 1fr; gap: 20px; }
+    .hero-row .actions { justify-self: start; }
+    .savings-head, .about-grid, .faq-grid { grid-template-columns: 1fr; gap: 24px; }
+    .panel { grid-template-columns: 1fr; gap: 24px; }
+    .panel > div { max-width: 640px; }
+    .savings, .how, .backbar, .about { padding-top: 72px; padding-bottom: 72px; }
+    .faq { padding-bottom: 72px; }
+  }
+  /* Phone */
+  @media (max-width: 600px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 16px; }
+    .hero { padding-top: 36px; }
+    .hero h1 { font-size: clamp(2.3rem, 11.5vw, 3.2rem); }
+    .hero-row { margin-top: 18px; gap: 18px; }
+    .hero-shot { margin-top: 28px; margin-left: -16px; margin-right: -16px; padding: 12px 12px 0; }
+    .hero-row .actions .btn { flex: 1 1 auto; text-align: center; }
+    .big-number { font-size: clamp(2.4rem, 13vw, 3.4rem); }
+    .savings, .how, .backbar, .about { padding-top: 56px; padding-bottom: 56px; }
+    .faq { padding-bottom: 56px; }
+    td { padding-right: 8px; }
+    .rail { margin-top: 36px; }
+    .rail-tabs { gap: 2px; }
+    .bottle { width: 38px; height: 86px; }
+    .rail::after { top: 76px; }
+    .contact { padding: 24px; }
+    .contact-actions .btn { flex: 1 1 auto; text-align: center; }
+  }
 
-  @media (max-width: 940px) {
-    .nav { display: none; }
-    .hero .wrap, .about .wrap { grid-template-columns: 1fr; }
-    .demo-grid { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; gap: 1.5rem; }
-  }
-  @media (max-width: 640px) {
-    .savings thead { display: none; }
-    .savings tr { display: grid; grid-template-columns: 1fr auto auto; border-bottom: 1px solid var(--rule); padding: 1.1rem 0; column-gap: 1rem; }
-    .savings td { border: 0; padding: 0; }
-    .savings td:first-child { width: auto; grid-column: 1; }
-    .savings td.desc { grid-column: 1 / -1; grid-row: 2; margin-top: 0.35rem; font-size: 0.97rem; }
-    .savings .after { padding-left: 0; }
-    .savings tr.total { border-top: 1px solid var(--ink); border-bottom: 0; }
-    .savings tr.total td { border: 0; }
-    .savings tr.total td:nth-child(2) { display: none; }
-    .contact dl { grid-template-columns: 1fr; gap: 0.1rem; }
-    .contact dd { margin-bottom: 0.6rem; }
-  }
+  footer { padding: 28px 0; font-size: 0.9rem; color: var(--slate); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="#" aria-label="SpeedRail home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1D3B53"/><path d="M6.9 20V14.2L8.5 12.4V8H10.5V12.4L12.1 14.2V20ZM19.9 20V14.2L21.5 12.4V8H23.5V12.4L25.1 14.2V20Z" fill="#fff"/><path d="M13.4 20V14.2L15 12.4V6H17V12.4L18.6 14.2V20Z" fill="#D9932B"/><rect x="4.5" y="19" width="23" height="4" rx="2" fill="#fff"/><rect x="4.5" y="24.8" width="9" height="1.4" rx=".7" fill="#D9932B" opacity=".9"/></svg><b>SpeedRail</b><span>Bar tools</span></a>
-    <nav class="nav" aria-label="Main">
-      <a href="#what">What I do</a>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#" aria-label="SpeedRail home"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpiYTU0NzQyNy0yMTQ0LTRmODUtOTYzZC03MGFhNDY5MzI4YTYAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaPkXK3mPD8c/5mKpPAV/Fj0AAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDoyNjRhMGYxMi0yYjEwLTRiZDUtYmY2ZS01ZTkxOGFiNGY1YTVscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNooWq+Ll28fZESQ55aHQPKcgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggQgN6DvzXk46FwCRqgfq/xjCSRQ+PjjBjJxvkICcfUE6kZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaGnDrHr0vEVJOuA6CAjvKbwAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCAcWsNmnbV82k1FgJ2yWMGBSXupJPAkEZyla2gtbRGD7GRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBh7Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmJhNTQ3NDI3LTIxNDQtNGY4NS05NjNkLTcwYWE0NjkzMjhhNi9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjU0NzY2MGMwLWU4Y2EtNDA0Ni04MDUyLWZiNzk4ZmM3NzFiY3JjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBCA3oO/NeTjoXAJGqB+r/GMJJFD4+OMGMnG+QgJx9QTqJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg+pvzpgMDYQRBx25gLL3I3plKhB0llm3O3PiS2AvYH0eiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggj9VKkLA/b4fhPQojBl+1QigY6HTnP0zjdPr4LZxGv3F0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQGmQaAqMOL7feNG8f52/1ZKxd7O+hxwAMPYoZvqAwtCCfPmIt7lsIwYXgbsKePdx2XJGPYdkzOzevm4IBboCdu8=</c2pa:manifest></metadata><rect width="32" height="32" rx="7" fill="#1D3B53"/><path d="M6.9 20V14.2L8.5 12.4V8H10.5V12.4L12.1 14.2V20ZM19.9 20V14.2L21.5 12.4V8H23.5V12.4L25.1 14.2V20Z" fill="#fff"/><path d="M13.4 20V14.2L15 12.4V6H17V12.4L18.6 14.2V20Z" fill="#D9932B"/><rect x="4.5" y="19" width="23" height="4" rx="2" fill="#fff"/><rect x="4.5" y="24.8" width="9" height="1.4" rx=".7" fill="#D9932B" opacity=".9"/></svg>SpeedRail</a>
+    <nav aria-label="Main">
+      <a href="#savings">What I do</a>
       <a href="#demos">Demos</a>
       <a href="#how">How it works</a>
-      <a href="#questions">Questions</a>
+      <a href="#faq">Questions</a>
+      <a class="btn btn-primary" href="#contact">Book a call</a>
     </nav>
-    <a class="btn btn-primary btn-small" href="#contact">Book a call</a>
   </div>
 </header>
 
 <main>
   <section class="hero">
     <div class="wrap">
-      <div>
-        <h1>Ten years behind the bar. Now I build the tools I wished I had.</h1>
+      <h1 class="display">Ten years behind the bar. Now I build the tools I wished I had.</h1>
+      <div class="hero-row">
         <p class="lede">I set up the monthly reporting and weekly drink posts your managers make by hand, so they build themselves from your POS. Your team reviews them instead of making them.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="#contact">Book a 20-minute call</a>
-          <a class="btn btn-secondary" href="#demos">See the demos</a>
+        <div>
+          <div class="actions">
+            <a class="btn btn-primary" href="#contact">Book a 20-minute call</a>
+            <a class="btn btn-ghost" href="#demos">See the demos</a>
+          </div>
+          <p class="founding-line"><b>Founding offer:</b> 40% off setup for the first five bars.</p>
         </div>
-        <p class="meta">Built by Blake Herring, a bar manager and supply chain analyst in Marietta, Georgia. Free first call, no software to buy.</p>
       </div>
-      <figure>
-        <div class="frame"><img src="images/owner-deck.jpg" width="1600" height="724" alt="A slide from the monthly owner deck showing net sales, guests, average check, and orders against last year, with four written takeaways"></div>
-        <figcaption>A page from the monthly owner deck, built from a month of POS sales in one click.</figcaption>
+      <figure class="hero-shot" style="margin-bottom:0">
+        <img src="images/owner-deck.jpg" alt="A page from the monthly owner deck showing sales up 13.5% on last September, with net sales, guests, average check and orders compared to last year">
       </figure>
+      <p class="caption">A page from the monthly owner deck, built from a month of POS sales in one click. Sample numbers.</p>
     </div>
   </section>
 
-  <section class="block" id="what">
+  <section class="savings" id="savings">
     <div class="wrap">
-      <h2>What comes off your plate</h2>
-      <p class="intro">Three jobs that eat a manager's month. Each is set up once around how you already report, then runs on its own.</p>
-      <table class="savings">
-        <thead><tr><th scope="col">Task</th><th scope="col">What you get</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th></tr></thead>
+      <div class="savings-head">
+        <div>
+          <h2 class="display">What comes off your plate</h2>
+          <p class="lede">Three jobs that eat a manager's month. Each is set up once around how you already report, then runs on its own.</p>
+        </div>
+        <div class="big-number" aria-label="8 hours down to 30 minutes a month">8 hrs <span>&rarr;</span> 30 min</div>
+      </div>
+      <table>
+        <thead><tr><th>Task</th><th class="desc">What you get</th><th class="num">Before</th><th class="num">After</th></tr></thead>
         <tbody>
-          <tr><td><h3>Monthly owner deck</h3></td><td class="desc">Sales against last year, top sellers, and the items running over your cost target, laid out the way your owners or corporate want it. Add a note and send.</td><td class="num before">3 hrs</td><td class="num after">10 min</td></tr>
-          <tr><td><h3>Weekly drink posts</h3></td><td class="desc">Snap a photo of the drink at your bar and get a ready-to-post carousel and caption, written from your own recipe and checked against Georgia's alcohol ad rules.</td><td class="num before">3 hrs</td><td class="num after">20 min</td></tr>
-          <tr><td><h3>Sales against last year</h3></td><td class="desc">Every day, week, and month compared to the same period last year, readable on a phone. No pivot tables.</td><td class="num before">2 hrs</td><td class="num after">0</td></tr>
-          <tr class="total"><td>Each month</td><td></td><td class="num before">8 hrs</td><td class="num after">30 min</td></tr>
+          <tr><td class="task">Monthly owner deck</td><td class="desc">Sales against last year, top sellers, and the items running over your cost target, laid out the way your owners or corporate want it. Add a note and send.</td><td class="num">3 hrs</td><td class="num after">10 min</td></tr>
+          <tr><td class="task">Weekly drink posts</td><td class="desc">Snap a photo of the drink at your bar and get a ready-to-post carousel and caption, written from your own recipe and checked against Georgia's alcohol ad rules.</td><td class="num">3 hrs</td><td class="num after">20 min</td></tr>
+          <tr><td class="task">Sales against last year</td><td class="desc">Every day, week, and month compared to the same period last year, readable on a phone. No pivot tables.</td><td class="num">2 hrs</td><td class="num after">0</td></tr>
+          <tr class="total"><td class="task">Each month</td><td class="desc"></td><td class="num">8 hrs</td><td class="num after">30 min</td></tr>
         </tbody>
       </table>
       <p class="fine">Times are from my own bar. We'll work out yours on the first call.</p>
     </div>
   </section>
 
-  <section class="block wash" id="demos">
+  <section class="backbar" id="demos">
     <div class="wrap">
-      <h2>See it on a sample bar</h2>
-      <p class="intro">Each demo runs on made-up numbers for a fictional taproom, so you can click around freely.</p>
-      <div class="demo-grid">
-        <div class="demo">
-          <a class="pic" href="deck/"><div class="frame"><img src="images/owner-deck-price.jpg" width="1600" height="901" loading="lazy" alt="Owner deck slide listing six items over the cost target with suggested prices"></div></a>
-          <h3>Monthly owner deck</h3>
-          <p>Pick a month and eight slides build themselves, from sales against last year to a list of prices worth raising. Save it as a PDF or copy an email summary.</p>
-          <a class="go" href="deck/">Open the deck demo</a>
-        </div>
-        <div class="demo">
-          <a class="pic" href="cocktails/"><div class="frame"><img src="images/drink-app.jpg" width="1600" height="950" loading="lazy" alt="The Drink of the Week app on a phone next to a generated Instagram post"></div></a>
-          <h3>Drink of the Week app and posts</h3>
-          <p>Staff see the weekly feature, full specs, and talking points on their phones. One tap turns the feature into a post for Instagram, Facebook, or Stories.</p>
-          <a class="go" href="cocktails/">Open the app demo</a>
-        </div>
-        <div class="demo">
-          <a class="pic" href="dashboard/"><div class="frame"><img src="images/sales-dashboard.jpg" width="1600" height="950" loading="lazy" alt="Sales dashboard showing three years of sales and key numbers compared with last year"></div></a>
-          <h3>Sales dashboard</h3>
-          <p>This year against last year, the sales mix, guest traffic, and which items cost you margin. Updated by dropping in the month's POS reports.</p>
-          <a class="go" href="dashboard/">Open the dashboard demo</a>
-        </div>
-        <div class="demo">
-          <a class="pic" href="inventory/"><div class="frame"><img src="images/planner.jpg" width="1600" height="950" loading="lazy" alt="Inventory planner listing items to order now, sorted by what runs out first"></div></a>
-          <h3>Reorder and keep-or-cut planner</h3>
-          <p>What to order this week, sorted by what runs out first, and which beers, spirits, and wines have earned their spot.</p>
-          <a class="go" href="inventory/">Open the planner demo</a>
-        </div>
-        <div class="demo">
-          <a class="pic" href="dashboard/#variance"><div class="frame"><img src="images/draft-variance.jpg" width="1600" height="950" loading="lazy" alt="Draft variance tracker showing ounces poured but not rung in, by day and by tap"></div></a>
-          <h3>Draft variance tracker</h3>
-          <p>Drop in your flow-meter reports and see every tap's pours against what was rung in, which lines are leaking, and what it's costing you. Beer the kitchen uses is kept separate so it never reads as loss.</p>
-          <a class="go" href="dashboard/#variance">Open the variance demo</a>
+      <h2 class="display">Pick a tool off the rail</h2>
+      <p class="lede">Each demo runs on made-up numbers for a fictional taproom, so you can click around freely.</p>
+
+      <div class="rail">
+        <div class="rail-tabs" role="tablist" aria-label="Demos">
+          <button class="tab" type="button" role="tab" id="tab-deck" aria-controls="panel-deck" aria-selected="true" tabindex="0"><svg class="bottle" viewBox="0 0 40 90" aria-hidden="true"><path d="M16 2h8v20l6 9v57H10V31l6-9z"/></svg><span class="tab-label">Owner deck</span></button>
+          <button class="tab" type="button" role="tab" id="tab-app" aria-controls="panel-app" aria-selected="false" tabindex="-1"><svg class="bottle" viewBox="0 0 40 90" aria-hidden="true"><path d="M16 2h8v20l6 9v57H10V31l6-9z"/></svg><span class="tab-label">Drink app</span></button>
+          <button class="tab" type="button" role="tab" id="tab-dash" aria-controls="panel-dash" aria-selected="false" tabindex="-1"><svg class="bottle" viewBox="0 0 40 90" aria-hidden="true"><path d="M16 2h8v20l6 9v57H10V31l6-9z"/></svg><span class="tab-label">Sales dashboard</span></button>
+          <button class="tab" type="button" role="tab" id="tab-plan" aria-controls="panel-plan" aria-selected="false" tabindex="-1"><svg class="bottle" viewBox="0 0 40 90" aria-hidden="true"><path d="M16 2h8v20l6 9v57H10V31l6-9z"/></svg><span class="tab-label">Reorder planner</span></button>
+          <button class="tab" type="button" role="tab" id="tab-var" aria-controls="panel-var" aria-selected="false" tabindex="-1"><svg class="bottle" viewBox="0 0 40 90" aria-hidden="true"><path d="M16 2h8v20l6 9v57H10V31l6-9z"/></svg><span class="tab-label">Draft variance</span></button>
         </div>
       </div>
+      <div class="panel" role="tabpanel" id="panel-deck" aria-labelledby="tab-deck"><img src="images/owner-deck-price.jpg" alt="A price-watch slide listing six items over a 20% cost target with suggested new prices" loading="lazy"><div><h3>Monthly owner deck</h3><p>Pick a month and eight slides build themselves, from sales against last year to a list of prices worth raising. Save it as a PDF or copy an email summary.</p><a class="btn btn-primary" href="deck/">Open the deck demo</a><p class="sample">Sample data for a fictional taproom.</p></div></div>
+      <div class="panel" role="tabpanel" id="panel-app" aria-labelledby="tab-app" hidden><img src="images/drink-app.jpg" alt="The drink app on a phone next to a finished Drink of the Week post" loading="lazy"><div><h3>Drink of the Week app and posts</h3><p>Staff see the weekly feature, full specs, and talking points on their phones. One tap turns the feature into a post for Instagram, Facebook, or Stories.</p><a class="btn btn-primary" href="cocktails/">Open the app demo</a><p class="sample">Sample data for a fictional taproom.</p></div></div>
+      <div class="panel" role="tabpanel" id="panel-dash" aria-labelledby="tab-dash" hidden><img src="images/sales-dashboard.jpg" alt="The sales dashboard comparing three years of sales" loading="lazy"><div><h3>Sales dashboard</h3><p>This year against last year, the sales mix, guest traffic, and which items cost you margin. Updated by dropping in the month's POS reports.</p><a class="btn btn-primary" href="dashboard/">Open the dashboard demo</a><p class="sample">Sample data for a fictional taproom.</p></div></div>
+      <div class="panel" role="tabpanel" id="panel-plan" aria-labelledby="tab-plan" hidden><img src="images/planner.jpg" alt="The reorder planner listing items to order now" loading="lazy"><div><h3>Reorder and keep-or-cut planner</h3><p>What to order this week, sorted by what runs out first, and which beers, spirits, and wines have earned their spot.</p><a class="btn btn-primary" href="inventory/">Open the planner demo</a><p class="sample">Sample data for a fictional taproom.</p></div></div>
+      <div class="panel" role="tabpanel" id="panel-var" aria-labelledby="tab-var" hidden><img src="images/draft-variance.jpg" alt="Draft variance tracker showing ounces poured but not rung in, by day and by tap" loading="lazy"><div><h3>Draft variance tracker</h3><p>Drop in your flow-meter reports and see every tap's pours against what was rung in, which lines are leaking, and what it's costing you. Beer the kitchen uses is kept separate so it never reads as loss.</p><a class="btn btn-primary" href="dashboard/#variance">Open the variance demo</a><p class="sample">Sample data for a fictional taproom.</p></div></div>
     </div>
   </section>
 
-  <section class="block" id="how">
+  <section class="how" id="how">
     <div class="wrap">
-      <h2>How it works</h2>
-      <ol class="steps">
-        <li><h3>A free 20-minute call</h3><p>We look at how you report today, what your owners ask for, and which POS reports you can already pull.</p></li>
-        <li><h3>Two to three weeks of setup</h3><p>I build everything in your own Google account around the layouts your team already knows. You approve each piece.</p></li>
-        <li><h3>It runs on its own</h3><p>Reports refresh from your POS and your weekly post is ready to approve. I keep it running and make small changes as you need them.</p></li>
+      <h2 class="display">How it works</h2>
+      <ol class="timeline">
+        <li><div class="when">Day 1</div><h3>A free 20-minute call</h3><p>We look at how you report today, what your owners ask for, and which POS reports you can already pull.</p></li>
+        <li><div class="when">Weeks 1&ndash;3</div><h3>I build it</h3><p>Everything goes in your own Google account, around the layouts your team already knows. You approve each piece.</p></li>
+        <li><div class="when">After that</div><h3>It runs on its own</h3><p>Reports refresh from your POS and your weekly post is ready to approve. I keep it running and make small changes as you need them.</p></li>
       </ol>
-      <div class="founding">
-        <div>
-          <h3>Founding clients get 40% off setup</h3>
-          <p>I'm taking on my first five bars at a reduced setup price, with your monthly rate locked for a year. In return I ask for a short testimonial, permission to share your before-and-after results, and honest feedback while we get it right.</p>
-          <p class="spots">5 of 5 spots open</p>
-        </div>
-        <a class="btn btn-primary" href="#contact">Ask about a spot</a>
-      </div>
     </div>
   </section>
 
-  <section class="block" id="questions">
-    <div class="wrap">
-      <h2>Questions GMs ask</h2>
-      <div class="faq">
+  <section class="faq" id="faq">
+    <div class="wrap faq-grid">
+      <h2 class="display">Questions GMs ask</h2>
+      <div>
         <details>
           <summary>Is it automated, or am I still exporting reports?</summary>
           <p>Where your POS can send data on a schedule, everything updates overnight on its own. Where it can't, it's one drag and drop at the start of the month, about two minutes. We'll check what your setup supports on the first call, before you pay for anything.</p>
@@ -298,29 +325,31 @@
     </div>
   </section>
 
-  <section class="block wash about" id="contact">
-    <div class="wrap">
+  <section class="about" id="contact">
+    <div class="wrap about-grid">
       <div>
-        <h2>Who's behind SpeedRail</h2>
+        <h2 class="display">Who's behind SpeedRail</h2>
+        
         <p>By day I work in supply chain analytics for a Fortune 500 company, managing field inventory for the construction crews that build cell towers. Keeping the right materials in the right place, and reporting on it so leadership can act, is the whole job.</p>
         <p>I've also managed bars for ten years and still run the back office at a craft beer and cocktail bar in Marietta: inventory, pricing, the cocktail program, and the monthly reports to ownership.</p>
         <p>That mix is the point. A bar is a small supply chain: product comes in, gets poured, and every keg and bottle has to earn its spot. I bring the same inventory and reporting discipline a Fortune 500 company runs on, sized for a single bar.</p>
         <p>The name comes from the speed rail, the rack in front of every bartender that keeps the most-used bottles within reach. That's the idea: the numbers and tools your bar runs on, right where you need them.</p>
+      
       </div>
-      <div class="contact">
+      <aside class="contact">
         <h3>Book a 20-minute call</h3>
         <p>Tell me what's eating your week. If I can't save you real time, I'll say so on the call.</p>
-        <div class="actions" style="margin-top:1.25rem">
+        <div class="contact-actions">
           <a class="btn btn-primary" id="email-btn" href="mailto:sobie275@gmail.com?subject=20-minute%20call" aria-controls="email-options" aria-expanded="false">Email me</a>
-          <a class="btn btn-secondary" href="tel:+14043371143">Call (404) 337-1143</a>
+          <a class="btn btn-ghost" href="tel:+14043371143">Call (404) 337-1143</a>
         </div>
         <div class="email-options" id="email-options" hidden>
           <p>Send your note to <strong>sobie275@gmail.com</strong> from whichever email you use:</p>
           <div class="row">
-            <a class="btn btn-secondary btn-small" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=sobie275@gmail.com&amp;su=20-minute%20call">Open in Gmail</a>
-            <a class="btn btn-secondary btn-small" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to=sobie275@gmail.com&amp;subject=20-minute%20call">Open in Outlook</a>
-            <a class="btn btn-secondary btn-small" href="mailto:sobie275@gmail.com?subject=20-minute%20call">Open my mail app</a>
-            <button class="btn btn-secondary btn-small" type="button" id="copy-email">Copy address</button>
+            <a class="btn btn-small" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=sobie275@gmail.com&amp;su=20-minute%20call">Open in Gmail</a>
+            <a class="btn btn-small" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to=sobie275@gmail.com&amp;subject=20-minute%20call">Open in Outlook</a>
+            <a class="btn btn-small" href="mailto:sobie275@gmail.com?subject=20-minute%20call">Open my mail app</a>
+            <button class="btn btn-small" type="button" id="copy-email">Copy address</button>
           </div>
           <p class="status" id="copy-status" role="status"></p>
         </div>
@@ -328,19 +357,40 @@
           <dt>Email</dt><dd><a href="mailto:sobie275@gmail.com">sobie275@gmail.com</a></dd>
           <dt>Based in</dt><dd>Marietta, Georgia</dd>
         </dl>
-      </div>
+        <p class="founding"><b>Founding clients:</b> 40% off setup for the first five bars, with your monthly rate locked for a year, in exchange for a testimonial and honest feedback. 5 of 5 spots open.</p>
+      </aside>
     </div>
   </section>
 </main>
 
-<footer class="site-footer">
+<footer>
   <div class="wrap">
-    <span>&copy; <span id="year">2026</span> SpeedRail. Everything your bar runs on, within reach.</span>
-    <span><a href="#demos">Demos</a> &nbsp; <a href="#questions">Questions</a> &nbsp; <a href="#contact">Contact</a></span>
+    <span>&copy; 2026 SpeedRail. Everything your bar runs on, within reach.</span>
+    <span><a href="#demos">Demos</a> &nbsp; <a href="#faq">Questions</a> &nbsp; <a href="#contact">Contact</a></span>
   </div>
 </footer>
+
 <script>
-document.getElementById("year").textContent = new Date().getFullYear();
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+    function select(tab) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { select(t); });
+      t.addEventListener('keydown', function (e) {
+        var n = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!n) return;
+        var next = tabs[(i + n + tabs.length) % tabs.length];
+        select(next); next.focus(); e.preventDefault();
+      });
+    });
+  })();
 (function () {
   var btn = document.getElementById("email-btn"), panel = document.getElementById("email-options");
   var copy = document.getElementById("copy-email"), status = document.getElementById("copy-status");
